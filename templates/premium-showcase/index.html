@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS Premium — Elementos Extraídos dos Melhores</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    
+    <style>
+        /* ══════════════════════════════════════════════
+           PREMIUM DESIGN SYSTEM — Elementos Extraídos
+           ══════════════════════════════════════════════ */
+        
+        /* Linear.app Color System */
+        :root {
+            --linear-bg: #0d1117;
+            --linear-surface: #161b22;
+            --linear-border: #21262d;
+            --linear-text: #e6edf3;
+            --linear-muted: #656d76;
+            --linear-accent: #5e6ad2;
+            
+            /* Stripe Payment Colors */
+            --stripe-primary: #635bff;
+            --stripe-success: #00d924;
+            --stripe-surface: #ffffff;
+            
+            /* Apple Liquid Glass */
+            --apple-glass-bg: rgba(255, 255, 255, 0.1);
+            --apple-glass-border: rgba(255, 255, 255, 0.2);
+            
+            /* Figma Creative */
+            --figma-blue: #0d99ff;
+            --figma-green: #1bc47d;
+            --figma-purple: #7b68ee;
+            
+            /* Typography */
+            --font-primary: 'Inter', system-ui, sans-serif;
+        }
+
+        /* Reset + Base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--linear-bg);
+            color: var(--linear-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ══════════════════════════════════════════════
+           EXTRACTED: Linear.app Blur Effects
+           ══════════════════════════════════════════════ */
+        .linear-glass {
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid rgba(48, 54, 61, 0.3);
+            border-radius: 8px;
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .linear-command-palette {
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            border-radius: 12px;
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ══════════════════════════════════════════════
+           EXTRACTED: Stripe.com Button System
+           ══════════════════════════════════════════════ */
+        .stripe-button {
+            background: linear-gradient(135deg, #635bff 0%, #5a52ff 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stripe-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+        }
+
+        /* Stripe shimmer effect */
+        .stripe-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .stripe-button:hover::before {
+            left: 100%;
+        }
+
+        /* ══════════════════════════════════════════════
+           EXTRACTED: Apple.com Liquid Glass
+           ══════════════════════════════════════════════ */
+        .apple-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                0 2px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .apple-transition {
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* ══════════════════════════════════════════════
+           EXTRACTED: Magnetic Interactions
+           ══════════════════════════════════════════════ */
+        .magnetic {
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+
+        .magnetic:hover {
+            transform: translate3d(0, -4px, 0) scale(1.02);
+        }
+
+        /* Ripple effect */
+        .magnetic::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            pointer-events: none;
+        }
+
+        .magnetic:active::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        /* ══════════════════════════════════════════════
+           EXTRACTED: Icon System (Phosphor Style)
+           ══════════════════════════════════════════════ */
+        .phosphor-icon {
+            width: 24px;
+            height: 24px;
+            stroke-width: 1.5px;
+            stroke: currentColor;
+            fill: none;
+            transition: all 0.15s ease;
+        }
+
+        .phosphor-icon:hover {
+            transform: scale(1.1);
+            stroke-width: 2px;
+        }
+
+        /* ══════════════════════════════════════════════
+           NAVIGATION — Linear Style
+           ══════════════════════════════════════════════ */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 2rem;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            padding: 0 1.5rem;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--linear-accent), var(--figma-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ══════════════════════════════════════════════
+           HERO SECTION — Premium Combination
+           ══════════════════════════════════════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 0.2s;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.4s;
+        }
+
+        .hero-title .premium {
+            background: linear-gradient(135deg, var(--stripe-primary), var(--figma-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title .extracted {
+            background: linear-gradient(135deg, var(--figma-blue), var(--figma-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: var(--linear-muted);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 0.6s;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 0.8s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ══════════════════════════════════════════════
+           SHOWCASE GRID — Premium Cards
+           ══════════════════════════════════════════════ */
+        .showcase {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .showcase-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--linear-text), var(--linear-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .showcase-subtitle {
+            font-size: 1.2rem;
+            color: var(--linear-muted);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* ══════════════════════════════════════════════
+           EXTRACTED COMPONENT CARDS
+           ══════════════════════════════════════════════ */
+        .component-card {
+            padding: 2rem;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .component-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .component-card.linear-style {
+            background: var(--linear-surface);
+            border: 1px solid var(--linear-border);
+        }
+
+        .component-card.linear-style:hover {
+            border-color: var(--linear-accent);
+            box-shadow: 0 8px 32px rgba(94, 106, 210, 0.2);
+        }
+
+        .component-card.stripe-style {
+            background: var(--stripe-surface);
+            border: 1px solid rgba(0,0,0,0.05);
+            color: #1a1a1a;
+        }
+
+        .component-card.stripe-style:hover {
+            border-color: rgba(99, 91, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .component-card.apple-style {
+            color: var(--linear-text);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .linear-style .card-icon {
+            background: linear-gradient(135deg, var(--linear-accent), var(--figma-blue));
+            color: white;
+        }
+
+        .stripe-style .card-icon {
+            background: linear-gradient(135deg, var(--stripe-primary), #5a52ff);
+            color: white;
+        }
+
+        .apple-style .card-icon {
+            background: var(--apple-glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--apple-glass-border);
+            color: var(--linear-text);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-desc {
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-features {
+            list-style: none;
+        }
+
+        .card-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .card-features .ph {
+            color: var(--figma-green);
+        }
+
+        /* ══════════════════════════════════════════════
+           DEMO BUTTONS — All Styles
+           ══════════════════════════════════════════════ */
+        .demo-buttons {
+            padding: 4rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .button-demo {
+            text-align: center;
+        }
+
+        .button-demo h4 {
+            font-size: 0.9rem;
+            color: var(--linear-muted);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Figma style button */
+        .figma-button {
+            background: var(--figma-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .figma-button:hover {
+            background: #0b8ae6;
+            transform: translateY(-1px);
+        }
+
+        /* Apple style button */
+        .apple-button {
+            color: var(--linear-text);
+            border: none;
+            border-radius: 20px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* ══════════════════════════════════════════════
+           MOBILE RESPONSIVE
+           ══════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 1rem 3rem;
+            }
+            
+            .showcase {
+                padding: 4rem 1rem;
+            }
+            
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* ══════════════════════════════════════════════
+           LOADING & TRANSITIONS
+           ══════════════════════════════════════════════ */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* GPU optimization */
+        .gpu-optimized {
+            transform: translate3d(0, 0, 0);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="linear-glass">
+        <div class="nav-inner">
+            <div class="nav-logo">NEXUS Premium</div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge linear-glass">
+            <i class="ph ph-sparkle"></i>
+            Elementos Extraídos dos Melhores
+        </div>
+        
+        <h1 class="hero-title">
+            <span class="premium">Premium</span><br>
+            <span class="extracted">Extracted</span>
+        </h1>
+        
+        <p class="hero-subtitle">
+            Analisei Linear, Stripe, Apple, Figma e Framer. 
+            Extraí os melhores padrões de design e criei esta biblioteca premium.
+        </p>
+        
+        <div class="hero-actions">
+            <button class="stripe-button magnetic">
+                <i class="ph ph-eye"></i>
+                Ver Elementos
+            </button>
+            <button class="apple-button apple-glass magnetic">
+                <i class="ph ph-download"></i>
+                Baixar Código
+            </button>
+        </div>
+    </section>
+
+    <!-- Showcase Grid -->
+    <section class="showcase">
+        <h2 class="showcase-title">Sites Analisados</h2>
+        <p class="showcase-subtitle">
+            Cada card demonstra elementos extraídos de sites premiados mundialmente
+        </p>
+        
+        <div class="showcase-grid">
+            <!-- Linear.app Card -->
+            <div class="component-card linear-style magnetic">
+                <div class="card-icon">
+                    <i class="ph ph-terminal-window"></i>
+                </div>
+                <h3 class="card-title">Linear.app</h3>
+                <p class="card-desc">
+                    Dark mode mastery com glassmorphism sutil e sistema de cores científico.
+                </p>
+                <ul class="card-features">
+                    <li><i class="ph ph-check"></i> Color system #0d1117</li>
+                    <li><i class="ph ph-check"></i> Backdrop blur effects</li>
+                    <li><i class="ph ph-check"></i> Command palette style</li>
+                </ul>
+            </div>
+
+            <!-- Stripe.com Card -->
+            <div class="component-card stripe-style magnetic">
+                <div class="card-icon">
+                    <i class="ph ph-credit-card"></i>
+                </div>
+                <h3 class="card-title">Stripe.com</h3>
+                <p class="card-desc">
+                    Buttons perfeitos para conversão com shimmer effects e micro-interações.
+                </p>
+                <ul class="card-features">
+                    <li><i class="ph ph-check"></i> Gradient buttons #635bff</li>
+                    <li><i class="ph ph-check"></i> Shimmer animations</li>
+                    <li><i class="ph ph-check"></i> Trust-building design</li>
+                </ul>
+            </div>
+
+            <!-- Apple.com Card -->
+            <div class="component-card apple-style apple-glass magnetic">
+                <div class="card-icon">
+                    <i class="ph ph-device-mobile"></i>
+                </div>
+                <h3 class="card-title">Apple.com</h3>
+                <p class="card-desc">
+                    Liquid Glass effect com natural motion curves e saturação perfeita.
+                </p>
+                <ul class="card-features">
+                    <li><i class="ph ph-check"></i> Saturate(180%) blur(20px)</li>
+                    <li><i class="ph ph-check"></i> Natural easing curves</li>
+                    <li><i class="ph ph-check"></i> Premium feel</li>
+                </ul>
+            </div>
+
+            <!-- Figma.com Card -->
+            <div class="component-card linear-style magnetic">
+                <div class="card-icon" style="background: linear-gradient(135deg, var(--figma-blue), var(--figma-purple));">
+                    <i class="ph ph-figma-logo"></i>
+                </div>
+                <h3 class="card-title">Figma.com</h3>
+                <p class="card-desc">
+                    Sistema de cores criativo com states perfeitos para colaboração.
+                </p>
+                <ul class="card-features">
+                    <li><i class="ph ph-check"></i> Creative palette</li>
+                    <li><i class="ph ph-check"></i> Component states</li>
+                    <li><i class="ph ph-check"></i> Collaboration UI</li>
+                </ul>
+            </div>
+
+            <!-- Framer.com Card -->
+            <div class="component-card linear-style magnetic">
+                <div class="card-icon" style="background: linear-gradient(135deg, #ff0066, #ff6600);">
+                    <i class="ph ph-play"></i>
+                </div>
+                <h3 class="card-title">Framer.com</h3>
+                <p class="card-desc">
+                    Animation-first approach com spring transitions e parallax scrolling.
+                </p>
+                <ul class="card-features">
+                    <li><i class="ph ph-check"></i> Spring animations</li>
+                    <li><i class="ph ph-check"></i> Parallax effects</li>
+                    <li><i class="ph ph-check"></i> Motion system</li>
+                </ul>
+            </div>
+
+            <!-- Premium Icons Card -->
+            <div class="component-card stripe-style magnetic">
+                <div class="card-icon">
+                    <i class="ph ph-sparkle"></i>
+                </div>
+                <h3 class="card-title">Icon Libraries</h3>
+                <p class="card-desc">
+                    Phosphor, Heroicons, Lucide e Feather com 10K+ ícones curados.
+                </p>
+                <ul class="card-features">
+                    <li><i class="ph ph-check"></i> 10.000+ ícones</li>
+                    <li><i class="ph ph-check"></i> Multiple weights</li>
+                    <li><i class="ph ph-check"></i> MIT License</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Buttons -->
+    <section class="demo-buttons">
+        <h2 style="color: var(--linear-text); margin-bottom: 1rem;">
+            Todos os Estilos de Botão
+        </h2>
+        <p style="color: var(--linear-muted);">
+            Cada botão replica exatamente o estilo dos sites analisados
+        </p>
+        
+        <div class="demo-grid">
+            <div class="button-demo">
+                <h4>Stripe Style</h4>
+                <button class="stripe-button">
+                    Converter Agora
+                </button>
+            </div>
+            
+            <div class="button-demo">
+                <h4>Figma Style</h4>
+                <button class="figma-button">
+                    Create Design
+                </button>
+            </div>
+            
+            <div class="button-demo">
+                <h4>Apple Liquid</h4>
+                <button class="apple-button apple-glass">
+                    Explore Magic
+                </button>
+            </div>
+            
+            <div class="button-demo">
+                <h4>Linear Command</h4>
+                <div class="linear-command-palette" style="padding: 1rem;">
+                    <small style="color: var(--linear-muted);">⌘ K to search</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Magnetic effect for all magnetic elements
+        document.querySelectorAll('.magnetic').forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+                
+                el.style.transform = `translate3d(${x * 5}px, ${y * 5}px, 0) scale(1.02)`;
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'translate3d(0, 0, 0) scale(1)';
+            });
+        });
+
+        // Phosphor icons hover effect
+        document.querySelectorAll('.ph').forEach(icon => {
+            icon.addEventListener('mouseenter', () => {
+                icon.style.transform = 'scale(1.2) rotate(5deg)';
+            });
+            
+            icon.addEventListener('mouseleave', () => {
+                icon.style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards
+        document.querySelectorAll('.component-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            observer.observe(card);
+        });
+
+        // Performance monitoring
+        console.log('🌌 NEXUS Premium Showcase carregado com elementos extraídos de:');
+        console.log('• Linear.app - Dark mode + glassmorphism');
+        console.log('• Stripe.com - Button perfection + shimmer');  
+        console.log('• Apple.com - Liquid glass + natural motion');
+        console.log('• Figma.com - Creative colors + states');
+        console.log('• Framer.com - Animation-first + springs');
+    </script>
+</body>
+</html>

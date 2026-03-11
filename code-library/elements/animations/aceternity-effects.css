@@ -1,0 +1,597 @@
+/*
+ * ✨ ACETERNITY UI EFFECTS
+ * Extracted from ui.aceternity.com - Premium animated components
+ * 200+ components used by top startups and YC companies
+ */
+
+/* ══════════════════════════════════════════════
+   ACETERNITY DESIGN TOKENS
+   ══════════════════════════════════════════════ */
+
+:root {
+  /* Aceternity brand colors */
+  --aceternity-primary: #0ea5e9;
+  --aceternity-secondary: #8b5cf6;
+  --aceternity-accent: #06b6d4;
+  --aceternity-success: #10b981;
+  --aceternity-warning: #f59e0b;
+  --aceternity-error: #ef4444;
+  
+  /* Dark theme (primary) */
+  --aceternity-bg-primary: #0a0a0a;
+  --aceternity-bg-secondary: #111111;
+  --aceternity-bg-tertiary: #1a1a1a;
+  --aceternity-border: #262626;
+  --aceternity-text: #ffffff;
+  --aceternity-text-secondary: #a3a3a3;
+  --aceternity-text-muted: #525252;
+  
+  /* Gradients */
+  --aceternity-gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --aceternity-gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --aceternity-gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --aceternity-gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  
+  /* Animation timings */
+  --aceternity-timing-fast: 0.15s;
+  --aceternity-timing-normal: 0.3s;
+  --aceternity-timing-slow: 0.6s;
+  --aceternity-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --aceternity-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ══════════════════════════════════════════════
+   CARD SPOTLIGHT EFFECT - SIGNATURE COMPONENT
+   ══════════════════════════════════════════════ */
+
+.aceternity-card-spotlight {
+  /* Foundation */
+  position: relative;
+  background: var(--aceternity-bg-secondary);
+  border: 1px solid var(--aceternity-border);
+  border-radius: 16px;
+  padding: 32px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--aceternity-timing-normal) var(--aceternity-easing);
+  
+  /* Performance */
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
+}
+
+.aceternity-card-spotlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+    rgba(255, 255, 255, 0.1),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity var(--aceternity-timing-normal) var(--aceternity-easing);
+  pointer-events: none;
+}
+
+.aceternity-card-spotlight:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.aceternity-card-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* JavaScript required for mouse tracking */
+.aceternity-card-spotlight[data-spotlight="active"]::before {
+  opacity: 1;
+}
+
+/* ══════════════════════════════════════════════
+   3D CARD EFFECT - PERSPECTIVE ANIMATION
+   ══════════════════════════════════════════════ */
+
+.aceternity-3d-card {
+  /* Foundation */
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background: var(--aceternity-bg-secondary);
+  border-radius: 20px;
+  padding: 24px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: all var(--aceternity-timing-slow) var(--aceternity-easing);
+  perspective: 1000px;
+}
+
+.aceternity-3d-card:hover {
+  transform: rotateY(10deg) rotateX(10deg) translateZ(20px);
+}
+
+.aceternity-3d-card__content {
+  position: relative;
+  z-index: 2;
+  transition: transform var(--aceternity-timing-slow) var(--aceternity-easing);
+}
+
+.aceternity-3d-card:hover .aceternity-3d-card__content {
+  transform: translateZ(30px);
+}
+
+.aceternity-3d-card__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--aceternity-text);
+  margin-bottom: 12px;
+  transform: translateZ(40px);
+}
+
+.aceternity-3d-card__description {
+  font-size: 16px;
+  color: var(--aceternity-text-secondary);
+  line-height: 1.6;
+  transform: translateZ(20px);
+}
+
+.aceternity-3d-card__background {
+  position: absolute;
+  inset: 0;
+  background: var(--aceternity-gradient-primary);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--aceternity-timing-slow) var(--aceternity-easing);
+}
+
+.aceternity-3d-card:hover .aceternity-3d-card__background {
+  opacity: 0.1;
+}
+
+/* ══════════════════════════════════════════════
+   MOVING BORDER EFFECT - ANIMATED OUTLINE
+   ══════════════════════════════════════════════ */
+
+.aceternity-moving-border {
+  /* Foundation */
+  position: relative;
+  background: var(--aceternity-bg-secondary);
+  border-radius: 12px;
+  padding: 20px 32px;
+  cursor: pointer;
+  overflow: hidden;
+  color: var(--aceternity-text);
+  text-decoration: none;
+  display: inline-block;
+  transition: all var(--aceternity-timing-normal) var(--aceternity-easing);
+}
+
+.aceternity-moving-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: var(--aceternity-gradient-primary);
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  animation: rotate-border 3s linear infinite;
+}
+
+.aceternity-moving-border:hover {
+  transform: scale(1.02);
+}
+
+@keyframes rotate-border {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ══════════════════════════════════════════════
+   GLOWING STARS BACKGROUND - MAGICAL EFFECT
+   ══════════════════════════════════════════════ */
+
+.aceternity-glowing-stars {
+  position: relative;
+  background: var(--aceternity-bg-primary);
+  border-radius: 16px;
+  padding: 40px;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+.aceternity-glowing-stars::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #ffffff20, transparent),
+    radial-gradient(2px 2px at 40px 70px, #ffffff15, transparent),
+    radial-gradient(1px 1px at 90px 40px, #ffffff25, transparent),
+    radial-gradient(1px 1px at 130px 80px, #ffffff20, transparent),
+    radial-gradient(2px 2px at 160px 30px, #ffffff15, transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+
+.aceternity-glowing-stars::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 50% at 50% -20%,
+    rgba(120, 119, 198, 0.3),
+    transparent
+  );
+  animation: aurora 8s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+@keyframes aurora {
+  0% { 
+    background: radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(120, 119, 198, 0.3),
+      transparent
+    );
+  }
+  100% { 
+    background: radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(255, 154, 158, 0.3),
+      transparent
+    );
+  }
+}
+
+/* ══════════════════════════════════════════════
+   HOVER BORDER GRADIENT - EXPANSION EFFECT
+   ══════════════════════════════════════════════ */
+
+.aceternity-hover-border {
+  /* Foundation */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  background: var(--aceternity-bg-secondary);
+  border: 1px solid var(--aceternity-border);
+  border-radius: 8px;
+  color: var(--aceternity-text);
+  text-decoration: none;
+  overflow: hidden;
+  transition: all var(--aceternity-timing-normal) var(--aceternity-easing);
+}
+
+.aceternity-hover-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--aceternity-gradient-primary);
+  opacity: 0;
+  transition: opacity var(--aceternity-timing-normal) var(--aceternity-easing);
+  z-index: 1;
+}
+
+.aceternity-hover-border::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--aceternity-bg-secondary);
+  border-radius: 6px;
+  z-index: 2;
+}
+
+.aceternity-hover-border:hover::before {
+  opacity: 1;
+}
+
+.aceternity-hover-border:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.aceternity-hover-border span {
+  position: relative;
+  z-index: 3;
+}
+
+/* ══════════════════════════════════════════════
+   FLIP WORDS ANIMATION - TEXT ROTATOR
+   ══════════════════════════════════════════════ */
+
+.aceternity-flip-words {
+  display: inline-block;
+  position: relative;
+  height: 1.2em;
+  overflow: hidden;
+}
+
+.aceternity-flip-words__word {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--aceternity-primary);
+  font-weight: 600;
+  animation: flip-word 3s infinite;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.aceternity-flip-words__word:nth-child(1) { animation-delay: 0s; }
+.aceternity-flip-words__word:nth-child(2) { animation-delay: 1s; }
+.aceternity-flip-words__word:nth-child(3) { animation-delay: 2s; }
+
+@keyframes flip-word {
+  0%, 20% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+  25%, 100% { 
+    opacity: 0; 
+    transform: translateY(-100%); 
+  }
+}
+
+/* ══════════════════════════════════════════════
+   METEOR SHOWER BACKGROUND - DYNAMIC EFFECT
+   ══════════════════════════════════════════════ */
+
+.aceternity-meteors {
+  position: relative;
+  background: var(--aceternity-bg-primary);
+  border-radius: 16px;
+  padding: 40px;
+  overflow: hidden;
+  min-height: 400px;
+}
+
+.aceternity-meteors::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--aceternity-primary), transparent);
+  animation: meteor-1 2s linear infinite;
+}
+
+.aceternity-meteors::after {
+  content: '';
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--aceternity-accent), transparent);
+  animation: meteor-2 3s linear infinite 1s;
+}
+
+@keyframes meteor-1 {
+  0% { transform: translateX(-100%) rotate(-45deg); }
+  100% { transform: translateX(200vw) rotate(-45deg); }
+}
+
+@keyframes meteor-2 {
+  0% { transform: translateX(-100%) rotate(-45deg); }
+  100% { transform: translateX(200vw) rotate(-45deg); }
+}
+
+/* ══════════════════════════════════════════════
+   BACKGROUND BEAMS - LINEAR ANIMATION
+   ══════════════════════════════════════════════ */
+
+.aceternity-background-beams {
+  position: relative;
+  background: var(--aceternity-bg-primary);
+  border-radius: 16px;
+  padding: 40px;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+.aceternity-background-beams::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(14, 165, 233, 0.1) 50%,
+    transparent 70%
+  );
+  animation: beam-sweep 3s ease-in-out infinite;
+}
+
+@keyframes beam-sweep {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  50% { transform: translateX(0) skewX(-15deg); }
+  100% { transform: translateX(100%) skewX(-15deg); }
+}
+
+/* ══════════════════════════════════════════════
+   SPARKLES EFFECT - PARTICLE ANIMATION
+   ══════════════════════════════════════════════ */
+
+.aceternity-sparkles {
+  position: relative;
+  display: inline-block;
+}
+
+.aceternity-sparkles::before,
+.aceternity-sparkles::after {
+  content: '✨';
+  position: absolute;
+  font-size: 12px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.aceternity-sparkles::before {
+  top: -10px;
+  right: -10px;
+  animation: sparkle 2s infinite;
+}
+
+.aceternity-sparkles::after {
+  bottom: -10px;
+  left: -10px;
+  animation: sparkle 2s infinite 0.5s;
+}
+
+@keyframes sparkle {
+  0%, 100% { 
+    opacity: 0; 
+    transform: scale(0) rotate(0deg); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1) rotate(180deg); 
+  }
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .aceternity-3d-card {
+    width: 280px;
+    height: 180px;
+    padding: 20px;
+  }
+  
+  .aceternity-3d-card:hover {
+    transform: rotateY(5deg) rotateX(5deg) translateZ(10px);
+  }
+  
+  .aceternity-card-spotlight {
+    padding: 24px;
+  }
+  
+  .aceternity-glowing-stars,
+  .aceternity-meteors,
+  .aceternity-background-beams {
+    padding: 24px;
+    min-height: 200px;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY & PERFORMANCE
+   ══════════════════════════════════════════════ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .aceternity-card-spotlight,
+  .aceternity-3d-card,
+  .aceternity-moving-border {
+    border-width: 2px;
+    border-color: var(--aceternity-text);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .aceternity-card-spotlight,
+  .aceternity-3d-card,
+  .aceternity-moving-border,
+  .aceternity-flip-words__word {
+    transition: none;
+    animation: none;
+  }
+  
+  .aceternity-3d-card:hover {
+    transform: none;
+  }
+  
+  .aceternity-glowing-stars::before,
+  .aceternity-glowing-stars::after,
+  .aceternity-meteors::before,
+  .aceternity-meteors::after,
+  .aceternity-background-beams::before {
+    animation: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- Card Spotlight Effect -->
+<div class="aceternity-card-spotlight" id="spotlight-card">
+  <h3>Spotlight Card</h3>
+  <p>Hover to reveal the spotlight effect</p>
+</div>
+
+<!-- 3D Card Effect -->
+<div class="aceternity-3d-card">
+  <div class="aceternity-3d-card__background"></div>
+  <div class="aceternity-3d-card__content">
+    <h3 class="aceternity-3d-card__title">3D Card</h3>
+    <p class="aceternity-3d-card__description">This card has a beautiful 3D perspective effect</p>
+  </div>
+</div>
+
+<!-- Moving Border Button -->
+<a href="#" class="aceternity-moving-border">
+  <span>Get Started</span>
+</a>
+
+<!-- Flip Words Animation -->
+<h1>I am a <span class="aceternity-flip-words">
+  <span class="aceternity-flip-words__word">Developer</span>
+  <span class="aceternity-flip-words__word">Designer</span>
+  <span class="aceternity-flip-words__word">Creator</span>
+</span></h1>
+
+<!-- Background Effects -->
+<div class="aceternity-glowing-stars">
+  <h2>Glowing Stars Background</h2>
+</div>
+
+<div class="aceternity-meteors">
+  <h2>Meteor Shower Effect</h2>
+</div>
+
+<div class="aceternity-background-beams">
+  <h2>Background Beams</h2>
+</div>
+
+<!-- Sparkles Text -->
+<span class="aceternity-sparkles">Magic Text ✨</span>
+
+<!-- JavaScript for Spotlight Effect -->
+<script>
+document.getElementById('spotlight-card').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  this.style.setProperty('--mouse-x', x + 'px');
+  this.style.setProperty('--mouse-y', y + 'px');
+  this.setAttribute('data-spotlight', 'active');
+});
+
+document.getElementById('spotlight-card').addEventListener('mouseleave', function() {
+  this.removeAttribute('data-spotlight');
+});
+</script>
+*/

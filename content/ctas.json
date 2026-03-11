@@ -1,0 +1,24 @@
+{
+  "primary": "Começar Com Segurança",
+  "secondary": "Acessar Método Comprovado",
+  "variants": [
+    "Ver Resultados Reais",
+    "Conhecer a Metodologia",
+    "Falar Com Especialista"
+  ],
+  "psychological_focus": "value",
+  "urgency_enhanced": [
+    "Começar Com Segurança",
+    "Acessar Método Comprovado",
+    "Ver Resultados Reais",
+    "Conhecer a Metodologia",
+    "Falar Com Especialista"
+  ],
+  "trust_enhanced": [
+    "Começar Com Segurança",
+    "Acessar Método Comprovado",
+    "Ver Resultados Reais",
+    "Conhecer a Metodologia",
+    "Falar Com Especialista"
+  ]
+}

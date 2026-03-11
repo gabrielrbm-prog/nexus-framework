@@ -1,0 +1,618 @@
+/*
+ * 🤖 21ST.DEV AI COMPONENTS  
+ * Extracted from 21st.dev - AI-powered design engineering platform
+ * Community-made UI components with AI generation
+ */
+
+/* ══════════════════════════════════════════════
+   21ST.DEV DESIGN TOKENS
+   ══════════════════════════════════════════════ */
+
+:root {
+  /* 21st brand colors */
+  --st21-primary: #3b82f6;
+  --st21-secondary: #8b5cf6;
+  --st21-accent: #06b6d4;
+  --st21-success: #10b981;
+  --st21-warning: #f59e0b;
+  --st21-error: #ef4444;
+  
+  /* Backgrounds */
+  --st21-bg-primary: #ffffff;
+  --st21-bg-secondary: #f8fafc;
+  --st21-bg-tertiary: #f1f5f9;
+  --st21-border: #e2e8f0;
+  --st21-text: #0f172a;
+  --st21-text-secondary: #475569;
+  --st21-text-muted: #94a3b8;
+  
+  /* Dark mode */
+  --st21-dark-bg-primary: #0f172a;
+  --st21-dark-bg-secondary: #1e293b;
+  --st21-dark-bg-tertiary: #334155;
+  --st21-dark-border: #475569;
+  --st21-dark-text: #f8fafc;
+  --st21-dark-text-secondary: #cbd5e1;
+  
+  /* AI-specific colors */
+  --st21-ai-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --st21-magic-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --st21-neural-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  
+  /* Animation settings */
+  --st21-duration-fast: 0.15s;
+  --st21-duration-normal: 0.3s;
+  --st21-duration-slow: 0.6s;
+  --st21-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --st21-easing-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ══════════════════════════════════════════════
+   AI CHAT COMPONENT - SIGNATURE FEATURE
+   ══════════════════════════════════════════════ */
+
+.st21-ai-chat {
+  /* Foundation */
+  display: flex;
+  flex-direction: column;
+  background: var(--st21-bg-primary);
+  border: 1px solid var(--st21-border);
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  max-width: 600px;
+  height: 500px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.st21-ai-chat__header {
+  background: var(--st21-ai-gradient);
+  padding: 16px 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.st21-ai-chat__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.st21-ai-chat__title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.st21-ai-chat__status {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.st21-ai-chat__status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse-online 2s ease-in-out infinite;
+}
+
+.st21-ai-chat__messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.st21-ai-chat__message {
+  display: flex;
+  gap: 12px;
+  max-width: 80%;
+}
+
+.st21-ai-chat__message--user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.st21-ai-chat__message--user .st21-ai-chat__bubble {
+  background: var(--st21-primary);
+  color: white;
+}
+
+.st21-ai-chat__message--ai .st21-ai-chat__bubble {
+  background: var(--st21-bg-secondary);
+  color: var(--st21-text);
+  border: 1px solid var(--st21-border);
+}
+
+.st21-ai-chat__bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.st21-ai-chat__input-area {
+  padding: 16px 20px;
+  border-top: 1px solid var(--st21-border);
+  background: var(--st21-bg-secondary);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.st21-ai-chat__input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--st21-border);
+  border-radius: 12px;
+  background: var(--st21-bg-primary);
+  font-size: 14px;
+  outline: none;
+  transition: all var(--st21-duration-fast) var(--st21-easing);
+}
+
+.st21-ai-chat__input:focus {
+  border-color: var(--st21-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.st21-ai-chat__send {
+  padding: 12px;
+  background: var(--st21-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--st21-duration-fast) var(--st21-easing);
+}
+
+.st21-ai-chat__send:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.st21-ai-chat__send:active {
+  transform: translateY(0);
+}
+
+@keyframes pulse-online {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.5; }
+}
+
+/* ══════════════════════════════════════════════
+   MAGIC AI BUTTON - GENERATIVE INTERFACE
+   ══════════════════════════════════════════════ */
+
+.st21-magic-button {
+  /* Foundation */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px;
+  background: var(--st21-magic-gradient);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--st21-duration-normal) var(--st21-easing);
+}
+
+.st21-magic-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.st21-magic-button:hover::before {
+  transform: translateX(100%);
+}
+
+.st21-magic-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(240, 147, 251, 0.4);
+}
+
+.st21-magic-button__icon {
+  font-size: 16px;
+  animation: magic-sparkle 2s ease-in-out infinite;
+}
+
+@keyframes magic-sparkle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(180deg); }
+}
+
+/* ══════════════════════════════════════════════
+   AI TYPING ANIMATION - REALISTIC EFFECT
+   ══════════════════════════════════════════════ */
+
+.st21-typing-animation {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  background: var(--st21-bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--st21-border);
+}
+
+.st21-typing-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--st21-text-muted);
+  border-radius: 50%;
+  animation: typing-bounce 1.4s ease-in-out infinite both;
+}
+
+.st21-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.st21-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.st21-typing-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes typing-bounce {
+  0%, 80%, 100% { 
+    transform: scale(0.8); 
+    opacity: 0.5; 
+  }
+  40% { 
+    transform: scale(1.2); 
+    opacity: 1; 
+  }
+}
+
+/* ══════════════════════════════════════════════
+   NEURAL NETWORK BACKGROUND - AI VISUALIZATION
+   ══════════════════════════════════════════════ */
+
+.st21-neural-background {
+  position: relative;
+  background: var(--st21-dark-bg-primary);
+  border-radius: 16px;
+  padding: 40px;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+.st21-neural-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+  animation: neural-flow 8s ease-in-out infinite;
+}
+
+.st21-neural-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-pulse 4s ease-in-out infinite;
+}
+
+@keyframes neural-flow {
+  0%, 100% { 
+    background-position: 0% 0%, 100% 100%, 50% 0%; 
+  }
+  50% { 
+    background-position: 100% 100%, 0% 0%, 50% 100%; 
+  }
+}
+
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+/* ══════════════════════════════════════════════
+   COMPONENT SHOWCASE CARD - 21ST STYLE
+   ══════════════════════════════════════════════ */
+
+.st21-component-card {
+  background: var(--st21-bg-primary);
+  border: 1px solid var(--st21-border);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--st21-duration-normal) var(--st21-easing);
+  cursor: pointer;
+}
+
+.st21-component-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-color: var(--st21-primary);
+}
+
+.st21-component-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.st21-component-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--st21-text);
+}
+
+.st21-component-card__copy-btn {
+  padding: 8px 12px;
+  background: var(--st21-bg-secondary);
+  border: 1px solid var(--st21-border);
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--st21-duration-fast) var(--st21-easing);
+}
+
+.st21-component-card__copy-btn:hover {
+  background: var(--st21-primary);
+  color: white;
+  border-color: var(--st21-primary);
+}
+
+.st21-component-card__preview {
+  background: var(--st21-bg-secondary);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+}
+
+.st21-component-card__description {
+  font-size: 14px;
+  color: var(--st21-text-secondary);
+  line-height: 1.5;
+}
+
+.st21-component-card__tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.st21-component-card__tag {
+  padding: 4px 8px;
+  background: var(--st21-bg-tertiary);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--st21-text-muted);
+}
+
+/* ══════════════════════════════════════════════
+   AI GENERATION LOADER - PROCESS VISUALIZATION
+   ══════════════════════════════════════════════ */
+
+.st21-ai-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px;
+  background: var(--st21-bg-primary);
+  border-radius: 16px;
+  border: 1px solid var(--st21-border);
+}
+
+.st21-ai-loader__spinner {
+  width: 60px;
+  height: 60px;
+  border: 3px solid var(--st21-border);
+  border-top: 3px solid var(--st21-primary);
+  border-radius: 50%;
+  animation: ai-spin 1s linear infinite;
+}
+
+.st21-ai-loader__text {
+  font-size: 16px;
+  color: var(--st21-text);
+  font-weight: 500;
+}
+
+.st21-ai-loader__subtext {
+  font-size: 14px;
+  color: var(--st21-text-secondary);
+  text-align: center;
+}
+
+@keyframes ai-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .st21-ai-chat {
+    max-width: 100%;
+    height: 400px;
+  }
+  
+  .st21-ai-chat__messages {
+    padding: 16px;
+  }
+  
+  .st21-ai-chat__input-area {
+    padding: 12px 16px;
+  }
+  
+  .st21-component-card {
+    padding: 20px;
+  }
+  
+  .st21-neural-background {
+    padding: 24px;
+    min-height: 200px;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   DARK MODE SUPPORT
+   ══════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --st21-bg-primary: var(--st21-dark-bg-primary);
+    --st21-bg-secondary: var(--st21-dark-bg-secondary);
+    --st21-bg-tertiary: var(--st21-dark-bg-tertiary);
+    --st21-border: var(--st21-dark-border);
+    --st21-text: var(--st21-dark-text);
+    --st21-text-secondary: var(--st21-dark-text-secondary);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY & PERFORMANCE
+   ══════════════════════════════════════════════ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .st21-ai-chat,
+  .st21-component-card {
+    border-width: 2px;
+  }
+  
+  .st21-magic-button {
+    border: 2px solid var(--st21-text);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .st21-magic-button__icon,
+  .st21-typing-dot,
+  .st21-ai-loader__spinner,
+  .st21-neural-background::before,
+  .st21-neural-grid {
+    animation: none;
+  }
+  
+  .st21-component-card,
+  .st21-magic-button {
+    transition: none;
+  }
+  
+  .st21-component-card:hover,
+  .st21-magic-button:hover {
+    transform: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- AI Chat Component -->
+<div class="st21-ai-chat">
+  <div class="st21-ai-chat__header">
+    <div class="st21-ai-chat__avatar">🤖</div>
+    <div class="st21-ai-chat__title">AI Assistant</div>
+    <div class="st21-ai-chat__status">Online</div>
+  </div>
+  
+  <div class="st21-ai-chat__messages">
+    <div class="st21-ai-chat__message st21-ai-chat__message--ai">
+      <div class="st21-ai-chat__bubble">
+        Hello! I'm your AI assistant. How can I help you today?
+      </div>
+    </div>
+    <div class="st21-ai-chat__message st21-ai-chat__message--user">
+      <div class="st21-ai-chat__bubble">
+        Create a button component for me
+      </div>
+    </div>
+  </div>
+  
+  <div class="st21-ai-chat__input-area">
+    <input class="st21-ai-chat__input" placeholder="Type your message..." />
+    <button class="st21-ai-chat__send">Send</button>
+  </div>
+</div>
+
+<!-- Magic AI Button -->
+<button class="st21-magic-button">
+  <span class="st21-magic-button__icon">✨</span>
+  Generate with AI
+</button>
+
+<!-- AI Typing Animation -->
+<div class="st21-typing-animation">
+  <div class="st21-typing-dot"></div>
+  <div class="st21-typing-dot"></div>
+  <div class="st21-typing-dot"></div>
+</div>
+
+<!-- Neural Background -->
+<div class="st21-neural-background">
+  <div class="st21-neural-grid"></div>
+  <h2>AI-Powered Interface</h2>
+</div>
+
+<!-- Component Showcase Card -->
+<div class="st21-component-card">
+  <div class="st21-component-card__header">
+    <h3 class="st21-component-card__title">Button Component</h3>
+    <button class="st21-component-card__copy-btn">Copy Code</button>
+  </div>
+  
+  <div class="st21-component-card__preview">
+    <button class="st21-magic-button">
+      <span class="st21-magic-button__icon">⚡</span>
+      Preview Button
+    </button>
+  </div>
+  
+  <p class="st21-component-card__description">
+    A beautiful animated button with gradient background and hover effects.
+  </p>
+  
+  <div class="st21-component-card__tags">
+    <span class="st21-component-card__tag">React</span>
+    <span class="st21-component-card__tag">Tailwind</span>
+    <span class="st21-component-card__tag">Animation</span>
+  </div>
+</div>
+
+<!-- AI Generation Loader -->
+<div class="st21-ai-loader">
+  <div class="st21-ai-loader__spinner"></div>
+  <div class="st21-ai-loader__text">Generating component...</div>
+  <div class="st21-ai-loader__subtext">Please wait while AI creates your custom component</div>
+</div>
+*/

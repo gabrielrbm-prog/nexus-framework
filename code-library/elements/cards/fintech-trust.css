@@ -1,0 +1,546 @@
+/*
+ * 💳 FINTECH TRUST CARDS
+ * Extracted from stripe.com, plaid.com, brex.com
+ * Trust-building card components for financial services
+ */
+
+/* ══════════════════════════════════════════════
+   BASE FINTECH CARD SYSTEM
+   ══════════════════════════════════════════════ */
+
+.fintech-card {
+  /* Foundation */
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 32px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  
+  /* Trust signals */
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+  
+  /* Performance */
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+}
+
+.fintech-card:hover {
+  border-color: rgba(99, 91, 255, 0.2);
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 10px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════
+   PAYMENT FEATURE CARD - Stripe Style
+   ══════════════════════════════════════════════ */
+
+.fintech-card--payment {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #d1d5db;
+}
+
+.fintech-card--payment::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #635bff 0%, #6c63ff 50%, #7c70ff 100%);
+}
+
+.fintech-card--payment:hover {
+  border-color: #635bff;
+  box-shadow: 
+    0 8px 25px rgba(99, 91, 255, 0.15),
+    0 4px 12px rgba(99, 91, 255, 0.1);
+}
+
+/* ══════════════════════════════════════════════
+   SECURITY BADGE CARD - Trust Building
+   ══════════════════════════════════════════════ */
+
+.fintech-card--security {
+  background: #ffffff;
+  border: 2px solid #10b981;
+  position: relative;
+}
+
+.fintech-card--security::after {
+  content: '✓';
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.fintech-card--security:hover {
+  box-shadow: 
+    0 8px 25px rgba(16, 185, 129, 0.2),
+    0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+/* ══════════════════════════════════════════════
+   PRICING CARD - Conversion Optimized
+   ══════════════════════════════════════════════ */
+
+.fintech-card--pricing {
+  text-align: center;
+  position: relative;
+  border: 2px solid #e5e7eb;
+}
+
+.fintech-card--pricing.featured {
+  border-color: #635bff;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.fintech-card--pricing.featured::before {
+  content: 'Most Popular';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #635bff;
+  color: white;
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════
+   TESTIMONIAL CARD - Social Proof
+   ══════════════════════════════════════════════ */
+
+.fintech-card--testimonial {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 40px 32px;
+  position: relative;
+}
+
+.fintech-card--testimonial::before {
+  content: '"';
+  position: absolute;
+  top: 16px;
+  left: 32px;
+  font-size: 48px;
+  color: #635bff;
+  opacity: 0.3;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+/* ══════════════════════════════════════════════
+   METRICS CARD - Data Focused
+   ══════════════════════════════════════════════ */
+
+.fintech-card--metrics {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: white;
+  border: 1px solid #334155;
+  text-align: center;
+}
+
+.fintech-card--metrics:hover {
+  border-color: #635bff;
+  box-shadow: 
+    0 8px 25px rgba(99, 91, 255, 0.3),
+    0 4px 12px rgba(99, 91, 255, 0.2);
+}
+
+/* ══════════════════════════════════════════════
+   CARD HEADER SYSTEM
+   ══════════════════════════════════════════════ */
+
+.fintech-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.fintech-card__icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #635bff 0%, #7c70ff 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.fintech-card__icon--success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.fintech-card__icon--warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.fintech-card__icon--danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.fintech-card__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.fintech-card--metrics .fintech-card__title {
+  color: white;
+}
+
+.fintech-card__subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════════
+   CARD CONTENT SYSTEM
+   ══════════════════════════════════════════════ */
+
+.fintech-card__content {
+  flex: 1;
+}
+
+.fintech-card__description {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.fintech-card--metrics .fintech-card__description {
+  color: #e2e8f0;
+}
+
+/* Metric display */
+.fintech-card__metric {
+  font-size: 32px;
+  font-weight: 700;
+  color: #635bff;
+  display: block;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.fintech-card--metrics .fintech-card__metric {
+  color: #60a5fa;
+  font-size: 36px;
+}
+
+.fintech-card__metric-label {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Features list */
+.fintech-card__features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fintech-card__features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.fintech-card__features li::before {
+  content: '✓';
+  width: 20px;
+  height: 20px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════
+   CARD FOOTER SYSTEM
+   ══════════════════════════════════════════════ */
+
+.fintech-card__footer {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.fintech-card__footer--no-border {
+  border-top: none;
+  padding-top: 0;
+}
+
+.fintech-card__action {
+  background: #635bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.fintech-card__action:hover {
+  background: #5a52ff;
+  transform: translateY(-1px);
+}
+
+.fintech-card__action--secondary {
+  background: transparent;
+  color: #635bff;
+  border: 1px solid #d1d5db;
+}
+
+.fintech-card__action--secondary:hover {
+  background: #f3f4f6;
+  border-color: #635bff;
+}
+
+/* ══════════════════════════════════════════════
+   SPECIAL CARD TYPES
+   ══════════════════════════════════════════════ */
+
+/* Integration card */
+.fintech-card--integration {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #d1d5db;
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.fintech-card--integration:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.fintech-card__logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 12px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #6b7280;
+}
+
+/* Status card */
+.fintech-card--status {
+  padding: 20px 24px;
+  background: #ffffff;
+  border-left: 4px solid #10b981;
+}
+
+.fintech-card--status.warning {
+  border-left-color: #f59e0b;
+}
+
+.fintech-card--status.danger {
+  border-left-color: #ef4444;
+}
+
+.fintech-card--status.info {
+  border-left-color: #3b82f6;
+}
+
+/* ══════════════════════════════════════════════
+   LOADING STATES
+   ══════════════════════════════════════════════ */
+
+.fintech-card--loading {
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.fintech-card--loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(99, 91, 255, 0.1),
+    transparent
+  );
+  animation: fintech-shimmer 1.5s infinite;
+}
+
+@keyframes fintech-shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .fintech-card {
+    padding: 24px 20px;
+  }
+  
+  .fintech-card__header {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .fintech-card__icon {
+    margin: 0 auto;
+  }
+  
+  .fintech-card__metric {
+    font-size: 28px;
+  }
+  
+  .fintech-card--pricing.featured {
+    transform: none;
+    margin-top: 24px;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   HIGH CONTRAST MODE
+   ══════════════════════════════════════════════ */
+
+@media (prefers-contrast: high) {
+  .fintech-card {
+    border-width: 2px;
+    border-color: #000000;
+  }
+  
+  .fintech-card__title {
+    color: #000000;
+  }
+  
+  .fintech-card__action {
+    background: #000000;
+    border: 2px solid #ffffff;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   REDUCED MOTION
+   ══════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .fintech-card,
+  .fintech-card__action {
+    transition: none;
+  }
+  
+  .fintech-card:hover {
+    transform: none;
+  }
+  
+  .fintech-card--loading::after {
+    animation: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- Payment feature card -->
+<div class="fintech-card fintech-card--payment">
+  <div class="fintech-card__header">
+    <div class="fintech-card__icon">💳</div>
+    <div>
+      <h3 class="fintech-card__title">Accept payments</h3>
+      <p class="fintech-card__subtitle">Online and in-person</p>
+    </div>
+  </div>
+  <div class="fintech-card__content">
+    <p class="fintech-card__description">
+      Start accepting payments in minutes with our easy-to-integrate APIs and pre-built components.
+    </p>
+    <ul class="fintech-card__features">
+      <li>135+ currencies supported</li>
+      <li>Real-time fraud detection</li>
+      <li>PCI DSS Level 1 certified</li>
+    </ul>
+  </div>
+  <div class="fintech-card__footer">
+    <a href="#" class="fintech-card__action">Start integrating</a>
+  </div>
+</div>
+
+<!-- Metrics card -->
+<div class="fintech-card fintech-card--metrics">
+  <div class="fintech-card__content">
+    <span class="fintech-card__metric">99.99%</span>
+    <span class="fintech-card__metric-label">Uptime guarantee</span>
+  </div>
+</div>
+
+<!-- Security card -->
+<div class="fintech-card fintech-card--security">
+  <div class="fintech-card__header">
+    <div class="fintech-card__icon fintech-card__icon--success">🛡️</div>
+    <div>
+      <h3 class="fintech-card__title">Bank-level security</h3>
+      <p class="fintech-card__subtitle">SOC 2 Type II certified</p>
+    </div>
+  </div>
+  <div class="fintech-card__content">
+    <p class="fintech-card__description">
+      Your data is protected with enterprise-grade security that meets the highest industry standards.
+    </p>
+  </div>
+</div>
+*/

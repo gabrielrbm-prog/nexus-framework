@@ -1,0 +1,106 @@
+{
+  "hero": {
+    "subheadline": "Método SMC + PO3 comprovado. Do zero ao financiado em 90 dias. 1.000+ traders aprovados em prop firms internacionais.",
+    "benefits": [
+      "Método SMC (Smart Money Concepts) completo",
+      "Suporte 24/7 com traders experientes",
+      "Aprovação garantida em prop firms",
+      "Comunidade exclusiva de 1.000+ traders"
+    ],
+    "social_proof": "⭐⭐⭐⭐⭐ 4.9/5 baseado em 500+ avaliações",
+    "trust_elements": [
+      "1.000+ alunos formados",
+      "95% taxa de aprovação",
+      "189 traders ativos",
+      "Método comprovado há 5 anos"
+    ],
+    "psychology_optimized": "value"
+  },
+  "about": {
+    "mission": "Nossa missão é transformar 35-50 anos em profissionais de general através de metodologia comprovada.",
+    "vision": "Ser referência em formação profissional com resultados mensuráveis.",
+    "values": [
+      "Excelência",
+      "Transparência",
+      "Resultados",
+      "Comunidade"
+    ]
+  },
+  "features": [
+    {
+      "title": "Método SMC Completo",
+      "description": "Smart Money Concepts aplicados na prática"
+    },
+    {
+      "title": "Suporte 24/7",
+      "description": "Comunidade ativa de traders experientes"
+    },
+    {
+      "title": "Aprovação Garantida",
+      "description": "Metodologia testada em prop firms"
+    }
+  ],
+  "benefits": {
+    "primary_benefit": "Resultados comprovados em menos tempo",
+    "secondary_benefits": [
+      "Methodology cientificamente validada",
+      "Comunidade de suporte ativa",
+      "Acompanhamento personalizado",
+      "Garantia de satisfação"
+    ]
+  },
+  "testimonials": [
+    {
+      "name": "João Silva",
+      "role": "Trader",
+      "text": "Em 3 meses consegui aprovação na FTMO. Método realmente funciona!"
+    },
+    {
+      "name": "Maria Santos",
+      "role": "Iniciante",
+      "text": "Nunca pensei que conseguiria viver de trading. Obrigada ETF!"
+    }
+  ],
+  "pricing": {
+    "value_proposition": "Investimento que se paga em resultados",
+    "guarantee": "30 dias de garantia total",
+    "payment_options": "12x sem juros no cartão",
+    "bonus_items": [
+      "Bônus exclusivos",
+      "Acesso vitalício",
+      "Comunidade VIP"
+    ]
+  },
+  "faq": [
+    {
+      "q": "Quanto tempo para ser aprovado?",
+      "a": "Em média 90 dias seguindo nossa metodologia."
+    },
+    {
+      "q": "Preciso de capital inicial?",
+      "a": "Não, trabalhamos com prop firms que fornecem capital."
+    },
+    {
+      "q": "Há garantia de aprovação?",
+      "a": "Sim, seguindo o método corretamente, aprovação é garantida."
+    }
+  ],
+  "footer": {
+    "company_description": "Transformando vidas através de general profissional desde 2019.",
+    "contact_info": {
+      "email": "contato@empresa.com",
+      "phone": "(11) 99999-9999",
+      "address": "São Paulo, SP"
+    },
+    "social_links": [
+      "Instagram",
+      "YouTube",
+      "LinkedIn"
+    ],
+    "legal_links": [
+      "Termos de Uso",
+      "Política de Privacidade",
+      "LGPD"
+    ]
+  }
+}

@@ -1,0 +1,708 @@
+/*
+ * 📈 INTERACTIVE MOBILE CHARTS
+ * Mobile-optimized data visualization components
+ * Touch-friendly, responsive, and accessible chart patterns
+ */
+
+/* ══════════════════════════════════════════════
+   MOBILE CHART DESIGN TOKENS
+   ══════════════════════════════════════════════ */
+
+:root {
+  /* Chart colors - Mobile optimized palette */
+  --chart-primary: #3b82f6;
+  --chart-primary-light: #93c5fd;
+  --chart-primary-dark: #1d4ed8;
+  --chart-secondary: #10b981;
+  --chart-secondary-light: #6ee7b7;
+  --chart-secondary-dark: #047857;
+  --chart-tertiary: #f59e0b;
+  --chart-tertiary-light: #fbbf24;
+  --chart-tertiary-dark: #d97706;
+  --chart-quaternary: #ef4444;
+  --chart-quaternary-light: #fca5a5;
+  --chart-quaternary-dark: #dc2626;
+  --chart-accent: #8b5cf6;
+  --chart-accent-light: #c4b5fd;
+  --chart-accent-dark: #7c3aed;
+  
+  /* Chart background colors */
+  --chart-bg: #ffffff;
+  --chart-bg-secondary: #f8fafc;
+  --chart-grid: #e2e8f0;
+  --chart-grid-major: #cbd5e1;
+  --chart-text: #334155;
+  --chart-text-light: #64748b;
+  --chart-text-lighter: #94a3b8;
+  
+  /* Dark mode chart colors */
+  --chart-dark-bg: #0f172a;
+  --chart-dark-bg-secondary: #1e293b;
+  --chart-dark-grid: #334155;
+  --chart-dark-grid-major: #475569;
+  --chart-dark-text: #f1f5f9;
+  --chart-dark-text-light: #cbd5e1;
+  --chart-dark-text-lighter: #94a3b8;
+  
+  /* Touch targets */
+  --chart-touch-target: 44px;
+  --chart-touch-large: 56px;
+  
+  /* Animation easing */
+  --chart-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --chart-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Dark mode adaptation */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chart-bg: var(--chart-dark-bg);
+    --chart-bg-secondary: var(--chart-dark-bg-secondary);
+    --chart-grid: var(--chart-dark-grid);
+    --chart-grid-major: var(--chart-dark-grid-major);
+    --chart-text: var(--chart-dark-text);
+    --chart-text-light: var(--chart-dark-text-light);
+    --chart-text-lighter: var(--chart-dark-text-lighter);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   BASE CHART CONTAINER
+   ══════════════════════════════════════════════ */
+
+.mobile-chart {
+  /* Foundation */
+  width: 100%;
+  background: var(--chart-bg);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  
+  /* Mobile touch optimization */
+  touch-action: pan-x pan-y;
+  user-select: none;
+  
+  /* Performance */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.mobile-chart__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.mobile-chart__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Roboto", system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--chart-text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.mobile-chart__subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Roboto", system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--chart-text-light);
+  margin: 4px 0 0 0;
+  line-height: 1.3;
+}
+
+.mobile-chart__controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE CHART CANVAS
+   ══════════════════════════════════════════════ */
+
+.mobile-chart__canvas {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  background: var(--chart-bg-secondary);
+  border-radius: 8px;
+  overflow: hidden;
+  
+  /* Touch scrolling for wide charts */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-chart__canvas::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-chart__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Chart with horizontal scroll */
+.mobile-chart__canvas--scrollable {
+  overflow-x: auto;
+}
+
+.mobile-chart__canvas--scrollable .mobile-chart__svg {
+  min-width: 150%;
+}
+
+/* ══════════════════════════════════════════════
+   BAR CHART - MOBILE OPTIMIZED
+   ══════════════════════════════════════════════ */
+
+.mobile-bar-chart {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  height: 180px;
+  padding: 20px 0;
+}
+
+.mobile-bar-chart__bar {
+  background: var(--chart-primary);
+  border-radius: 4px 4px 0 0;
+  min-width: 24px;
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s var(--chart-easing);
+  
+  /* Touch target */
+  min-height: 20px;
+}
+
+.mobile-bar-chart__bar:active,
+.mobile-bar-chart__bar:hover {
+  background: var(--chart-primary-dark);
+  transform: scaleY(1.05);
+}
+
+.mobile-bar-chart__bar--secondary {
+  background: var(--chart-secondary);
+}
+
+.mobile-bar-chart__bar--secondary:active,
+.mobile-bar-chart__bar--secondary:hover {
+  background: var(--chart-secondary-dark);
+}
+
+.mobile-bar-chart__value {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--chart-text);
+  background: var(--chart-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.mobile-bar-chart__bar:active .mobile-bar-chart__value,
+.mobile-bar-chart__bar:hover .mobile-bar-chart__value {
+  opacity: 1;
+}
+
+.mobile-bar-chart__label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: var(--chart-text-light);
+  text-align: center;
+  max-width: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ══════════════════════════════════════════════
+   LINE CHART - TOUCH OPTIMIZED
+   ══════════════════════════════════════════════ */
+
+.mobile-line-chart {
+  position: relative;
+  width: 100%;
+  height: 180px;
+}
+
+.mobile-line-chart__line {
+  fill: none;
+  stroke: var(--chart-primary);
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-line 2s var(--chart-easing) forwards;
+}
+
+.mobile-line-chart__line--secondary {
+  stroke: var(--chart-secondary);
+  stroke-dasharray: 5, 5;
+  animation-delay: 0.5s;
+}
+
+.mobile-line-chart__area {
+  fill: url(#gradient-primary);
+  opacity: 0.3;
+}
+
+.mobile-line-chart__point {
+  fill: var(--chart-primary);
+  stroke: var(--chart-bg);
+  stroke-width: 3px;
+  r: 5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+  animation: fade-in 0.5s ease forwards;
+}
+
+.mobile-line-chart__point:active,
+.mobile-line-chart__point:hover {
+  r: 8;
+  fill: var(--chart-primary-dark);
+}
+
+.mobile-line-chart__point--active {
+  r: 8;
+  fill: var(--chart-primary-dark);
+  opacity: 1;
+}
+
+@keyframes draw-line {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fade-in {
+  to { opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════
+   DONUT CHART - MOBILE FRIENDLY
+   ══════════════════════════════════════════════ */
+
+.mobile-donut-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.mobile-donut-chart__svg {
+  width: 160px;
+  height: 160px;
+  transform: rotate(-90deg);
+}
+
+.mobile-donut-chart__track {
+  fill: none;
+  stroke: var(--chart-grid);
+  stroke-width: 20;
+}
+
+.mobile-donut-chart__progress {
+  fill: none;
+  stroke: var(--chart-primary);
+  stroke-width: 20;
+  stroke-linecap: round;
+  stroke-dasharray: 0 1000;
+  transition: stroke-dasharray 1s var(--chart-easing);
+  cursor: pointer;
+}
+
+.mobile-donut-chart__progress--animated {
+  animation: draw-donut 2s var(--chart-easing) forwards;
+}
+
+.mobile-donut-chart__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.mobile-donut-chart__value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--chart-text);
+  line-height: 1;
+}
+
+.mobile-donut-chart__label {
+  font-size: 14px;
+  color: var(--chart-text-light);
+  margin-top: 4px;
+}
+
+@keyframes draw-donut {
+  to { stroke-dasharray: var(--progress) 1000; }
+}
+
+/* ══════════════════════════════════════════════
+   CHART LEGEND - MOBILE OPTIMIZED
+   ══════════════════════════════════════════════ */
+
+.mobile-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.mobile-chart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.mobile-chart__legend-item:active {
+  opacity: 0.7;
+}
+
+.mobile-chart__legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--chart-primary);
+  flex-shrink: 0;
+}
+
+.mobile-chart__legend-color--secondary {
+  background: var(--chart-secondary);
+}
+
+.mobile-chart__legend-color--tertiary {
+  background: var(--chart-tertiary);
+}
+
+.mobile-chart__legend-color--quaternary {
+  background: var(--chart-quaternary);
+}
+
+.mobile-chart__legend-label {
+  font-size: 14px;
+  color: var(--chart-text);
+  font-weight: 500;
+}
+
+.mobile-chart__legend-value {
+  font-size: 14px;
+  color: var(--chart-text-light);
+  margin-left: 4px;
+}
+
+/* ══════════════════════════════════════════════
+   CHART TOOLTIP - MOBILE TOUCH
+   ══════════════════════════════════════════════ */
+
+.mobile-chart__tooltip {
+  position: absolute;
+  background: var(--chart-text);
+  color: var(--chart-bg);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -100%) scale(0.8);
+  transition: all 0.2s var(--chart-easing);
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 80px;
+  text-align: center;
+}
+
+.mobile-chart__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--chart-text);
+}
+
+.mobile-chart__tooltip--visible {
+  opacity: 1;
+  transform: translate(-50%, -100%) scale(1);
+}
+
+.mobile-chart__tooltip-title {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.mobile-chart__tooltip-value {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════
+   CHART CONTROLS - MOBILE UI
+   ══════════════════════════════════════════════ */
+
+.mobile-chart__period-selector {
+  display: flex;
+  background: var(--chart-bg-secondary);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.mobile-chart__period-option {
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--chart-text-light);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: var(--chart-touch-target);
+}
+
+.mobile-chart__period-option--active {
+  background: var(--chart-bg);
+  color: var(--chart-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-chart__zoom-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.mobile-chart__zoom-button {
+  width: var(--chart-touch-target);
+  height: var(--chart-touch-target);
+  background: var(--chart-bg-secondary);
+  border: none;
+  border-radius: 8px;
+  color: var(--chart-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.mobile-chart__zoom-button:active {
+  background: var(--chart-grid);
+  transform: scale(0.95);
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .mobile-chart {
+    padding: 12px;
+  }
+  
+  .mobile-chart__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .mobile-chart__title {
+    font-size: 16px;
+  }
+  
+  .mobile-chart__canvas {
+    height: 160px;
+  }
+  
+  .mobile-bar-chart {
+    height: 140px;
+    gap: 4px;
+  }
+  
+  .mobile-bar-chart__bar {
+    min-width: 20px;
+  }
+  
+  .mobile-line-chart {
+    height: 140px;
+  }
+  
+  .mobile-donut-chart__svg {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .mobile-donut-chart__value {
+    font-size: 24px;
+  }
+  
+  .mobile-chart__legend {
+    gap: 12px;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY & TOUCH
+   ══════════════════════════════════════════════ */
+
+.mobile-chart:focus {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .mobile-chart {
+    border: 1px solid var(--chart-text);
+  }
+  
+  .mobile-bar-chart__bar,
+  .mobile-line-chart__line {
+    stroke-width: 4px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-line-chart__line,
+  .mobile-donut-chart__progress,
+  .mobile-bar-chart__bar {
+    animation: none;
+    transition: none;
+  }
+  
+  .mobile-chart__tooltip {
+    transition: opacity 0.15s ease;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-bar-chart__value {
+    opacity: 1;
+  }
+  
+  .mobile-chart__tooltip {
+    opacity: 1;
+    position: static;
+    transform: none;
+    margin-top: 12px;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   GRADIENT DEFINITIONS
+   ══════════════════════════════════════════════ */
+
+.mobile-chart__gradients {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- Bar chart -->
+<div class="mobile-chart">
+  <div class="mobile-chart__header">
+    <div>
+      <h3 class="mobile-chart__title">Revenue</h3>
+      <p class="mobile-chart__subtitle">Last 7 days</p>
+    </div>
+    <div class="mobile-chart__controls">
+      <div class="mobile-chart__period-selector">
+        <button class="mobile-chart__period-option">7d</button>
+        <button class="mobile-chart__period-option mobile-chart__period-option--active">30d</button>
+        <button class="mobile-chart__period-option">90d</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mobile-chart__canvas">
+    <div class="mobile-bar-chart">
+      <div class="mobile-bar-chart__bar" style="height: 60%;">
+        <div class="mobile-bar-chart__value">$1,200</div>
+        <div class="mobile-bar-chart__label">Mon</div>
+      </div>
+      <div class="mobile-bar-chart__bar" style="height: 80%;">
+        <div class="mobile-bar-chart__value">$1,600</div>
+        <div class="mobile-bar-chart__label">Tue</div>
+      </div>
+      <!-- More bars -->
+    </div>
+  </div>
+</div>
+
+<!-- Line chart -->
+<div class="mobile-chart">
+  <div class="mobile-chart__canvas">
+    <svg class="mobile-chart__svg" viewBox="0 0 300 180">
+      <defs>
+        <linearGradient id="gradient-primary" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="var(--chart-primary)" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="var(--chart-primary)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path class="mobile-line-chart__area" d="M0,180 L0,100 L50,80 L100,90 L150,60 L200,70 L250,50 L300,40 L300,180 Z"/>
+      <path class="mobile-line-chart__line" d="M0,100 L50,80 L100,90 L150,60 L200,70 L250,50 L300,40"/>
+      <circle class="mobile-line-chart__point" cx="0" cy="100"/>
+      <circle class="mobile-line-chart__point" cx="50" cy="80"/>
+      <circle class="mobile-line-chart__point" cx="100" cy="90"/>
+    </svg>
+  </div>
+  
+  <div class="mobile-chart__tooltip mobile-chart__tooltip--visible" style="left: 50%; top: 80px;">
+    <div class="mobile-chart__tooltip-title">March 15</div>
+    <div class="mobile-chart__tooltip-value">$2,450</div>
+  </div>
+</div>
+
+<!-- Donut chart -->
+<div class="mobile-chart">
+  <div class="mobile-donut-chart">
+    <svg class="mobile-donut-chart__svg" viewBox="0 0 160 160">
+      <circle class="mobile-donut-chart__track" cx="80" cy="80" r="70"/>
+      <circle class="mobile-donut-chart__progress mobile-donut-chart__progress--animated" 
+              cx="80" cy="80" r="70" style="--progress: 264"/>
+    </svg>
+    <div class="mobile-donut-chart__center">
+      <div class="mobile-donut-chart__value">75%</div>
+      <div class="mobile-donut-chart__label">Complete</div>
+    </div>
+  </div>
+</div>
+*/

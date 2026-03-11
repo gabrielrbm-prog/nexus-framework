@@ -1,0 +1,230 @@
+{
+  "headlines": {
+    "primary": "Transforme Sua Carreira em Trading Profissional",
+    "variants": [
+      "Do Zero ao Trader Financiado em 90 Dias",
+      "Método Comprovado: 1.000+ Traders Aprovados",
+      "Trading Profissional com Resultados Reais"
+    ],
+    "psychological_focus": "value",
+    "audience_optimized": [
+      "Transforme Sua Carreira em Trading Profissional",
+      "Do Zero ao Trader Financiado em 90 Dias",
+      "Método Comprovado: 1.000+ Traders Aprovados",
+      "Trading Profissional com Resultados Reais",
+      "Seja o Próximo Trader de Sucesso"
+    ],
+    "conversion_focused": [
+      "Transforme Sua Carreira em Trading Profissional",
+      "Do Zero ao Trader Financiado em 90 Dias",
+      "Método Comprovado: 1.000+ Traders Aprovados",
+      "Trading Profissional com Resultados Reais",
+      "Seja o Próximo Trader de Sucesso"
+    ]
+  },
+  "ctas": {
+    "primary": "Começar Com Segurança",
+    "secondary": "Acessar Método Comprovado",
+    "variants": [
+      "Ver Resultados Reais",
+      "Conhecer a Metodologia",
+      "Falar Com Especialista"
+    ],
+    "psychological_focus": "value",
+    "urgency_enhanced": [
+      "Começar Com Segurança",
+      "Acessar Método Comprovado",
+      "Ver Resultados Reais",
+      "Conhecer a Metodologia",
+      "Falar Com Especialista"
+    ],
+    "trust_enhanced": [
+      "Começar Com Segurança",
+      "Acessar Método Comprovado",
+      "Ver Resultados Reais",
+      "Conhecer a Metodologia",
+      "Falar Com Especialista"
+    ]
+  },
+  "sectionContent": {
+    "hero": {
+      "subheadline": "Método SMC + PO3 comprovado. Do zero ao financiado em 90 dias. 1.000+ traders aprovados em prop firms internacionais.",
+      "benefits": [
+        "Método SMC (Smart Money Concepts) completo",
+        "Suporte 24/7 com traders experientes",
+        "Aprovação garantida em prop firms",
+        "Comunidade exclusiva de 1.000+ traders"
+      ],
+      "social_proof": "⭐⭐⭐⭐⭐ 4.9/5 baseado em 500+ avaliações",
+      "trust_elements": [
+        "1.000+ alunos formados",
+        "95% taxa de aprovação",
+        "189 traders ativos",
+        "Método comprovado há 5 anos"
+      ],
+      "psychology_optimized": "value"
+    },
+    "about": {
+      "mission": "Nossa missão é transformar 35-50 anos em profissionais de general através de metodologia comprovada.",
+      "vision": "Ser referência em formação profissional com resultados mensuráveis.",
+      "values": [
+        "Excelência",
+        "Transparência",
+        "Resultados",
+        "Comunidade"
+      ]
+    },
+    "features": [
+      {
+        "title": "Método SMC Completo",
+        "description": "Smart Money Concepts aplicados na prática"
+      },
+      {
+        "title": "Suporte 24/7",
+        "description": "Comunidade ativa de traders experientes"
+      },
+      {
+        "title": "Aprovação Garantida",
+        "description": "Metodologia testada em prop firms"
+      }
+    ],
+    "benefits": {
+      "primary_benefit": "Resultados comprovados em menos tempo",
+      "secondary_benefits": [
+        "Methodology cientificamente validada",
+        "Comunidade de suporte ativa",
+        "Acompanhamento personalizado",
+        "Garantia de satisfação"
+      ]
+    },
+    "testimonials": [
+      {
+        "name": "João Silva",
+        "role": "Trader",
+        "text": "Em 3 meses consegui aprovação na FTMO. Método realmente funciona!"
+      },
+      {
+        "name": "Maria Santos",
+        "role": "Iniciante",
+        "text": "Nunca pensei que conseguiria viver de trading. Obrigada ETF!"
+      }
+    ],
+    "pricing": {
+      "value_proposition": "Investimento que se paga em resultados",
+      "guarantee": "30 dias de garantia total",
+      "payment_options": "12x sem juros no cartão",
+      "bonus_items": [
+        "Bônus exclusivos",
+        "Acesso vitalício",
+        "Comunidade VIP"
+      ]
+    },
+    "faq": [
+      {
+        "q": "Quanto tempo para ser aprovado?",
+        "a": "Em média 90 dias seguindo nossa metodologia."
+      },
+      {
+        "q": "Preciso de capital inicial?",
+        "a": "Não, trabalhamos com prop firms que fornecem capital."
+      },
+      {
+        "q": "Há garantia de aprovação?",
+        "a": "Sim, seguindo o método corretamente, aprovação é garantida."
+      }
+    ],
+    "footer": {
+      "company_description": "Transformando vidas através de general profissional desde 2019.",
+      "contact_info": {
+        "email": "contato@empresa.com",
+        "phone": "(11) 99999-9999",
+        "address": "São Paulo, SP"
+      },
+      "social_links": [
+        "Instagram",
+        "YouTube",
+        "LinkedIn"
+      ],
+      "legal_links": [
+        "Termos de Uso",
+        "Política de Privacidade",
+        "LGPD"
+      ]
+    }
+  },
+  "metaContent": {
+    "title": "Escola de Trading Profissional | Método SMC Completo | ETF Trading School",
+    "description": "Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida.",
+    "keywords": "trading, forex, SMC, prop firm, curso trading, escola trading, smart money concepts",
+    "og_title": "Escola de Trading Profissional | Método SMC Completo | ETF Trading School",
+    "og_description": "Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida.",
+    "twitter_title": "Escola de Trading Profissional | Método SMC Completo | ETF Trading School",
+    "twitter_description": "Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida."
+  },
+  "abVariants": {
+    "headlines": {
+      "variant_a": "Transforme Sua Carreira em Trading Profissional",
+      "variant_b": "Do Zero ao Trader Financiado em 90 Dias",
+      "variant_c": "Método Comprovado: 1.000+ Traders Aprovados",
+      "test_focus": "psychological_trigger"
+    },
+    "ctas": {
+      "variant_a": "Começar Com Segurança",
+      "variant_b": "Acessar Método Comprovado",
+      "variant_c": "Ver Resultados Reais",
+      "test_focus": "conversion_optimization"
+    },
+    "value_propositions": [
+      "Do zero ao trader profissional em 90 dias",
+      "Método comprovado por 1.000+ aprovações",
+      "Trading profissional com suporte completo"
+    ],
+    "social_proof": [
+      "⭐⭐⭐⭐⭐ 4.9/5 baseado em 500+ avaliações",
+      "🏆 Mais de 1.000 alunos formados com sucesso",
+      "💯 95% taxa de aprovação comprovada"
+    ]
+  },
+  "microcopy": {
+    "form_labels": {
+      "name": "Nome",
+      "email": "Seu melhor email",
+      "phone": "Telefone"
+    },
+    "error_messages": {
+      "generic": "Alguns campos precisam ser ajustados"
+    },
+    "success_messages": {
+      "generic": "Perfeito! Em breve você receberá acesso ao método completo."
+    },
+    "navigation": [
+      "Início",
+      "Método",
+      "Resultados",
+      "Preços",
+      "Contato"
+    ],
+    "buttons": {
+      "submit": "Aproveitar Benefício",
+      "cancel": "Revisar"
+    },
+    "loading_states": {
+      "generic": "Preparando seus benefícios..."
+    },
+    "empty_states": {
+      "generic": "Seus resultados aparecerão aqui em breve"
+    },
+    "tooltips": {
+      "help": "Clique aqui para ajuda especializada",
+      "info": "Mais informações sobre este recurso",
+      "contact": "Entre em contato conosco"
+    }
+  },
+  "generated": "2026-03-11T08:37:55.633Z",
+  "context": {
+    "businessType": "general",
+    "psychology": "value",
+    "audience": "gen_x"
+  },
+  "files": []
+}

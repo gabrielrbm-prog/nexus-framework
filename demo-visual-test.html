@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 NEXUS Components Demo - Gabriel ETF</title>
+    
+    <!-- Carrega TODOS os componentes da nossa biblioteca -->
+    <link rel="stylesheet" href="code-library/elements/buttons/stripe-payment.css">
+    <link rel="stylesheet" href="code-library/elements/buttons/apple-glass.css">
+    <link rel="stylesheet" href="code-library/elements/buttons/linear-command.css">
+    <link rel="stylesheet" href="code-library/elements/cards/fintech-trust.css">
+    <link rel="stylesheet" href="code-library/elements/cards/spotify-music.css">
+    <link rel="stylesheet" href="code-library/elements/animations/aceternity-effects.css">
+    <link rel="stylesheet" href="code-library/elements/animations/magic-ui-effects.css">
+    <link rel="stylesheet" href="code-library/elements/cards/21st-ai-components.css">
+    <link rel="stylesheet" href="code-library/elements/icons/premium-icon-system.css">
+    
+    <style>
+        /* Base ETF Branding (baseado no Context DNA) */
+        :root {
+            /* ETF Brand Colors (trust_blue) */
+            --etf-primary: #0F172A;
+            --etf-secondary: #1E293B;
+            --etf-accent: #3B82F6;
+            --etf-success: #10B981;
+            --etf-warning: #F59E0B;
+            
+            /* Typography (modern_sans) */
+            --etf-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            
+            /* Layout (clean_minimal) */
+            --etf-spacing: 1.5rem;
+            --etf-border-radius: 12px;
+        }
+        
+        body {
+            font-family: var(--etf-font-family);
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: #ffffff;
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--etf-border-radius);
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--etf-border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .demo-item {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-item h4 {
+            margin: 0 0 1rem 0;
+            color: var(--etf-accent);
+            font-size: 1.1rem;
+        }
+        
+        .etf-hero {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            padding: 4rem 2rem;
+            border-radius: var(--etf-border-radius);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .etf-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .etf-stat {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .etf-stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--etf-success);
+            display: block;
+        }
+        
+        .etf-stat-label {
+            color: #94A3B8;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .etf-stats {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animation showcase */
+        .component-showcase {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            margin-bottom: 2rem;
+        }
+        
+        .showcase-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--etf-accent);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="demo-header">
+            <h1>🔥 NEXUS Components Library</h1>
+            <p style="font-size: 1.2rem; opacity: 0.8; margin: 1rem 0;">
+                <strong>ETF Trading School</strong> - Premium Components Demo
+            </p>
+            <p style="font-size: 1rem; opacity: 0.6;">
+                Gerado automaticamente pelo NEXUS Context Agent • Target: Millennials 25-35 • Style: Trust Blue
+            </p>
+        </div>
+
+        <!-- ETF Hero Section -->
+        <div class="etf-hero aceternity-glowing-stars">
+            <h2 style="font-size: 3rem; margin-bottom: 1rem;">Seja um Trader de Elite</h2>
+            <p style="font-size: 1.3rem; opacity: 0.9; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Aprenda Smart Money Concepts com quem realmente entrega resultados. 
+                <strong>1.000+ alunos aprovados</strong> em prop firms internacionais.
+            </p>
+            
+            <!-- Buttons ETF -->
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem;">
+                <button class="stripe-payment-button stripe-payment-button--primary">
+                    <span>🚀 Começar Agora</span>
+                </button>
+                <button class="apple-glass-button">
+                    <span>📊 Ver Resultados</span>
+                </button>
+                <button class="linear-command-button">
+                    <span>⌨️ Acessar Plataforma</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ETF Stats -->
+        <div class="etf-stats">
+            <div class="etf-stat">
+                <span class="etf-stat-number">1.000+</span>
+                <span class="etf-stat-label">Alunos Formados</span>
+            </div>
+            <div class="etf-stat">
+                <span class="etf-stat-number">189</span>
+                <span class="etf-stat-label">Alunos Ativos</span>
+            </div>
+            <div class="etf-stat">
+                <span class="etf-stat-number">95%</span>
+                <span class="etf-stat-label">Taxa de Aprovação</span>
+            </div>
+            <div class="etf-stat">
+                <span class="etf-stat-number">R$ 755K</span>
+                <span class="etf-stat-label">Faturamento 4 meses</span>
+            </div>
+        </div>
+
+        <!-- Components Showcase -->
+        <div class="demo-section">
+            <h3>💳 Fintech Components (Context: ETF)</h3>
+            <div class="demo-grid">
+                <!-- Fintech Trust Cards -->
+                <div class="demo-item">
+                    <h4>🛡️ Trust Building Cards</h4>
+                    <div class="fintech-trust-card">
+                        <div class="fintech-trust-card__header">
+                            <div class="fintech-trust-card__icon">🏆</div>
+                            <h3 class="fintech-trust-card__title">Aprovação Garantida</h3>
+                        </div>
+                        <div class="fintech-trust-card__content">
+                            <p class="fintech-trust-card__description">
+                                95% dos nossos alunos são aprovados em prop firms. 
+                                Método SMC + PO3 comprovado.
+                            </p>
+                            <div class="fintech-trust-card__metrics">
+                                <span class="fintech-trust-card__metric">
+                                    <strong>1.000+</strong> Aprovados
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Components -->
+                <div class="demo-item">
+                    <h4>🤖 AI Learning Interface</h4>
+                    <div class="st21-ai-chat" style="height: 300px;">
+                        <div class="st21-ai-chat__header">
+                            <div class="st21-ai-chat__avatar">📊</div>
+                            <div class="st21-ai-chat__title">ETF Assistant</div>
+                            <div class="st21-ai-chat__status">Online</div>
+                        </div>
+                        <div class="st21-ai-chat__messages">
+                            <div class="st21-ai-chat__message st21-ai-chat__message--ai">
+                                <div class="st21-ai-chat__bubble">
+                                    Olá! Sou seu assistente de trading. Como posso ajudar você hoje?
+                                </div>
+                            </div>
+                            <div class="st21-ai-chat__message st21-ai-chat__message--user">
+                                <div class="st21-ai-chat__bubble">
+                                    Como identificar um order block?
+                                </div>
+                            </div>
+                            <div class="st21-ai-chat__message st21-ai-chat__message--ai">
+                                <div class="st21-ai-chat__bubble">
+                                    Order blocks são zonas onde o smart money deixa ordens. Procure por...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="st21-ai-chat__input-area">
+                            <input class="st21-ai-chat__input" placeholder="Digite sua pergunta sobre trading..." />
+                            <button class="st21-ai-chat__send">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animation Effects -->
+        <div class="demo-section">
+            <h3>✨ Premium Animations</h3>
+            <div class="demo-grid">
+                <!-- Aceternity Effects -->
+                <div class="demo-item">
+                    <h4>🌟 Aceternity Card Spotlight</h4>
+                    <div class="aceternity-card-spotlight" id="etf-spotlight">
+                        <h3>Curso ETF Premium</h3>
+                        <p>Método SMC + PO3 completo. Do zero ao financiado em 90 dias.</p>
+                        <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+                            <li>Smart Money Concepts</li>
+                            <li>Power of 3 (PO3)</li>
+                            <li>Gestão de risco</li>
+                            <li>Prop firm approval</li>
+                        </ul>
+                        <div style="margin-top: 1.5rem;">
+                            <span style="color: var(--etf-success); font-weight: 600; font-size: 1.2rem;">
+                                R$ 497 <span style="color: #666; text-decoration: line-through; font-size: 1rem;">R$ 997</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Magic UI Effects -->
+                <div class="demo-item">
+                    <h4>🪄 Magic UI Bento Grid</h4>
+                    <div class="magic-bento-grid" style="grid-template-rows: repeat(2, 100px); max-width: 100%;">
+                        <div class="magic-bento-item magic-bento-item--large">
+                            <div class="magic-bento-item__background"></div>
+                            <div class="magic-bento-item__content">
+                                <h3 class="magic-bento-item__title">Smart Money</h3>
+                                <p class="magic-bento-item__description">Entenda como o dinheiro institucional move o mercado</p>
+                            </div>
+                        </div>
+                        <div class="magic-bento-item">
+                            <div class="magic-bento-item__content">
+                                <h3 class="magic-bento-item__title">PO3</h3>
+                                <p class="magic-bento-item__description">Power of 3</p>
+                            </div>
+                        </div>
+                        <div class="magic-bento-item">
+                            <div class="magic-bento-item__content">
+                                <h3 class="magic-bento-item__title">Props</h3>
+                                <p class="magic-bento-item__description">Aprovação</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ETF Results -->
+        <div class="component-showcase">
+            <h3 class="showcase-title">🎯 Resultados ETF - Generated by Context DNA</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div style="text-align: center; padding: 2rem; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                    <h4 style="color: var(--etf-success); margin-bottom: 1rem;">Business Type</h4>
+                    <p style="font-size: 1.1rem; font-weight: 600;">Fintech Detectado ✅</p>
+                </div>
+                <div style="text-align: center; padding: 2rem; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3);">
+                    <h4 style="color: var(--etf-accent); margin-bottom: 1rem;">Target Audience</h4>
+                    <p style="font-size: 1.1rem; font-weight: 600;">Millennials 25-35 ✅</p>
+                </div>
+                <div style="text-align: center; padding: 2rem; background: rgba(245, 158, 11, 0.1); border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                    <h4 style="color: var(--etf-warning); margin-bottom: 1rem;">Psychology</h4>
+                    <p style="font-size: 1.1rem; font-weight: 600;">Trust + Authority ✅</p>
+                </div>
+                <div style="text-align: center; padding: 2rem; background: rgba(139, 92, 246, 0.1); border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.3);">
+                    <h4 style="color: #8B5CF6; margin-bottom: 1rem;">Components</h4>
+                    <p style="font-size: 1.1rem; font-weight: 600;">428KB Library ✅</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; padding: 3rem 0; opacity: 0.7; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 3rem;">
+            <p>🚀 <strong>NEXUS Framework</strong> • Context Agent + Image Agent + Premium Library</p>
+            <p style="font-size: 0.9rem;">Gerado automaticamente • 384KB de componentes premium • Baseado em Context DNA</p>
+        </div>
+    </div>
+
+    <!-- JavaScript para efeitos interativos -->
+    <script>
+        // Spotlight effect
+        const spotlightCard = document.getElementById('etf-spotlight');
+        if (spotlightCard) {
+            spotlightCard.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                this.style.setProperty('--mouse-x', x + 'px');
+                this.style.setProperty('--mouse-y', y + 'px');
+                this.setAttribute('data-spotlight', 'active');
+            });
+
+            spotlightCard.addEventListener('mouseleave', function() {
+                this.removeAttribute('data-spotlight');
+            });
+        }
+
+        // Add some interactive feedback
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                const originalText = this.textContent;
+                this.textContent = '✅ ' + originalText;
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 2000);
+            });
+        });
+
+        console.log('🔥 NEXUS Components Demo loaded successfully!');
+        console.log('📊 Context DNA: ETF Trading School detected');
+        console.log('🎨 Components: 15+ premium systems loaded');
+        console.log('✨ Animations: Aceternity + Magic UI active');
+    </script>
+</body>
+</html>

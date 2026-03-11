@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS — Experience Template</title>
+    
+    <!-- Performance & SEO -->
+    <meta name="description" content="Immersive landing page template by NEXUS">
+    <meta property="og:title" content="NEXUS — Impossible Web Experience">
+    <meta property="og:description" content="3D web experience that breaks the internet">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- 3D & Animation Libraries -->
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+      }
+    }
+    </script>
+
+    <style>
+        :root {
+            /* NEXUS Design Tokens */
+            --nexus-primary: #00f5ff;
+            --nexus-secondary: #8b5cf6; 
+            --nexus-accent: #ff6b6b;
+            --nexus-dark: #0a0a0f;
+            --nexus-surface: #1a1a2e;
+            --nexus-text: #ffffff;
+            --nexus-text-muted: rgba(255,255,255,0.7);
+            --nexus-glow: rgba(0,245,255,0.3);
+            
+            /* Typography Scale */
+            --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+            --text-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+            --text-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+            --text-lg: clamp(1.125rem, 1rem + 0.625vw, 1.375rem);
+            --text-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.625rem);
+            --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+            --text-3xl: clamp(1.875rem, 1.6rem + 1.375vw, 2.625rem);
+            --text-4xl: clamp(2.25rem, 1.9rem + 1.75vw, 3.375rem);
+            --text-5xl: clamp(3rem, 2.5rem + 2.5vw, 4.5rem);
+            
+            /* Spacing System */
+            --space-1: clamp(0.25rem, 0.2rem + 0.25vw, 0.375rem);
+            --space-2: clamp(0.5rem, 0.4rem + 0.5vw, 0.75rem);
+            --space-4: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+            --space-8: clamp(2rem, 1.6rem + 2vw, 3rem);
+            --space-16: clamp(4rem, 3.2rem + 4vw, 6rem);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--nexus-dark);
+            color: var(--nexus-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* 🎭 Hero Section with 3D */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, var(--nexus-surface) 0%, var(--nexus-dark) 100%);
+        }
+
+        .hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: var(--space-8);
+        }
+
+        .hero-title {
+            font-size: var(--text-5xl);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--nexus-primary), var(--nexus-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: var(--space-4);
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .hero-subtitle {
+            font-size: var(--text-xl);
+            color: var(--nexus-text-muted);
+            margin-bottom: var(--space-8);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* 🎨 Interactive Elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .floating-orb {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--nexus-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--nexus-glow);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* 📱 Mobile Optimizations */
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: var(--space-4);
+            }
+            
+            .hero-title {
+                font-size: var(--text-3xl);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--text-lg);
+            }
+        }
+
+        /* 🌟 Scroll Sections */
+        .section {
+            min-height: 100vh;
+            padding: var(--space-16) var(--space-4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .section-content {
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: var(--text-4xl);
+            font-weight: 700;
+            margin-bottom: var(--space-8);
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .section-text {
+            font-size: var(--text-lg);
+            color: var(--nexus-text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* 🎯 CTA Button */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-4) var(--space-8);
+            background: linear-gradient(135deg, var(--nexus-primary), var(--nexus-secondary));
+            color: var(--nexus-dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: var(--text-base);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: var(--space-8);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 20px 40px var(--nexus-glow);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* 🎪 Loading Spinner */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--nexus-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--nexus-surface);
+            border-top: 3px solid var(--nexus-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 🎪 Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- 🎭 Hero Section -->
+    <section class="hero" id="hero">
+        <canvas class="hero-canvas" id="three-canvas"></canvas>
+        
+        <div class="floating-elements">
+            <div class="floating-orb" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+            <div class="floating-orb" style="top: 60%; right: 15%; animation-delay: 2s;"></div>
+            <div class="floating-orb" style="bottom: 30%; left: 20%; animation-delay: 4s;"></div>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="hero-title" id="hero-title">NEXUS</h1>
+            <p class="hero-subtitle" id="hero-subtitle">
+                Experience the impossible. Design the future. Break the internet.
+            </p>
+            <a href="#experience" class="cta-button" id="cta">
+                Enter the Experience
+                <span>→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 🌟 Experience Section -->
+    <section class="section" id="experience">
+        <div class="section-content">
+            <h2 class="section-title">Beyond Imagination</h2>
+            <p class="section-text">
+                NEXUS doesn't just build websites. We craft digital universes that 
+                captivate, convert, and change the way people see the web forever.
+            </p>
+        </div>
+    </section>
+
+    <!-- 🚀 Technology Section -->
+    <section class="section" id="technology">
+        <div class="section-content">
+            <h2 class="section-title">Powered by the Future</h2>
+            <p class="section-text">
+                Three.js 3D • GSAP Animations • AI Design • WebXR Ready • 
+                Mobile Perfection • Global Standards • Lighthouse 100
+            </p>
+        </div>
+    </section>
+
+    <!-- ⚡ JavaScript -->
+    <script type="module">
+        import * as THREE from 'three';
+        
+        // 🌌 NEXUS Animation Engine
+        class NexusExperience {
+            constructor() {
+                this.init();
+                this.setupThree();
+                this.setupAnimations();
+                this.setupInteractions();
+            }
+
+            init() {
+                gsap.registerPlugin(ScrollTrigger, TextPlugin);
+                
+                // Hide loader after setup
+                window.addEventListener('load', () => {
+                    setTimeout(() => {
+                        document.getElementById('loader').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('loader').style.display = 'none';
+                            this.startExperience();
+                        }, 500);
+                    }, 1000);
+                });
+            }
+
+            setupThree() {
+                const canvas = document.getElementById('three-canvas');
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+                
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                // Create floating geometry
+                const geometry = new THREE.TorusKnotGeometry(1, 0.3, 64, 8);
+                const material = new THREE.MeshBasicMaterial({ 
+                    color: 0x00f5ff, 
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                
+                this.mesh = new THREE.Mesh(geometry, material);
+                this.scene.add(this.mesh);
+                this.camera.position.z = 5;
+
+                // Animation loop
+                this.animate();
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                if (this.mesh) {
+                    this.mesh.rotation.x += 0.005;
+                    this.mesh.rotation.y += 0.01;
+                }
+                
+                this.renderer.render(this.scene, this.camera);
+            }
+
+            setupAnimations() {
+                // Hero entrance animation
+                const tl = gsap.timeline({ paused: true });
+                
+                tl.from('#hero-title', {
+                    duration: 1.5,
+                    y: 50,
+                    opacity: 0,
+                    ease: 'power3.out'
+                })
+                .from('#hero-subtitle', {
+                    duration: 1.2,
+                    y: 30,
+                    opacity: 0,
+                    ease: 'power3.out'
+                }, '-=0.8')
+                .from('#cta', {
+                    duration: 1,
+                    y: 20,
+                    opacity: 0,
+                    scale: 0.9,
+                    ease: 'back.out(1.7)'
+                }, '-=0.6');
+
+                this.heroTimeline = tl;
+
+                // Scroll-triggered animations
+                gsap.utils.toArray('.section-title, .section-text').forEach(element => {
+                    gsap.from(element, {
+                        duration: 1.2,
+                        y: 50,
+                        opacity: 0,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: element,
+                            start: 'top 80%',
+                            end: 'bottom 20%',
+                            toggleActions: 'play none none reverse'
+                        }
+                    });
+                });
+            }
+
+            setupInteractions() {
+                // Smooth scrolling for CTA
+                document.getElementById('cta').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    gsap.to(window, {
+                        duration: 1.5,
+                        scrollTo: '#experience',
+                        ease: 'power3.inOut'
+                    });
+                });
+
+                // Mouse parallax effect
+                document.addEventListener('mousemove', (e) => {
+                    const x = (e.clientX / window.innerWidth) * 2 - 1;
+                    const y = -(e.clientY / window.innerHeight) * 2 + 1;
+                    
+                    if (this.mesh) {
+                        gsap.to(this.mesh.rotation, {
+                            duration: 0.5,
+                            x: y * 0.1,
+                            y: x * 0.1
+                        });
+                    }
+                });
+
+                // Responsive handling
+                window.addEventListener('resize', () => {
+                    if (this.camera && this.renderer) {
+                        this.camera.aspect = window.innerWidth / window.innerHeight;
+                        this.camera.updateProjectionMatrix();
+                        this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    }
+                });
+            }
+
+            startExperience() {
+                this.heroTimeline.play();
+            }
+        }
+
+        // 🚀 Initialize NEXUS
+        new NexusExperience();
+
+        // 📊 Analytics tracking
+        console.log('🌌 NEXUS Experience Loaded');
+        
+        // Performance monitoring
+        if ('PerformanceObserver' in window) {
+            const observer = new PerformanceObserver((list) => {
+                list.getEntries().forEach((entry) => {
+                    if (entry.entryType === 'navigation') {
+                        console.log('⚡ Load Time:', entry.loadEventEnd - entry.loadEventStart, 'ms');
+                    }
+                });
+            });
+            observer.observe({ entryTypes: ['navigation'] });
+        }
+    </script>
+
+    <!-- 🎯 Service Worker for PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('🔧 SW registered'))
+                    .catch(error => console.log('❌ SW registration failed'));
+            });
+        }
+    </script>
+</body>
+</html>

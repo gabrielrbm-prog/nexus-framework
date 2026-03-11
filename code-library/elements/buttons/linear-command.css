@@ -1,0 +1,489 @@
+/*
+ * 🔮 LINEAR COMMAND BUTTONS
+ * Extracted from linear.app - Developer-first command interfaces
+ * Dark mode mastery with technical precision
+ */
+
+/* ══════════════════════════════════════════════
+   BASE LINEAR COMMAND SYSTEM
+   ══════════════════════════════════════════════ */
+
+.linear-button {
+  /* Core structure */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #21262d;
+  border-radius: 6px;
+  background: #161b22;
+  color: #e6edf3;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  user-select: none;
+  
+  /* Linear's subtle transitions */
+  transition: all 0.15s ease;
+  
+  /* Performance */
+  transform: translateZ(0);
+  will-change: transform, background-color, border-color;
+}
+
+.linear-button:hover {
+  background: #1c2128;
+  border-color: #30363d;
+  transform: translateY(-1px);
+}
+
+.linear-button:active {
+  background: #161b22;
+  border-color: #21262d;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════════
+   COMMAND PALETTE STYLE
+   ══════════════════════════════════════════════ */
+
+.linear-command {
+  width: 100%;
+  padding: 12px 16px;
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  color: #e6edf3;
+  font-size: 14px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.linear-command:hover {
+  background: #161b22;
+  border-color: #30363d;
+}
+
+.linear-command--selected {
+  background: #1c2128;
+  border-color: #5e6ad2;
+  box-shadow: 0 0 0 1px rgba(94, 106, 210, 0.2);
+}
+
+/* Command shortcut display */
+.linear-command__shortcut {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+  opacity: 0.6;
+  font-size: 11px;
+}
+
+.linear-command__key {
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════
+   PRIMARY ACTION - Linear Purple
+   ══════════════════════════════════════════════ */
+
+.linear-button--primary {
+  background: linear-gradient(135deg, #5e6ad2 0%, #545cc7 100%);
+  border-color: #5e6ad2;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.linear-button--primary:hover {
+  background: linear-gradient(135deg, #545cc7 0%, #4a52bd 100%);
+  border-color: #545cc7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(94, 106, 210, 0.2);
+}
+
+.linear-button--primary:active {
+  background: linear-gradient(135deg, #4a52bd 0%, #4048b3 100%);
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════════
+   SECONDARY ACTION - Subtle
+   ══════════════════════════════════════════════ */
+
+.linear-button--secondary {
+  background: transparent;
+  border-color: #30363d;
+  color: #e6edf3;
+}
+
+.linear-button--secondary:hover {
+  background: #21262d;
+  border-color: #40464e;
+}
+
+/* ══════════════════════════════════════════════
+   GHOST BUTTON - Minimal
+   ══════════════════════════════════════════════ */
+
+.linear-button--ghost {
+  background: transparent;
+  border: none;
+  color: #7d8590;
+  padding: 8px 12px;
+}
+
+.linear-button--ghost:hover {
+  background: rgba(94, 106, 210, 0.1);
+  color: #e6edf3;
+}
+
+/* ══════════════════════════════════════════════
+   DANGER ACTION - Red
+   ══════════════════════════════════════════════ */
+
+.linear-button--danger {
+  background: #da3633;
+  border-color: #da3633;
+  color: #ffffff;
+}
+
+.linear-button--danger:hover {
+  background: #c93026;
+  border-color: #c93026;
+  box-shadow: 0 4px 8px rgba(218, 54, 51, 0.2);
+}
+
+/* ══════════════════════════════════════════════
+   SUCCESS ACTION - Green
+   ══════════════════════════════════════════════ */
+
+.linear-button--success {
+  background: #238636;
+  border-color: #238636;
+  color: #ffffff;
+}
+
+.linear-button--success:hover {
+  background: #1f7431;
+  border-color: #1f7431;
+}
+
+/* ══════════════════════════════════════════════
+   SIZE VARIATIONS
+   ══════════════════════════════════════════════ */
+
+.linear-button--small {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.linear-button--large {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════════
+   ICON INTEGRATION
+   ══════════════════════════════════════════════ */
+
+.linear-button__icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+  margin: -1px 0;
+}
+
+.linear-button__icon--right {
+  order: 1;
+  margin-left: 4px;
+}
+
+/* Icon-only buttons */
+.linear-button--icon-only {
+  padding: 8px;
+  width: 32px;
+  height: 32px;
+}
+
+.linear-button--icon-only .linear-button__icon {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* ══════════════════════════════════════════════
+   DROPDOWN BUTTONS
+   ══════════════════════════════════════════════ */
+
+.linear-button--dropdown {
+  position: relative;
+}
+
+.linear-button--dropdown::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+  margin-left: 8px;
+  opacity: 0.6;
+}
+
+/* ══════════════════════════════════════════════
+   LOADING STATES
+   ══════════════════════════════════════════════ */
+
+.linear-button--loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.linear-button--loading .linear-button__text {
+  opacity: 0;
+}
+
+.linear-button--loading::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid transparent;
+  border-top: 1.5px solid currentColor;
+  border-radius: 50%;
+  animation: linear-spin 0.6s linear infinite;
+}
+
+@keyframes linear-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════════
+   BUTTON GROUPS
+   ══════════════════════════════════════════════ */
+
+.linear-button-group {
+  display: inline-flex;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #21262d;
+}
+
+.linear-button-group .linear-button {
+  border: none;
+  border-radius: 0;
+  border-right: 1px solid #21262d;
+  margin: 0;
+}
+
+.linear-button-group .linear-button:last-child {
+  border-right: none;
+}
+
+.linear-button-group .linear-button:hover {
+  z-index: 1;
+  position: relative;
+  transform: none;
+}
+
+/* ══════════════════════════════════════════════
+   TOGGLE BUTTONS
+   ══════════════════════════════════════════════ */
+
+.linear-button--toggle {
+  position: relative;
+}
+
+.linear-button--toggle[aria-pressed="true"] {
+  background: #1c2128;
+  border-color: #5e6ad2;
+  color: #e6edf3;
+}
+
+.linear-button--toggle[aria-pressed="true"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(94, 106, 210, 0.2);
+}
+
+/* ══════════════════════════════════════════════
+   KEYBOARD SHORTCUTS DISPLAY
+   ══════════════════════════════════════════════ */
+
+.linear-shortcut-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  opacity: 0.5;
+  font-size: 11px;
+}
+
+.linear-shortcut-key {
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 9px;
+  min-width: 16px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ══════════════════════════════════════════════
+   FOCUS MANAGEMENT
+   ══════════════════════════════════════════════ */
+
+.linear-button:focus {
+  outline: none;
+}
+
+.linear-button:focus-visible {
+  border-color: #5e6ad2;
+  box-shadow: 0 0 0 2px rgba(94, 106, 210, 0.3);
+}
+
+/* ══════════════════════════════════════════════
+   DISABLED STATES
+   ══════════════════════════════════════════════ */
+
+.linear-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  background: #161b22;
+  border-color: #21262d;
+  color: #7d8590;
+}
+
+/* ══════════════════════════════════════════════
+   HIGH CONTRAST MODE
+   ══════════════════════════════════════════════ */
+
+@media (prefers-contrast: high) {
+  .linear-button {
+    border-width: 2px;
+  }
+  
+  .linear-button--primary {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   REDUCED MOTION
+   ══════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .linear-button,
+  .linear-button::after {
+    transition: none;
+    animation: none;
+  }
+  
+  .linear-button:hover {
+    transform: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .linear-button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  .linear-button--large {
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+  
+  .linear-shortcut-display {
+    display: none; /* Hide shortcuts on mobile */
+  }
+}
+
+@media (hover: none) {
+  .linear-button:hover {
+    background: #161b22;
+    border-color: #21262d;
+    transform: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- Primary action with shortcut -->
+<button class="linear-button linear-button--primary">
+  <span class="linear-button__text">Create Issue</span>
+  <span class="linear-shortcut-display">
+    <span class="linear-shortcut-key">⌘</span>
+    <span class="linear-shortcut-key">I</span>
+  </span>
+</button>
+
+<!-- Command palette item -->
+<div class="linear-command">
+  <svg class="linear-button__icon" viewBox="0 0 16 16">
+    <path d="M8 0L6.59 1.41L12.17 7H0v2h12.17l-5.58 5.59L8 16l8-8z"/>
+  </svg>
+  <span>Go to Dashboard</span>
+  <div class="linear-command__shortcut">
+    <span class="linear-command__key">⌘</span>
+    <span class="linear-command__key">D</span>
+  </div>
+</div>
+
+<!-- Icon-only button -->
+<button class="linear-button linear-button--ghost linear-button--icon-only">
+  <svg class="linear-button__icon" viewBox="0 0 16 16">
+    <path d="M8 0L6.59 1.41L12.17 7H0v2h12.17l-5.58 5.59L8 16l8-8z"/>
+  </svg>
+</button>
+
+<!-- Button group -->
+<div class="linear-button-group">
+  <button class="linear-button">View</button>
+  <button class="linear-button linear-button--dropdown">Sort</button>
+  <button class="linear-button">Filter</button>
+</div>
+
+<!-- Toggle button -->
+<button class="linear-button linear-button--toggle" aria-pressed="false">
+  <svg class="linear-button__icon" viewBox="0 0 16 16">
+    <path d="M8 0L6.59 1.41L12.17 7H0v2h12.17l-5.58 5.59L8 16l8-8z"/>
+  </svg>
+  <span class="linear-button__text">Show Completed</span>
+</button>
+*/

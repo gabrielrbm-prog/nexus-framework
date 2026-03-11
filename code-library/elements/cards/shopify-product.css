@@ -1,0 +1,631 @@
+/*
+ * 🛒 SHOPIFY PRODUCT CARDS
+ * Extracted from shopify.com - E-commerce excellence
+ * Polaris design system for merchant and customer experiences
+ */
+
+/* ══════════════════════════════════════════════
+   SHOPIFY POLARIS DESIGN TOKENS
+   ══════════════════════════════════════════════ */
+
+:root {
+  /* Shopify brand colors */
+  --shopify-green: #00a047;
+  --shopify-green-light: #95bf47;
+  --shopify-green-dark: #00783a;
+  --shopify-purple: #6371c7;
+  --shopify-blue: #006fbb;
+  --shopify-orange: #ff6900;
+  --shopify-red: #de3618;
+  --shopify-yellow: #ffc453;
+  
+  /* Polaris semantic colors */
+  --polaris-border: #c9cccf;
+  --polaris-border-subdued: #e1e3e5;
+  --polaris-border-strong: #8c9196;
+  --polaris-surface: #ffffff;
+  --polaris-surface-subdued: #fafbfb;
+  --polaris-surface-disabled: #f6f6f7;
+  --polaris-surface-hovered: #f6f6f7;
+  --polaris-surface-pressed: #f1f2f3;
+  --polaris-surface-depressed: #edeeef;
+  
+  /* Text colors */
+  --polaris-text: #202223;
+  --polaris-text-subdued: #6d7175;
+  --polaris-text-disabled: #8c9196;
+  --polaris-text-critical: #de3618;
+  --polaris-text-warning: #916a00;
+  --polaris-text-success: #00783a;
+  --polaris-text-info: #004c7a;
+  
+  /* Spacing system (4px base) */
+  --polaris-space-025: 2px;   /* 0.25rem */
+  --polaris-space-05: 4px;    /* 0.5rem */
+  --polaris-space-1: 8px;     /* 1rem */
+  --polaris-space-2: 12px;    /* 1.5rem */
+  --polaris-space-3: 16px;    /* 2rem */
+  --polaris-space-4: 20px;    /* 2.5rem */
+  --polaris-space-5: 24px;    /* 3rem */
+  --polaris-space-6: 28px;    /* 3.5rem */
+  
+  /* Border radius */
+  --polaris-border-radius-base: 4px;
+  --polaris-border-radius-large: 8px;
+  
+  /* Typography */
+  --polaris-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --polaris-font-size-caption: 12px;
+  --polaris-font-size-body: 14px;
+  --polaris-font-size-subheading: 16px;
+  --polaris-font-size-heading: 20px;
+  --polaris-font-size-display: 24px;
+  
+  /* Shadows */
+  --polaris-shadow-base: 0 0 0 1px rgba(99, 115, 129, 0.1), 0 1px 3px 0 rgba(99, 115, 129, 0.1);
+  --polaris-shadow-raised: 0 0 0 1px rgba(99, 115, 129, 0.1), 0 1px 3px 0 rgba(99, 115, 129, 0.2);
+  --polaris-shadow-deep: 0 0 0 1px rgba(99, 115, 129, 0.1), 0 4px 8px 0 rgba(99, 115, 129, 0.2);
+}
+
+/* ══════════════════════════════════════════════
+   BASE POLARIS CARD COMPONENT
+   ══════════════════════════════════════════════ */
+
+.polaris-card {
+  /* Foundation */
+  background: var(--polaris-surface);
+  border: 1px solid var(--polaris-border-subdued);
+  border-radius: var(--polaris-border-radius-large);
+  box-shadow: var(--polaris-shadow-base);
+  padding: 0;
+  position: relative;
+  transition: all 0.15s ease-out;
+  
+  /* Performance */
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
+}
+
+.polaris-card:hover {
+  box-shadow: var(--polaris-shadow-raised);
+  transform: translateY(-1px);
+}
+
+.polaris-card--interactive {
+  cursor: pointer;
+}
+
+.polaris-card--interactive:hover {
+  box-shadow: var(--polaris-shadow-deep);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════
+   PRODUCT CARD - CUSTOMER FACING
+   ══════════════════════════════════════════════ */
+
+.shopify-product-card {
+  background: var(--polaris-surface);
+  border: 1px solid var(--polaris-border-subdued);
+  border-radius: var(--polaris-border-radius-large);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.64, 0, 0.35, 1);
+  cursor: pointer;
+}
+
+.shopify-product-card:hover {
+  border-color: var(--polaris-border);
+  box-shadow: var(--polaris-shadow-deep);
+  transform: translateY(-2px);
+}
+
+/* Product image container */
+.shopify-product-card__image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  background: var(--polaris-surface-subdued);
+}
+
+.shopify-product-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s cubic-bezier(0.64, 0, 0.35, 1);
+}
+
+.shopify-product-card:hover .shopify-product-card__image {
+  transform: scale(1.05);
+}
+
+/* Product badge system */
+.shopify-product-card__badge {
+  position: absolute;
+  top: var(--polaris-space-2);
+  left: var(--polaris-space-2);
+  background: var(--shopify-red);
+  color: white;
+  padding: var(--polaris-space-05) var(--polaris-space-1);
+  border-radius: var(--polaris-border-radius-base);
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-caption);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 2;
+}
+
+.shopify-product-card__badge--sale {
+  background: var(--shopify-red);
+}
+
+.shopify-product-card__badge--new {
+  background: var(--shopify-green);
+}
+
+.shopify-product-card__badge--sold-out {
+  background: var(--polaris-text-subdued);
+}
+
+/* Quick action buttons */
+.shopify-product-card__quick-actions {
+  position: absolute;
+  top: var(--polaris-space-2);
+  right: var(--polaris-space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--polaris-space-1);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: all 0.2s cubic-bezier(0.64, 0, 0.35, 1);
+}
+
+.shopify-product-card:hover .shopify-product-card__quick-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.shopify-product-card__quick-action {
+  width: 32px;
+  height: 32px;
+  background: var(--polaris-surface);
+  border: 1px solid var(--polaris-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: var(--polaris-shadow-base);
+}
+
+.shopify-product-card__quick-action:hover {
+  background: var(--polaris-surface-hovered);
+  transform: scale(1.1);
+}
+
+.shopify-product-card__quick-action--favorited {
+  color: var(--shopify-red);
+}
+
+/* ══════════════════════════════════════════════
+   PRODUCT CARD CONTENT
+   ══════════════════════════════════════════════ */
+
+.shopify-product-card__content {
+  padding: var(--polaris-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--polaris-space-1);
+}
+
+.shopify-product-card__vendor {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-caption);
+  color: var(--polaris-text-subdued);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.shopify-product-card__title {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-subheading);
+  font-weight: 600;
+  color: var(--polaris-text);
+  margin: 0;
+  line-height: 1.3;
+  
+  /* Text overflow handling */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.shopify-product-card__description {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-body);
+  color: var(--polaris-text-subdued);
+  line-height: 1.4;
+  margin: 0;
+  
+  /* Text overflow handling */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.shopify-product-card__price-container {
+  display: flex;
+  align-items: center;
+  gap: var(--polaris-space-1);
+  margin-top: var(--polaris-space-1);
+}
+
+.shopify-product-card__price {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-subheading);
+  font-weight: 600;
+  color: var(--polaris-text);
+  margin: 0;
+}
+
+.shopify-product-card__price--sale {
+  color: var(--shopify-red);
+}
+
+.shopify-product-card__original-price {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-body);
+  color: var(--polaris-text-subdued);
+  text-decoration: line-through;
+  margin: 0;
+}
+
+.shopify-product-card__savings {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-caption);
+  color: var(--shopify-red);
+  font-weight: 600;
+  margin-left: auto;
+}
+
+/* ══════════════════════════════════════════════
+   ADMIN PRODUCT CARD - MERCHANT FACING
+   ══════════════════════════════════════════════ */
+
+.shopify-admin-card {
+  background: var(--polaris-surface);
+  border: 1px solid var(--polaris-border-subdued);
+  border-radius: var(--polaris-border-radius-large);
+  padding: var(--polaris-space-4);
+  display: flex;
+  gap: var(--polaris-space-3);
+  align-items: flex-start;
+  transition: all 0.15s ease;
+}
+
+.shopify-admin-card:hover {
+  border-color: var(--polaris-border);
+  box-shadow: var(--polaris-shadow-raised);
+}
+
+.shopify-admin-card__thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--polaris-border-radius-base);
+  overflow: hidden;
+  background: var(--polaris-surface-subdued);
+  border: 1px solid var(--polaris-border-subdued);
+  flex-shrink: 0;
+}
+
+.shopify-admin-card__thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shopify-admin-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--polaris-space-05);
+}
+
+.shopify-admin-card__title {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-subheading);
+  font-weight: 600;
+  color: var(--polaris-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.shopify-admin-card__meta {
+  display: flex;
+  gap: var(--polaris-space-3);
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-caption);
+  color: var(--polaris-text-subdued);
+}
+
+.shopify-admin-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--polaris-space-05);
+  padding: var(--polaris-space-025) var(--polaris-space-1);
+  border-radius: var(--polaris-border-radius-base);
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-caption);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.shopify-admin-card__status--active {
+  background: rgba(0, 120, 58, 0.1);
+  color: var(--polaris-text-success);
+}
+
+.shopify-admin-card__status--draft {
+  background: rgba(109, 113, 117, 0.1);
+  color: var(--polaris-text-subdued);
+}
+
+.shopify-admin-card__status--archived {
+  background: rgba(222, 54, 24, 0.1);
+  color: var(--polaris-text-critical);
+}
+
+/* Status indicator dot */
+.shopify-admin-card__status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ══════════════════════════════════════════════
+   COLLECTION CARD
+   ══════════════════════════════════════════════ */
+
+.shopify-collection-card {
+  background: var(--polaris-surface);
+  border: 1px solid var(--polaris-border-subdued);
+  border-radius: var(--polaris-border-radius-large);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.64, 0, 0.35, 1);
+}
+
+.shopify-collection-card:hover {
+  box-shadow: var(--polaris-shadow-deep);
+  transform: translateY(-2px);
+}
+
+.shopify-collection-card__image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/2;
+  overflow: hidden;
+  background: var(--polaris-surface-subdued);
+}
+
+.shopify-collection-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s cubic-bezier(0.64, 0, 0.35, 1);
+}
+
+.shopify-collection-card:hover .shopify-collection-card__image {
+  transform: scale(1.05);
+}
+
+.shopify-collection-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(32, 34, 35, 0.1) 60%,
+    rgba(32, 34, 35, 0.6) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--polaris-space-4);
+}
+
+.shopify-collection-card__title {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-heading);
+  font-weight: 600;
+  color: white;
+  margin: 0 0 var(--polaris-space-05) 0;
+  line-height: 1.2;
+}
+
+.shopify-collection-card__product-count {
+  font-family: var(--polaris-font-family);
+  font-size: var(--polaris-font-size-body);
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════
+   PRODUCT GRID LAYOUTS
+   ══════════════════════════════════════════════ */
+
+.shopify-product-grid {
+  display: grid;
+  gap: var(--polaris-space-4);
+  width: 100%;
+}
+
+.shopify-product-grid--2-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.shopify-product-grid--3-col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.shopify-product-grid--4-col {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.shopify-product-grid--auto {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .shopify-product-grid--4-col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .shopify-product-grid--auto {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .shopify-product-grid--3-col,
+  .shopify-product-grid--4-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .shopify-product-grid--auto {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  .shopify-product-card__content {
+    padding: var(--polaris-space-2);
+  }
+  
+  .shopify-admin-card {
+    padding: var(--polaris-space-3);
+  }
+  
+  .shopify-admin-card__thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shopify-product-grid--2-col,
+  .shopify-product-grid--3-col,
+  .shopify-product-grid--4-col {
+    grid-template-columns: 1fr;
+  }
+  
+  .shopify-product-grid--auto {
+    grid-template-columns: 1fr;
+  }
+  
+  .shopify-admin-card {
+    flex-direction: column;
+    gap: var(--polaris-space-2);
+  }
+  
+  .shopify-admin-card__thumbnail {
+    width: 100%;
+    height: 120px;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY & STATES
+   ══════════════════════════════════════════════ */
+
+.shopify-product-card:focus,
+.shopify-admin-card:focus,
+.shopify-collection-card:focus {
+  outline: 2px solid var(--shopify-blue);
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .polaris-card,
+  .shopify-product-card,
+  .shopify-admin-card {
+    border-width: 2px;
+    border-color: var(--polaris-border-strong);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .shopify-product-card,
+  .shopify-admin-card,
+  .shopify-collection-card,
+  .shopify-product-card__image {
+    transition: none;
+  }
+  
+  .shopify-product-card:hover {
+    transform: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- Customer product card -->
+<div class="shopify-product-card">
+  <div class="shopify-product-card__image-container">
+    <img src="product.jpg" alt="Product name" class="shopify-product-card__image">
+    <span class="shopify-product-card__badge shopify-product-card__badge--sale">Sale</span>
+    <div class="shopify-product-card__quick-actions">
+      <button class="shopify-product-card__quick-action" aria-label="Add to wishlist">♡</button>
+      <button class="shopify-product-card__quick-action" aria-label="Quick view">👁</button>
+    </div>
+  </div>
+  <div class="shopify-product-card__content">
+    <p class="shopify-product-card__vendor">Brand Name</p>
+    <h3 class="shopify-product-card__title">Premium Product Name</h3>
+    <div class="shopify-product-card__price-container">
+      <span class="shopify-product-card__price shopify-product-card__price--sale">$89.99</span>
+      <span class="shopify-product-card__original-price">$119.99</span>
+      <span class="shopify-product-card__savings">Save 25%</span>
+    </div>
+  </div>
+</div>
+
+<!-- Admin product card -->
+<div class="shopify-admin-card">
+  <div class="shopify-admin-card__thumbnail">
+    <img src="thumbnail.jpg" alt="Product thumbnail" class="shopify-admin-card__thumbnail-image">
+  </div>
+  <div class="shopify-admin-card__content">
+    <h3 class="shopify-admin-card__title">Product Name</h3>
+    <div class="shopify-admin-card__meta">
+      <span>SKU: ABC123</span>
+      <span>Inventory: 45 in stock</span>
+      <span>$89.99</span>
+    </div>
+    <div class="shopify-admin-card__status shopify-admin-card__status--active">Active</div>
+  </div>
+</div>
+
+<!-- Product grid -->
+<div class="shopify-product-grid shopify-product-grid--auto">
+  <!-- Multiple product cards here -->
+</div>
+*/

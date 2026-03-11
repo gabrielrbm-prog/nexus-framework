@@ -1,0 +1,133 @@
+{
+  "project": {
+    "businessType": "ecommerce",
+    "industry": "Retail & Commerce",
+    "projectScale": "medium",
+    "timeline": "2-4 weeks",
+    "budget": "medium",
+    "goals": [
+      "increase_conversions",
+      "increase_sales"
+    ]
+  },
+  "audience": {
+    "primaryAge": "gen_z",
+    "demographics": {
+      "age": "18-24",
+      "income": "low-medium",
+      "tech": "high",
+      "social": "tiktok-instagram"
+    },
+    "psychographics": {
+      "values": [
+        "efficiency",
+        "quality",
+        "value"
+      ],
+      "interests": [
+        "technology",
+        "business",
+        "growth"
+      ],
+      "lifestyle": "busy_professional"
+    },
+    "painPoints": [
+      "time_consuming",
+      "complex_process",
+      "lack_of_transparency"
+    ],
+    "motivations": [
+      "save_time",
+      "increase_profit",
+      "reduce_risk"
+    ],
+    "digitalBehavior": "mobile_first_short_attention"
+  },
+  "psychology": {
+    "primary": "urgency",
+    "triggers": [
+      "scarcity",
+      "social_proof",
+      "reciprocity"
+    ],
+    "fears": [
+      "regret",
+      "missing_out",
+      "poor_quality"
+    ],
+    "desires": [
+      "value",
+      "convenience",
+      "status"
+    ],
+    "copyTone": "friendly_persuasive"
+  },
+  "brand": {
+    "primaryTraits": [],
+    "voiceTone": "balanced_trustworthy",
+    "brandArchetype": "hero",
+    "communicationStyle": "informative_helpful",
+    "emotionalCore": "trust_and_success"
+  },
+  "technical": {
+    "security": "high",
+    "performance": "high",
+    "compliance": [
+      "GDPR",
+      "PCI"
+    ],
+    "integrations": [
+      "payment",
+      "shipping",
+      "inventory",
+      "crm"
+    ],
+    "monitoring": "standard"
+  },
+  "competitive": {
+    "directCompetitors": [
+      "amazon",
+      "shopify",
+      "mercadolivre"
+    ],
+    "benchmarkSites": [
+      "shopify.com",
+      "amazon.com"
+    ],
+    "differentiationOpportunities": [
+      "user_experience",
+      "transparency",
+      "speed"
+    ],
+    "designTrends": [
+      "glassmorphism",
+      "micro_interactions",
+      "dark_mode"
+    ]
+  },
+  "content": {
+    "contentPillars": [
+      "education",
+      "trust_building",
+      "product_benefits"
+    ],
+    "copyStrategy": "friendly_persuasive",
+    "ctaStrategy": "Limited_Time_Offer",
+    "contentHierarchy": [
+      "hero_value_prop",
+      "social_proof",
+      "features",
+      "pricing",
+      "cta"
+    ],
+    "seoStrategy": "focused_long_tail_keywords"
+  },
+  "visual": {
+    "colorPsychology": "converting_orange",
+    "typography": "friendly_rounded",
+    "layout": "grid_product",
+    "imagery": "product_lifestyle"
+  },
+  "created": "2026-03-11T01:46:21.935Z",
+  "agent": "NEXUS Context Agent"
+}

@@ -1,0 +1,126 @@
+{
+  "project": {
+    "businessType": "fitness",
+    "industry": "Health & Fitness",
+    "projectScale": "medium",
+    "timeline": "2-4 weeks",
+    "budget": "high",
+    "goals": [
+      "increase_conversions"
+    ]
+  },
+  "audience": {
+    "primaryAge": "millennial",
+    "demographics": {
+      "age": "25-35",
+      "income": "medium-high",
+      "tech": "high",
+      "social": "instagram-linkedin"
+    },
+    "psychographics": {
+      "values": [
+        "efficiency",
+        "quality",
+        "value"
+      ],
+      "interests": [
+        "technology",
+        "business",
+        "growth"
+      ],
+      "lifestyle": "busy_professional"
+    },
+    "painPoints": [
+      "time_consuming",
+      "complex_process",
+      "lack_of_transparency"
+    ],
+    "motivations": [
+      "save_time",
+      "increase_profit",
+      "reduce_risk"
+    ],
+    "digitalBehavior": "multi_device_research_heavy"
+  },
+  "psychology": {
+    "primary": "value",
+    "triggers": [
+      "productivity",
+      "roi",
+      "authority",
+      "social_proof"
+    ],
+    "fears": [
+      "complexity",
+      "time_waste",
+      "wrong_choice"
+    ],
+    "desires": [
+      "efficiency",
+      "success",
+      "simplicity"
+    ],
+    "copyTone": "smart_solution_oriented"
+  },
+  "brand": {
+    "primaryTraits": [
+      "premium"
+    ],
+    "voiceTone": "balanced_trustworthy",
+    "brandArchetype": "ruler",
+    "communicationStyle": "informative_helpful",
+    "emotionalCore": "trust_and_success"
+  },
+  "technical": {
+    "security": "medium",
+    "performance": "high",
+    "compliance": [
+      "GDPR"
+    ],
+    "integrations": [
+      "apis",
+      "webhooks",
+      "analytics"
+    ],
+    "monitoring": "advanced"
+  },
+  "competitive": {
+    "directCompetitors": [],
+    "benchmarkSites": [],
+    "differentiationOpportunities": [
+      "user_experience",
+      "transparency",
+      "speed"
+    ],
+    "designTrends": [
+      "glassmorphism",
+      "micro_interactions",
+      "dark_mode"
+    ]
+  },
+  "content": {
+    "contentPillars": [
+      "education",
+      "trust_building",
+      "product_benefits"
+    ],
+    "copyStrategy": "smart_solution_oriented",
+    "ctaStrategy": "See_ROI_Calculator",
+    "contentHierarchy": [
+      "hero_value_prop",
+      "social_proof",
+      "features",
+      "pricing",
+      "cta"
+    ],
+    "seoStrategy": "focused_long_tail_keywords"
+  },
+  "visual": {
+    "colorPsychology": "productive_purple",
+    "typography": "tech_geometric",
+    "layout": "dashboard_focused",
+    "imagery": "workflow_abstract"
+  },
+  "created": "2026-03-11T02:02:22.847Z",
+  "agent": "NEXUS Context Agent"
+}

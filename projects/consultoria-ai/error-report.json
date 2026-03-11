@@ -1,0 +1,32 @@
+{
+  "error": "Context DNA not generated - pipeline cannot continue",
+  "timestamp": "2026-03-11T02:36:22.706Z",
+  "execution": {
+    "briefing": "Consultoria em IA para empresas, target CTOs 35-50, foco em ROI e resultados",
+    "projectName": "consultoria-ai",
+    "options": {},
+    "startTime": 1773196582669,
+    "stages": {
+      "Context": {
+        "name": "Context",
+        "startTime": 1773196582675,
+        "success": true,
+        "output": "🧠 NEXUS Context Agent - Análise de Briefing\n=============================================\n\n📋 Briefing: Consultoria\n📂 Projeto: em\n\n🚀 Iniciando análise...\n📋 Briefing: \"Consultoria\"\n📂 Projeto: em\n\n🧠 NEXUS Context Agent processando briefing...\n💾 Context DNA salvo em: /root/.openclaw/workspace/nexus-project/projects/em/context-dna.json\n📄 Resumo humano salvo em: /root/.openclaw/workspace/nexus-project/projects/em/context-summary.md\n\n✅ Context DNA gerado com sucesso!\n📄 Arquivos salvos:\n   - /root/.openclaw/workspace/nexus-project/projects/em/context-dna.json\n   - /root/.openclaw/workspace/nexus-project/projects/em/context-summary.md\n\n🎯 Próximo passo: Use este Context DNA com outros agentes NEXUS\n\n🎯 Context DNA gerado com sucesso!\n📁 Arquivos salvos em: ./projects/em/\n\n🚀 Próximos passos disponíveis:\n   1. nexus-design.sh \"em\" (criar design system)\n   2. nexus-images.sh \"em\" (gerar imagens)\n   3. nexus-code.sh \"em\" (implementar código)\n\n",
+        "error": null,
+        "endTime": 1773196582705,
+        "duration": 30
+      }
+    },
+    "errors": [],
+    "warnings": [],
+    "currentStage": "Context",
+    "completed": false,
+    "finalResult": null
+  },
+  "stack": "Error: Context DNA not generated - pipeline cannot continue\n    at NexusOrchestratorAgent.validateContextDNA (/root/.openclaw/workspace/nexus-project/agents/nexus-orchestrator-agent.js:356:13)\n    at NexusOrchestratorAgent.executePipelineStages (/root/.openclaw/workspace/nexus-project/agents/nexus-orchestrator-agent.js:209:20)\n    at async NexusOrchestratorAgent.executeFullPipeline (/root/.openclaw/workspace/nexus-project/agents/nexus-orchestrator-agent.js:119:7)\n    at async main (/root/.openclaw/workspace/nexus-project/agents/nexus-orchestrator-agent.js:810:20)",
+  "environment": {
+    "node": "v22.22.1",
+    "platform": "linux",
+    "cwd": "/root/.openclaw/workspace/nexus-project"
+  }
+}

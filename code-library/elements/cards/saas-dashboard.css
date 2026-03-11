@@ -1,0 +1,696 @@
+/*
+ * 📊 SAAS DASHBOARD CARDS
+ * Extracted from figma.com, notion.so, airtable.com, slack.com
+ * Modern SaaS interface patterns for data visualization
+ */
+
+/* ══════════════════════════════════════════════
+   SAAS DESIGN TOKENS (2024-2025 TRENDS)
+   ══════════════════════════════════════════════ */
+
+:root {
+  /* SaaS neutral palette */
+  --saas-white: #ffffff;
+  --saas-gray-50: #f9fafb;
+  --saas-gray-100: #f3f4f6;
+  --saas-gray-200: #e5e7eb;
+  --saas-gray-300: #d1d5db;
+  --saas-gray-400: #9ca3af;
+  --saas-gray-500: #6b7280;
+  --saas-gray-600: #4b5563;
+  --saas-gray-700: #374151;
+  --saas-gray-800: #1f2937;
+  --saas-gray-900: #111827;
+  
+  /* Brand accent colors */
+  --saas-blue: #3b82f6;
+  --saas-blue-light: #dbeafe;
+  --saas-blue-dark: #1d4ed8;
+  --saas-green: #10b981;
+  --saas-green-light: #d1fae5;
+  --saas-green-dark: #047857;
+  --saas-purple: #8b5cf6;
+  --saas-purple-light: #ede9fe;
+  --saas-purple-dark: #6d28d9;
+  --saas-orange: #f59e0b;
+  --saas-orange-light: #fef3c7;
+  --saas-orange-dark: #d97706;
+  --saas-red: #ef4444;
+  --saas-red-light: #fee2e2;
+  --saas-red-dark: #dc2626;
+  
+  /* Dark mode colors */
+  --saas-dark-bg: #0f111a;
+  --saas-dark-surface: #1a1d29;
+  --saas-dark-surface-hover: #242938;
+  --saas-dark-border: #2d3142;
+  --saas-dark-text: #e2e8f0;
+  --saas-dark-text-muted: #94a3b8;
+  
+  /* Spacing system (8px grid) */
+  --saas-space-1: 4px;
+  --saas-space-2: 8px;
+  --saas-space-3: 12px;
+  --saas-space-4: 16px;
+  --saas-space-5: 20px;
+  --saas-space-6: 24px;
+  --saas-space-8: 32px;
+  --saas-space-10: 40px;
+  --saas-space-12: 48px;
+  
+  /* Typography */
+  --saas-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --saas-font-mono: "SF Mono", Monaco, "Cascadia Code", monospace;
+  
+  /* Border radius */
+  --saas-radius-sm: 6px;
+  --saas-radius-md: 8px;
+  --saas-radius-lg: 12px;
+  --saas-radius-xl: 16px;
+  
+  /* Shadows */
+  --saas-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --saas-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --saas-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --saas-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Dark mode variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --saas-bg-primary: var(--saas-dark-bg);
+    --saas-bg-secondary: var(--saas-dark-surface);
+    --saas-bg-hover: var(--saas-dark-surface-hover);
+    --saas-border: var(--saas-dark-border);
+    --saas-text-primary: var(--saas-dark-text);
+    --saas-text-secondary: var(--saas-dark-text-muted);
+  }
+}
+
+/* Light mode variables */
+@media (prefers-color-scheme: light) {
+  :root {
+    --saas-bg-primary: var(--saas-white);
+    --saas-bg-secondary: var(--saas-gray-50);
+    --saas-bg-hover: var(--saas-gray-100);
+    --saas-border: var(--saas-gray-200);
+    --saas-text-primary: var(--saas-gray-900);
+    --saas-text-secondary: var(--saas-gray-600);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   BASE SAAS CARD SYSTEM
+   ══════════════════════════════════════════════ */
+
+.saas-card {
+  /* Foundation */
+  background: var(--saas-bg-primary, var(--saas-white));
+  border: 1px solid var(--saas-border, var(--saas-gray-200));
+  border-radius: var(--saas-radius-lg);
+  padding: var(--saas-space-6);
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Modern card elevation */
+  box-shadow: var(--saas-shadow-sm);
+  
+  /* Performance */
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
+}
+
+.saas-card:hover {
+  border-color: var(--saas-gray-300);
+  box-shadow: var(--saas-shadow-md);
+  transform: translateY(-1px);
+}
+
+.saas-card--interactive {
+  cursor: pointer;
+}
+
+.saas-card--interactive:hover {
+  background: var(--saas-bg-hover, var(--saas-gray-50));
+  box-shadow: var(--saas-shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════
+   METRIC CARD - KPI DISPLAY
+   ══════════════════════════════════════════════ */
+
+.saas-metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--saas-space-3);
+  min-height: 140px;
+  position: relative;
+  overflow: hidden;
+}
+
+.saas-metric-card__header {
+  display: flex;
+  justify-content: between;
+  align-items: flex-start;
+  gap: var(--saas-space-3);
+}
+
+.saas-metric-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--saas-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.saas-metric-card__icon--blue {
+  background: linear-gradient(135deg, var(--saas-blue), var(--saas-blue-dark));
+}
+
+.saas-metric-card__icon--green {
+  background: linear-gradient(135deg, var(--saas-green), var(--saas-green-dark));
+}
+
+.saas-metric-card__icon--purple {
+  background: linear-gradient(135deg, var(--saas-purple), var(--saas-purple-dark));
+}
+
+.saas-metric-card__icon--orange {
+  background: linear-gradient(135deg, var(--saas-orange), var(--saas-orange-dark));
+}
+
+.saas-metric-card__icon--red {
+  background: linear-gradient(135deg, var(--saas-red), var(--saas-red-dark));
+}
+
+.saas-metric-card__title {
+  font-family: var(--saas-font-family);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--saas-text-secondary, var(--saas-gray-600));
+  margin: 0;
+  line-height: 1.4;
+}
+
+.saas-metric-card__value {
+  font-family: var(--saas-font-family);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--saas-text-primary, var(--saas-gray-900));
+  line-height: 1.2;
+  margin: var(--saas-space-2) 0;
+}
+
+.saas-metric-card__change {
+  display: flex;
+  align-items: center;
+  gap: var(--saas-space-1);
+  font-family: var(--saas-font-family);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.saas-metric-card__change--positive {
+  color: var(--saas-green-dark);
+}
+
+.saas-metric-card__change--negative {
+  color: var(--saas-red-dark);
+}
+
+.saas-metric-card__change--neutral {
+  color: var(--saas-text-secondary, var(--saas-gray-600));
+}
+
+.saas-metric-card__change::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.saas-metric-card__change--positive::before {
+  border-width: 0 3px 4px 3px;
+  border-color: transparent transparent currentColor transparent;
+}
+
+.saas-metric-card__change--negative::before {
+  border-width: 4px 3px 0 3px;
+  border-color: currentColor transparent transparent transparent;
+}
+
+/* ══════════════════════════════════════════════
+   CHART CARD - DATA VISUALIZATION
+   ══════════════════════════════════════════════ */
+
+.saas-chart-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--saas-space-4);
+  min-height: 280px;
+}
+
+.saas-chart-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--saas-space-4);
+}
+
+.saas-chart-card__title {
+  font-family: var(--saas-font-family);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--saas-text-primary, var(--saas-gray-900));
+  margin: 0;
+}
+
+.saas-chart-card__subtitle {
+  font-family: var(--saas-font-family);
+  font-size: 14px;
+  color: var(--saas-text-secondary, var(--saas-gray-600));
+  margin: var(--saas-space-1) 0 0 0;
+}
+
+.saas-chart-card__controls {
+  display: flex;
+  gap: var(--saas-space-2);
+  align-items: center;
+}
+
+.saas-chart-card__period-selector {
+  display: flex;
+  background: var(--saas-bg-secondary, var(--saas-gray-100));
+  border-radius: var(--saas-radius-sm);
+  padding: 2px;
+}
+
+.saas-chart-card__period-option {
+  padding: var(--saas-space-1) var(--saas-space-3);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--saas-text-secondary, var(--saas-gray-600));
+  background: transparent;
+  border: none;
+  border-radius: var(--saas-radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.saas-chart-card__period-option--active {
+  background: var(--saas-white);
+  color: var(--saas-text-primary, var(--saas-gray-900));
+  box-shadow: var(--saas-shadow-sm);
+}
+
+.saas-chart-card__chart-container {
+  flex: 1;
+  min-height: 200px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--saas-bg-secondary, var(--saas-gray-50));
+  border-radius: var(--saas-radius-md);
+  border: 1px dashed var(--saas-border, var(--saas-gray-200));
+}
+
+.saas-chart-card__placeholder {
+  color: var(--saas-text-secondary, var(--saas-gray-500));
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════
+   TABLE CARD - DATA LIST
+   ══════════════════════════════════════════════ */
+
+.saas-table-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--saas-space-4);
+  overflow: hidden;
+}
+
+.saas-table-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--saas-space-4);
+}
+
+.saas-table-card__title {
+  font-family: var(--saas-font-family);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--saas-text-primary, var(--saas-gray-900));
+  margin: 0;
+}
+
+.saas-table-card__action {
+  font-family: var(--saas-font-family);
+  font-size: 14px;
+  color: var(--saas-blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.saas-table-card__action:hover {
+  color: var(--saas-blue-dark);
+  text-decoration: underline;
+}
+
+.saas-table-card__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.saas-table-card__row {
+  border-bottom: 1px solid var(--saas-border, var(--saas-gray-200));
+}
+
+.saas-table-card__row:last-child {
+  border-bottom: none;
+}
+
+.saas-table-card__cell {
+  padding: var(--saas-space-3) 0;
+  font-family: var(--saas-font-family);
+  font-size: 14px;
+  color: var(--saas-text-primary, var(--saas-gray-900));
+  vertical-align: middle;
+}
+
+.saas-table-card__cell--secondary {
+  color: var(--saas-text-secondary, var(--saas-gray-600));
+}
+
+.saas-table-card__cell--right {
+  text-align: right;
+}
+
+/* ══════════════════════════════════════════════
+   ACTIVITY CARD - TIMELINE/FEED
+   ══════════════════════════════════════════════ */
+
+.saas-activity-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--saas-space-4);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.saas-activity-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.saas-activity-card__title {
+  font-family: var(--saas-font-family);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--saas-text-primary, var(--saas-gray-900));
+  margin: 0;
+}
+
+.saas-activity-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--saas-space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.saas-activity-card__item {
+  display: flex;
+  gap: var(--saas-space-3);
+  align-items: flex-start;
+}
+
+.saas-activity-card__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--saas-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--saas-gray-600);
+}
+
+.saas-activity-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.saas-activity-card__message {
+  font-family: var(--saas-font-family);
+  font-size: 14px;
+  color: var(--saas-text-primary, var(--saas-gray-900));
+  line-height: 1.4;
+  margin: 0 0 var(--saas-space-1) 0;
+}
+
+.saas-activity-card__time {
+  font-family: var(--saas-font-family);
+  font-size: 12px;
+  color: var(--saas-text-secondary, var(--saas-gray-500));
+}
+
+/* ══════════════════════════════════════════════
+   WIDGET CARD - CUSTOMIZABLE MODULE
+   ══════════════════════════════════════════════ */
+
+.saas-widget-card {
+  position: relative;
+  min-height: 160px;
+}
+
+.saas-widget-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--saas-space-4);
+}
+
+.saas-widget-card__title {
+  font-family: var(--saas-font-family);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--saas-text-primary, var(--saas-gray-900));
+  margin: 0;
+}
+
+.saas-widget-card__menu {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--saas-text-secondary, var(--saas-gray-400));
+  cursor: pointer;
+  border-radius: var(--saas-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.saas-widget-card__menu:hover {
+  background: var(--saas-bg-hover, var(--saas-gray-100));
+  color: var(--saas-text-primary, var(--saas-gray-600));
+}
+
+.saas-widget-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+}
+
+/* ══════════════════════════════════════════════
+   CARD LAYOUTS - RESPONSIVE GRIDS
+   ══════════════════════════════════════════════ */
+
+.saas-dashboard-grid {
+  display: grid;
+  gap: var(--saas-space-6);
+  width: 100%;
+}
+
+.saas-dashboard-grid--1-col {
+  grid-template-columns: 1fr;
+}
+
+.saas-dashboard-grid--2-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.saas-dashboard-grid--3-col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.saas-dashboard-grid--4-col {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.saas-dashboard-grid--auto {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Metric cards grid */
+.saas-dashboard-grid--metrics {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--saas-space-4);
+}
+
+/* Mixed layout */
+.saas-dashboard-grid--mixed {
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--saas-space-6);
+}
+
+.saas-dashboard-grid--mixed .saas-metric-card {
+  grid-column: span 3;
+}
+
+.saas-dashboard-grid--mixed .saas-chart-card {
+  grid-column: span 6;
+}
+
+.saas-dashboard-grid--mixed .saas-table-card {
+  grid-column: span 6;
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 1200px) {
+  .saas-dashboard-grid--4-col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .saas-dashboard-grid--mixed .saas-metric-card {
+    grid-column: span 4;
+  }
+  
+  .saas-dashboard-grid--mixed .saas-chart-card {
+    grid-column: span 8;
+  }
+}
+
+@media (max-width: 768px) {
+  .saas-dashboard-grid--2-col,
+  .saas-dashboard-grid--3-col,
+  .saas-dashboard-grid--4-col {
+    grid-template-columns: 1fr;
+  }
+  
+  .saas-dashboard-grid--mixed {
+    grid-template-columns: 1fr;
+  }
+  
+  .saas-dashboard-grid--mixed .saas-metric-card,
+  .saas-dashboard-grid--mixed .saas-chart-card,
+  .saas-dashboard-grid--mixed .saas-table-card {
+    grid-column: span 1;
+  }
+  
+  .saas-card {
+    padding: var(--saas-space-4);
+  }
+  
+  .saas-metric-card__value {
+    font-size: 28px;
+  }
+  
+  .saas-chart-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--saas-space-3);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY & INTERACTIONS
+   ══════════════════════════════════════════════ */
+
+.saas-card:focus {
+  outline: 2px solid var(--saas-blue);
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .saas-card {
+    border-width: 2px;
+    border-color: var(--saas-text-primary, var(--saas-gray-900));
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .saas-card {
+    transition: none;
+  }
+  
+  .saas-card:hover {
+    transform: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- Metric card -->
+<div class="saas-card saas-metric-card">
+  <div class="saas-metric-card__header">
+    <div class="saas-metric-card__icon saas-metric-card__icon--blue">📊</div>
+  </div>
+  <h3 class="saas-metric-card__title">Total Revenue</h3>
+  <div class="saas-metric-card__value">$45,210</div>
+  <div class="saas-metric-card__change saas-metric-card__change--positive">
+    +12.5% from last month
+  </div>
+</div>
+
+<!-- Chart card -->
+<div class="saas-card saas-chart-card">
+  <div class="saas-chart-card__header">
+    <div>
+      <h3 class="saas-chart-card__title">Sales Overview</h3>
+      <p class="saas-chart-card__subtitle">Revenue trends over time</p>
+    </div>
+    <div class="saas-chart-card__controls">
+      <div class="saas-chart-card__period-selector">
+        <button class="saas-chart-card__period-option">7d</button>
+        <button class="saas-chart-card__period-option saas-chart-card__period-option--active">30d</button>
+        <button class="saas-chart-card__period-option">90d</button>
+      </div>
+    </div>
+  </div>
+  <div class="saas-chart-card__chart-container">
+    <div class="saas-chart-card__placeholder">Chart placeholder</div>
+  </div>
+</div>
+
+<!-- Dashboard grid -->
+<div class="saas-dashboard-grid saas-dashboard-grid--mixed">
+  <!-- Multiple cards here -->
+</div>
+*/

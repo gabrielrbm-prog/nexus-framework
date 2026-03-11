@@ -1,0 +1,482 @@
+/*
+ * 🎬 NETFLIX MEDIA CAROUSEL
+ * Extracted from netflix.com - Entertainment streaming mastery
+ * Hawkins design system patterns for content discovery
+ */
+
+/* ══════════════════════════════════════════════
+   BASE NETFLIX CAROUSEL SYSTEM
+   ══════════════════════════════════════════════ */
+
+.netflix-carousel {
+  /* Core structure */
+  display: block;
+  width: 100%;
+  margin-bottom: 40px;
+  position: relative;
+  
+  /* Netflix spacing */
+  padding: 0 60px 0 60px;
+  
+  /* Performance */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.netflix-carousel__header {
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+
+.netflix-carousel__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  margin: 0;
+  font-family: Netflix Sans, Helvetica, Arial, sans-serif;
+}
+
+.netflix-carousel__subtitle {
+  font-size: 14px;
+  color: #b3b3b3;
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════════════
+   CAROUSEL CONTAINER - CSS GRID MASTERY
+   ══════════════════════════════════════════════ */
+
+.netflix-carousel__container {
+  /* Netflix's CSS Grid approach */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 8px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  
+  /* Custom scrollbar Netflix style */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  
+  /* Grid mastery - responsive adjustments */
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(250px, 300px);
+  
+  /* Smooth momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+.netflix-carousel__container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* ══════════════════════════════════════════════
+   NETFLIX MEDIA CARDS - HOVER MAGIC
+   ══════════════════════════════════════════════ */
+
+.netflix-card {
+  /* Foundation */
+  background: #000000;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.5, 0, 0.1, 1);
+  
+  /* Netflix aspect ratio magic */
+  aspect-ratio: 16/9;
+  min-height: 140px;
+  
+  /* Hover preparation */
+  transform-origin: center;
+  z-index: 1;
+}
+
+.netflix-card:hover {
+  /* Netflix signature scale + elevation */
+  transform: scale(1.05);
+  z-index: 10;
+  
+  /* Enhanced shadow */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+  
+  /* Delay for natural feel */
+  transition-delay: 0.3s;
+}
+
+.netflix-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s cubic-bezier(0.5, 0, 0.1, 1);
+}
+
+.netflix-card:hover .netflix-card__image {
+  transform: scale(1.08);
+  filter: brightness(1.1);
+}
+
+/* ══════════════════════════════════════════════
+   CARD OVERLAY SYSTEM - NETFLIX BRANDING
+   ══════════════════════════════════════════════ */
+
+.netflix-card__overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 20%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  padding: 16px;
+  transform: translateY(100%);
+  transition: all 0.3s cubic-bezier(0.5, 0, 0.1, 1);
+  pointer-events: none;
+}
+
+.netflix-card:hover .netflix-card__overlay {
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.netflix-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+  font-family: Netflix Sans, Helvetica, Arial, sans-serif;
+}
+
+.netflix-card__description {
+  font-size: 12px;
+  color: #b3b3b3;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.netflix-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: #46d369; /* Netflix green for ratings */
+}
+
+.netflix-card__rating {
+  font-weight: 600;
+}
+
+.netflix-card__year {
+  color: #b3b3b3;
+}
+
+/* ══════════════════════════════════════════════
+   NETFLIX ACTION BUTTONS
+   ══════════════════════════════════════════════ */
+
+.netflix-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.netflix-card__action {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: white;
+  font-size: 12px;
+}
+
+.netflix-card__action:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.netflix-card__action--play {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+.netflix-card__action--play:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* ══════════════════════════════════════════════
+   CAROUSEL NAVIGATION - NETFLIX STYLE
+   ══════════════════════════════════════════════ */
+
+.netflix-carousel__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.netflix-carousel:hover .netflix-carousel__nav {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.netflix-carousel__nav:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.netflix-carousel__nav--prev {
+  left: 12px;
+}
+
+.netflix-carousel__nav--next {
+  right: 12px;
+}
+
+/* ══════════════════════════════════════════════
+   CATEGORY VARIATIONS
+   ══════════════════════════════════════════════ */
+
+/* Trending/Featured - Larger cards */
+.netflix-carousel--featured .netflix-card {
+  aspect-ratio: 2/1;
+  min-height: 200px;
+}
+
+.netflix-carousel--featured .netflix-carousel__container {
+  grid-auto-columns: minmax(350px, 400px);
+}
+
+/* Continue Watching - Smaller cards */
+.netflix-carousel--continue .netflix-card {
+  aspect-ratio: 16/9;
+  min-height: 120px;
+}
+
+.netflix-carousel--continue .netflix-carousel__container {
+  grid-auto-columns: minmax(200px, 250px);
+}
+
+/* Netflix Originals - Special branding */
+.netflix-carousel--originals .netflix-card::before {
+  content: 'N';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 24px;
+  height: 24px;
+  background: #e50914; /* Netflix red */
+  color: white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 2;
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE DESIGN - MOBILE OPTIMIZATION
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 1200px) {
+  .netflix-carousel {
+    padding: 0 32px;
+  }
+  
+  .netflix-carousel__container {
+    grid-auto-columns: minmax(200px, 250px);
+  }
+  
+  .netflix-carousel--featured .netflix-carousel__container {
+    grid-auto-columns: minmax(300px, 350px);
+  }
+}
+
+@media (max-width: 768px) {
+  .netflix-carousel {
+    padding: 0 16px;
+    margin-bottom: 24px;
+  }
+  
+  .netflix-carousel__title {
+    font-size: 18px;
+  }
+  
+  .netflix-carousel__container {
+    grid-auto-columns: minmax(160px, 200px);
+    gap: 4px;
+  }
+  
+  .netflix-carousel--featured .netflix-carousel__container {
+    grid-auto-columns: minmax(240px, 280px);
+  }
+  
+  .netflix-card {
+    min-height: 90px;
+  }
+  
+  .netflix-carousel--featured .netflix-card {
+    min-height: 140px;
+  }
+  
+  /* Mobile hover adjustments */
+  .netflix-card:hover {
+    transform: scale(1.02);
+    transition-delay: 0s;
+  }
+  
+  .netflix-carousel__nav {
+    display: none; /* Hide navigation on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .netflix-carousel {
+    padding: 0 8px;
+  }
+  
+  .netflix-carousel__container {
+    grid-auto-columns: minmax(140px, 180px);
+  }
+  
+  .netflix-card__overlay {
+    padding: 12px;
+  }
+  
+  .netflix-card__title {
+    font-size: 14px;
+  }
+  
+  .netflix-card__description {
+    font-size: 11px;
+    -webkit-line-clamp: 1;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY & PERFORMANCE
+   ══════════════════════════════════════════════ */
+
+/* Focus management */
+.netflix-card:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .netflix-card,
+  .netflix-card__image,
+  .netflix-card__overlay,
+  .netflix-carousel__nav {
+    transition: none;
+  }
+  
+  .netflix-card:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .netflix-card {
+    border: 1px solid #ffffff;
+  }
+  
+  .netflix-card__overlay {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.9) 50%,
+      rgba(0, 0, 0, 1) 100%
+    );
+  }
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- Netflix carousel implementation -->
+<div class="netflix-carousel">
+  <div class="netflix-carousel__header">
+    <h2 class="netflix-carousel__title">Trending Now</h2>
+    <p class="netflix-carousel__subtitle">Popular on Netflix</p>
+  </div>
+  
+  <div class="netflix-carousel__container">
+    <div class="netflix-card">
+      <img src="movie-poster.jpg" alt="Movie Title" class="netflix-card__image">
+      <div class="netflix-card__overlay">
+        <h3 class="netflix-card__title">Movie Title</h3>
+        <p class="netflix-card__description">Brief description of the content...</p>
+        <div class="netflix-card__meta">
+          <span class="netflix-card__rating">98% Match</span>
+          <span class="netflix-card__year">2024</span>
+        </div>
+        <div class="netflix-card__actions">
+          <button class="netflix-card__action netflix-card__action--play">▶</button>
+          <button class="netflix-card__action">+</button>
+          <button class="netflix-card__action">👍</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <button class="netflix-carousel__nav netflix-carousel__nav--prev">‹</button>
+  <button class="netflix-carousel__nav netflix-carousel__nav--next">›</button>
+</div>
+
+<!-- Featured content carousel -->
+<div class="netflix-carousel netflix-carousel--featured">
+  <div class="netflix-carousel__header">
+    <h2 class="netflix-carousel__title">Netflix Originals</h2>
+  </div>
+  <!-- Content here -->
+</div>
+
+<!-- Continue watching -->
+<div class="netflix-carousel netflix-carousel--continue">
+  <div class="netflix-carousel__header">
+    <h2 class="netflix-carousel__title">Continue Watching for Gabriel</h2>
+  </div>
+  <!-- Content here -->
+</div>
+*/

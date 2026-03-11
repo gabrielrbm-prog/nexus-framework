@@ -1,0 +1,135 @@
+{
+  "project": {
+    "businessType": "fintech",
+    "industry": "Financial Services",
+    "projectScale": "medium",
+    "timeline": "2-4 weeks",
+    "budget": "medium",
+    "goals": [
+      "increase_conversions"
+    ]
+  },
+  "audience": {
+    "primaryAge": "millennial",
+    "demographics": {
+      "age": "25-35",
+      "income": "medium-high",
+      "tech": "high",
+      "social": "instagram-linkedin"
+    },
+    "psychographics": {
+      "values": [
+        "efficiency",
+        "quality",
+        "value"
+      ],
+      "interests": [
+        "technology",
+        "business",
+        "growth"
+      ],
+      "lifestyle": "busy_professional"
+    },
+    "painPoints": [
+      "time_consuming",
+      "complex_process",
+      "lack_of_transparency"
+    ],
+    "motivations": [
+      "save_time",
+      "increase_profit",
+      "reduce_risk"
+    ],
+    "digitalBehavior": "multi_device_research_heavy"
+  },
+  "psychology": {
+    "primary": "trust",
+    "triggers": [
+      "security",
+      "transparency",
+      "social_proof",
+      "authority"
+    ],
+    "fears": [
+      "fraud",
+      "loss",
+      "complexity"
+    ],
+    "desires": [
+      "growth",
+      "control",
+      "simplicity"
+    ],
+    "copyTone": "professional_confident"
+  },
+  "brand": {
+    "primaryTraits": [],
+    "voiceTone": "balanced_trustworthy",
+    "brandArchetype": "hero",
+    "communicationStyle": "informative_helpful",
+    "emotionalCore": "trust_and_success"
+  },
+  "technical": {
+    "security": "high",
+    "performance": "high",
+    "compliance": [
+      "PCI",
+      "GDPR",
+      "SOC2"
+    ],
+    "integrations": [
+      "payment_gateways",
+      "banking_apis",
+      "kyc"
+    ],
+    "monitoring": "advanced"
+  },
+  "competitive": {
+    "directCompetitors": [
+      "stripe",
+      "nubank",
+      "wise",
+      "revolut"
+    ],
+    "benchmarkSites": [
+      "stripe.com",
+      "wise.com",
+      "revolut.com"
+    ],
+    "differentiationOpportunities": [
+      "user_experience",
+      "transparency",
+      "speed"
+    ],
+    "designTrends": [
+      "glassmorphism",
+      "micro_interactions",
+      "dark_mode"
+    ]
+  },
+  "content": {
+    "contentPillars": [
+      "education",
+      "trust_building",
+      "product_benefits"
+    ],
+    "copyStrategy": "professional_confident",
+    "ctaStrategy": "Get_Started_Safely",
+    "contentHierarchy": [
+      "hero_value_prop",
+      "social_proof",
+      "features",
+      "pricing",
+      "cta"
+    ],
+    "seoStrategy": "focused_long_tail_keywords"
+  },
+  "visual": {
+    "colorPsychology": "trust_blue",
+    "typography": "modern_sans",
+    "layout": "clean_minimal",
+    "imagery": "business_lifestyle"
+  },
+  "created": "2026-03-11T01:38:30.214Z",
+  "agent": "NEXUS Context Agent"
+}

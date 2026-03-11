@@ -1,0 +1,656 @@
+/*
+ * 🪄 MAGIC UI EFFECTS
+ * Extracted from magicui.design - UI library for Design Engineers
+ * Used by YC companies and startups that raised millions
+ */
+
+/* ══════════════════════════════════════════════
+   MAGIC UI DESIGN TOKENS
+   ══════════════════════════════════════════════ */
+
+:root {
+  /* Magic UI brand colors */
+  --magic-primary: #6366f1;
+  --magic-secondary: #8b5cf6;
+  --magic-accent: #06b6d4;
+  --magic-success: #10b981;
+  --magic-warning: #f59e0b;
+  --magic-error: #ef4444;
+  
+  /* Backgrounds */
+  --magic-bg-primary: #ffffff;
+  --magic-bg-secondary: #f8fafc;
+  --magic-bg-tertiary: #f1f5f9;
+  --magic-border: #e2e8f0;
+  --magic-text: #0f172a;
+  --magic-text-secondary: #475569;
+  --magic-text-muted: #94a3b8;
+  
+  /* Dark mode */
+  --magic-dark-bg-primary: #0f172a;
+  --magic-dark-bg-secondary: #1e293b;
+  --magic-dark-bg-tertiary: #334155;
+  --magic-dark-border: #475569;
+  --magic-dark-text: #f8fafc;
+  --magic-dark-text-secondary: #cbd5e1;
+  --magic-dark-text-muted: #64748b;
+  
+  /* Gradients */
+  --magic-gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --magic-gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --magic-gradient-rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+  
+  /* Animation settings */
+  --magic-duration-fast: 0.15s;
+  --magic-duration-normal: 0.3s;
+  --magic-duration-slow: 0.6s;
+  --magic-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --magic-easing-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Dark mode variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --magic-bg-primary: var(--magic-dark-bg-primary);
+    --magic-bg-secondary: var(--magic-dark-bg-secondary);
+    --magic-bg-tertiary: var(--magic-dark-bg-tertiary);
+    --magic-border: var(--magic-dark-border);
+    --magic-text: var(--magic-dark-text);
+    --magic-text-secondary: var(--magic-dark-text-secondary);
+    --magic-text-muted: var(--magic-dark-text-muted);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   ANIMATED BEAM - CONNECTING LINES EFFECT
+   ══════════════════════════════════════════════ */
+
+.magic-animated-beam {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: var(--magic-bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.magic-beam {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--magic-primary),
+    transparent
+  );
+  animation: beam-flow 2s ease-in-out infinite;
+  transform: translateY(-50%);
+}
+
+.magic-beam--curved {
+  border-radius: 100px;
+  height: 100px;
+  width: 200px;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--magic-bg-primary), var(--magic-bg-primary)) padding-box,
+              var(--magic-gradient-primary) border-box;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes beam-flow {
+  0% { transform: translateX(-100%) translateY(-50%); }
+  100% { transform: translateX(100%) translateY(-50%); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    filter: brightness(1) blur(0px); 
+    transform: scale(1);
+  }
+  50% { 
+    filter: brightness(1.5) blur(2px); 
+    transform: scale(1.02);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   BENTO GRID - MODERN LAYOUT SYSTEM
+   ══════════════════════════════════════════════ */
+
+.magic-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 200px);
+  gap: 16px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.magic-bento-item {
+  background: var(--magic-bg-secondary);
+  border: 1px solid var(--magic-border);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--magic-duration-normal) var(--magic-easing);
+  cursor: pointer;
+}
+
+.magic-bento-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
+  border-color: var(--magic-primary);
+}
+
+.magic-bento-item--large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.magic-bento-item--wide {
+  grid-column: span 2;
+}
+
+.magic-bento-item--tall {
+  grid-row: span 2;
+}
+
+.magic-bento-item__content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.magic-bento-item__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--magic-text);
+  margin-bottom: 8px;
+}
+
+.magic-bento-item__description {
+  font-size: 14px;
+  color: var(--magic-text-secondary);
+  line-height: 1.5;
+}
+
+.magic-bento-item__background {
+  position: absolute;
+  inset: 0;
+  background: var(--magic-gradient-primary);
+  opacity: 0;
+  transition: opacity var(--magic-duration-normal) var(--magic-easing);
+}
+
+.magic-bento-item:hover .magic-bento-item__background {
+  opacity: 0.05;
+}
+
+/* ══════════════════════════════════════════════
+   BORDER BEAM - ROTATING BORDER EFFECT
+   ══════════════════════════════════════════════ */
+
+.magic-border-beam {
+  position: relative;
+  display: inline-block;
+  padding: 20px 32px;
+  background: var(--magic-bg-primary);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.magic-border-beam::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    var(--magic-primary),
+    var(--magic-accent),
+    var(--magic-secondary),
+    var(--magic-primary)
+  );
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  animation: border-rotate 4s linear infinite;
+}
+
+@keyframes border-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════════
+   RIPPLE EFFECT - CLICK ANIMATION
+   ══════════════════════════════════════════════ */
+
+.magic-ripple {
+  position: relative;
+  background: var(--magic-bg-secondary);
+  border: 1px solid var(--magic-border);
+  border-radius: 8px;
+  padding: 16px 24px;
+  cursor: pointer;
+  overflow: hidden;
+  color: var(--magic-text);
+  text-decoration: none;
+  display: inline-block;
+  transition: all var(--magic-duration-fast) var(--magic-easing);
+}
+
+.magic-ripple:active {
+  transform: scale(0.98);
+}
+
+.magic-ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.3);
+  transform: scale(0);
+  animation: ripple-animation 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   GRADIENT TEXT - ANIMATED TEXT EFFECT
+   ══════════════════════════════════════════════ */
+
+.magic-gradient-text {
+  background: var(--magic-gradient-rainbow);
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradient-shift 3s ease-in-out infinite;
+  font-weight: 700;
+  font-size: clamp(24px, 4vw, 48px);
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ══════════════════════════════════════════════
+   MORPHING BUTTON - SHAPE ANIMATION
+   ══════════════════════════════════════════════ */
+
+.magic-morphing-button {
+  position: relative;
+  padding: 16px 32px;
+  background: var(--magic-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--magic-duration-normal) var(--magic-easing-spring);
+  transform: translateZ(0);
+}
+
+.magic-morphing-button:hover {
+  border-radius: 24px;
+  padding: 16px 40px;
+  background: var(--magic-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.magic-morphing-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.magic-morphing-button__text {
+  position: relative;
+  z-index: 2;
+  transition: all var(--magic-duration-normal) var(--magic-easing);
+}
+
+.magic-morphing-button:hover .magic-morphing-button__text {
+  letter-spacing: 0.5px;
+}
+
+/* ══════════════════════════════════════════════
+   PARTICLE SYSTEM - FLOATING ELEMENTS
+   ══════════════════════════════════════════════ */
+
+.magic-particles {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: var(--magic-bg-primary);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.magic-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--magic-primary);
+  border-radius: 50%;
+  opacity: 0;
+  animation: float-particle 4s ease-in-out infinite;
+}
+
+.magic-particle:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 3s;
+}
+
+.magic-particle:nth-child(2) {
+  left: 30%;
+  animation-delay: 0.5s;
+  animation-duration: 4s;
+}
+
+.magic-particle:nth-child(3) {
+  left: 50%;
+  animation-delay: 1s;
+  animation-duration: 3.5s;
+}
+
+.magic-particle:nth-child(4) {
+  left: 70%;
+  animation-delay: 1.5s;
+  animation-duration: 4.5s;
+}
+
+.magic-particle:nth-child(5) {
+  left: 90%;
+  animation-delay: 2s;
+  animation-duration: 3.8s;
+}
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translateY(300px);
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   MAGNETIC EFFECT - CURSOR FOLLOWING
+   ══════════════════════════════════════════════ */
+
+.magic-magnetic {
+  position: relative;
+  display: inline-block;
+  padding: 20px;
+  background: var(--magic-bg-secondary);
+  border: 1px solid var(--magic-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--magic-duration-normal) var(--magic-easing);
+}
+
+.magic-magnetic:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* JavaScript required for magnetic effect */
+.magic-magnetic[data-magnetic="active"] {
+  transform: translate(var(--mouse-x, 0), var(--mouse-y, 0)) scale(1.05);
+}
+
+/* ══════════════════════════════════════════════
+   WAVE ANIMATION - FLOWING EFFECT
+   ══════════════════════════════════════════════ */
+
+.magic-wave {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background: var(--magic-bg-primary);
+  overflow: hidden;
+}
+
+.magic-wave::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--magic-primary) 0%,
+    var(--magic-accent) 50%,
+    var(--magic-secondary) 100%
+  );
+  border-radius: 50% 50% 0 0;
+  animation: wave-flow 3s ease-in-out infinite;
+}
+
+@keyframes wave-flow {
+  0%, 100% {
+    transform: translateX(-50%) translateY(20px);
+  }
+  50% {
+    transform: translateX(-50%) translateY(0px);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .magic-bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .magic-bento-item--large {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+  
+  .magic-bento-item--wide {
+    grid-column: span 2;
+  }
+  
+  .magic-particles {
+    height: 200px;
+  }
+  
+  .magic-gradient-text {
+    font-size: clamp(20px, 6vw, 32px);
+  }
+}
+
+@media (max-width: 480px) {
+  .magic-bento-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .magic-bento-item--large,
+  .magic-bento-item--wide {
+    grid-column: span 1;
+  }
+  
+  .magic-border-beam,
+  .magic-morphing-button {
+    padding: 12px 20px;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY & PERFORMANCE
+   ══════════════════════════════════════════════ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .magic-bento-item,
+  .magic-ripple,
+  .magic-magnetic {
+    border-width: 2px;
+    border-color: var(--magic-text);
+  }
+  
+  .magic-gradient-text {
+    background: var(--magic-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .magic-beam,
+  .magic-border-beam::before,
+  .magic-gradient-text,
+  .magic-particle,
+  .magic-wave::before {
+    animation: none;
+  }
+  
+  .magic-bento-item,
+  .magic-morphing-button,
+  .magic-magnetic {
+    transition: none;
+  }
+  
+  .magic-bento-item:hover,
+  .magic-morphing-button:hover,
+  .magic-magnetic:hover {
+    transform: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   USAGE EXAMPLES
+   ══════════════════════════════════════════════ */
+
+/*
+<!-- Animated Beam -->
+<div class="magic-animated-beam">
+  <div class="magic-beam"></div>
+</div>
+
+<!-- Bento Grid Layout -->
+<div class="magic-bento-grid">
+  <div class="magic-bento-item magic-bento-item--large">
+    <div class="magic-bento-item__background"></div>
+    <div class="magic-bento-item__content">
+      <h3 class="magic-bento-item__title">Large Item</h3>
+      <p class="magic-bento-item__description">This spans 2x2 grid cells</p>
+    </div>
+  </div>
+  <div class="magic-bento-item">
+    <div class="magic-bento-item__content">
+      <h3 class="magic-bento-item__title">Regular</h3>
+      <p class="magic-bento-item__description">Standard size</p>
+    </div>
+  </div>
+  <!-- More items -->
+</div>
+
+<!-- Border Beam Button -->
+<button class="magic-border-beam">
+  <span>Animated Border</span>
+</button>
+
+<!-- Ripple Button -->
+<button class="magic-ripple" onclick="createRipple(event, this)">
+  Click for Ripple
+</button>
+
+<!-- Gradient Text -->
+<h1 class="magic-gradient-text">Magic Gradient Text</h1>
+
+<!-- Morphing Button -->
+<button class="magic-morphing-button">
+  <span class="magic-morphing-button__text">Hover to Morph</span>
+</button>
+
+<!-- Particle System -->
+<div class="magic-particles">
+  <div class="magic-particle"></div>
+  <div class="magic-particle"></div>
+  <div class="magic-particle"></div>
+  <div class="magic-particle"></div>
+  <div class="magic-particle"></div>
+</div>
+
+<!-- Magnetic Effect -->
+<div class="magic-magnetic" id="magnetic-element">
+  Magnetic Element
+</div>
+
+<!-- Wave Animation -->
+<div class="magic-wave"></div>
+
+<!-- JavaScript for Ripple Effect -->
+<script>
+function createRipple(event, element) {
+  const circle = document.createElement('span');
+  const diameter = Math.max(element.clientWidth, element.clientHeight);
+  const radius = diameter / 2;
+  
+  circle.style.width = circle.style.height = diameter + 'px';
+  circle.style.left = event.clientX - element.offsetLeft - radius + 'px';
+  circle.style.top = event.clientY - element.offsetTop - radius + 'px';
+  circle.classList.add('magic-ripple-effect');
+  
+  const ripple = element.getElementsByClassName('magic-ripple-effect')[0];
+  if (ripple) {
+    ripple.remove();
+  }
+  
+  element.appendChild(circle);
+}
+
+// Magnetic Effect
+const magneticElement = document.getElementById('magnetic-element');
+magneticElement.addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const x = (e.clientX - rect.left - rect.width / 2) * 0.3;
+  const y = (e.clientY - rect.top - rect.height / 2) * 0.3;
+  this.style.setProperty('--mouse-x', x + 'px');
+  this.style.setProperty('--mouse-y', y + 'px');
+  this.setAttribute('data-magnetic', 'active');
+});
+
+magneticElement.addEventListener('mouseleave', function() {
+  this.style.setProperty('--mouse-x', '0px');
+  this.style.setProperty('--mouse-y', '0px');
+  this.removeAttribute('data-magnetic');
+});
+</script>
+*/

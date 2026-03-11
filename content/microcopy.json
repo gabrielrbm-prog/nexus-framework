@@ -1,0 +1,35 @@
+{
+  "form_labels": {
+    "name": "Nome",
+    "email": "Seu melhor email",
+    "phone": "Telefone"
+  },
+  "error_messages": {
+    "generic": "Alguns campos precisam ser ajustados"
+  },
+  "success_messages": {
+    "generic": "Perfeito! Em breve você receberá acesso ao método completo."
+  },
+  "navigation": [
+    "Início",
+    "Método",
+    "Resultados",
+    "Preços",
+    "Contato"
+  ],
+  "buttons": {
+    "submit": "Aproveitar Benefício",
+    "cancel": "Revisar"
+  },
+  "loading_states": {
+    "generic": "Preparando seus benefícios..."
+  },
+  "empty_states": {
+    "generic": "Seus resultados aparecerão aqui em breve"
+  },
+  "tooltips": {
+    "help": "Clique aqui para ajuda especializada",
+    "info": "Mais informações sobre este recurso",
+    "contact": "Entre em contato conosco"
+  }
+}
