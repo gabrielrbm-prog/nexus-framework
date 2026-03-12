@@ -227,8 +227,8 @@ class NexusBridge {
       code: () => {
         const dnaPath = path.join(this.projectDir, 'context-dna.json');
         // Use Code Agent v2 with real component library
-        const agentScript = fs.existsSync(path.join(AGENTS_DIR, 'nexus-code-agent-v2.js'))
-          ? 'nexus-code-agent-v2.js' : 'nexus-code-agent.js';
+        const agentScript = fs.existsSync(path.join(AGENTS_DIR, 'nexus-code-agent-v3.js'))
+          ? 'nexus-code-agent-v3.js' : 'nexus-code-agent.js';
         const cmd = `node ${path.join(AGENTS_DIR, agentScript)} "${dnaPath}"`;
         execSync(cmd, { cwd: WORKSPACE, timeout: 180000, stdio: 'inherit' });
         return this.collectCode();
