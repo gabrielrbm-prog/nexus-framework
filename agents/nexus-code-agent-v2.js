@@ -1,14 +1,534 @@
-<!DOCTYPE html>
-<html lang="en">
+#!/usr/bin/env node
+/**
+ * NEXUS Code Agent v2 — Production Landing Page Generator
+ *
+ * Generates single-file HTML landing pages with 16 premium effects from the
+ * Nexus Premium Components Library. All CSS/JS is inlined; only CDN libs
+ * (Three.js, GSAP) are loaded externally.
+ *
+ * Usage:  node nexus-code-agent-v2.js <path-to-context-dna.json>
+ *
+ * Reads:  context-dna.json  (required)
+ *         design-system.json (optional)
+ *         creative-brief.json (optional)
+ *
+ * Output: projects/<name>/output/index.html
+ *         generated-site/index.html
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+// ─────────────────────────────────────────────────────────────
+// Component Selection Profiles
+// ─────────────────────────────────────────────────────────────
+
+const ALWAYS_ON = [
+  'threejs-wireframe',
+  'gsap-scroll-reveal',
+  'magicui-floating-particles',
+  'magicui-wave-dividers',
+  'apple-glass-buttons',
+  'magicui-gradient-text',
+  'aceternity-meteors',
+  'aceternity-flip-words'
+];
+
+const BUSINESS_COMPONENTS = {
+  fintech:    ['gsap-counter', 'fintech-trust-cards', 'fintech-pricing-cards', 'aceternity-moving-borders'],
+  trading:    ['gsap-counter', 'fintech-trust-cards', 'fintech-pricing-cards', 'aceternity-moving-borders'],
+  saas:       ['aceternity-3d-cards', 'aceternity-flip-words', 'fintech-pricing-cards', 'magicui-border-beam'],
+  ecommerce:  ['aceternity-3d-cards', 'aceternity-moving-borders', 'fintech-trust-cards', 'magicui-border-beam'],
+  healthcare: ['aceternity-glowing-stars', 'fintech-trust-cards', 'aceternity-3d-cards', 'magicui-border-beam'],
+  education:  ['gsap-counter', 'fintech-trust-cards', 'fintech-pricing-cards', 'aceternity-3d-cards'],
+  agency:     ['aceternity-3d-cards', 'magicui-border-beam', 'aceternity-glowing-stars', 'aceternity-moving-borders'],
+  default:    [
+    'gsap-counter', 'gsap-typewriter', 'aceternity-3d-cards', 'aceternity-glowing-stars',
+    'aceternity-moving-borders', 'magicui-border-beam', 'fintech-trust-cards', 'fintech-pricing-cards'
+  ]
+};
+
+// ─────────────────────────────────────────────────────────────
+// Default color mappings for CSS variables
+// ─────────────────────────────────────────────────────────────
+
+const DEFAULT_COLORS = {
+  '--bg':             '#0a0a0f',
+  '--bg-card':        '#12121a',
+  '--bg-card-hover':  '#1a1a2e',
+  '--blue':           '#3b82f6',
+  '--cyan':           '#22d3ee',
+  '--purple':         '#8b5cf6',
+  '--pink':           '#ec4899',
+  '--text':           '#e2e8f0',
+  '--text-dim':       '#94a3b8',
+  '--text-bright':    '#f8fafc',
+  '--border':         'rgba(255,255,255,0.06)',
+  '--glow-blue':      '0 0 30px rgba(59,130,246,0.3)',
+  '--glow-cyan':      '0 0 30px rgba(34,211,238,0.3)',
+  '--glow-purple':    '0 0 30px rgba(139,92,246,0.3)'
+};
+
+// ─────────────────────────────────────────────────────────────
+// NexusCodeAgentV2 Class
+// ─────────────────────────────────────────────────────────────
+
+class NexusCodeAgentV2 {
+
+  constructor(contextDnaPath) {
+    this.contextDnaPath = path.resolve(contextDnaPath);
+    this.projectDir = path.dirname(this.contextDnaPath);
+    this.contextDna = {};
+    this.designSystem = {};
+    this.creativeBrief = {};
+    this.activeComponents = [];
+    this.cssBlocks = [];
+    this.htmlSections = [];
+    this.inlineJsBlocks = [];
+    this.moduleJsBlocks = [];
+    this.colors = { ...DEFAULT_COLORS };
+  }
+
+  // ── File I/O helpers ──────────────────────────────────────
+
+  _readJSON(filePath) {
+    try {
+      return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    } catch {
+      return null;
+    }
+  }
+
+  _ensureDir(dir) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
+  _writeFile(filePath, content) {
+    this._ensureDir(path.dirname(filePath));
+    fs.writeFileSync(filePath, content, 'utf-8');
+    console.log(`  [write] ${filePath} (${(Buffer.byteLength(content) / 1024).toFixed(1)} KB)`);
+  }
+
+  // ── Load inputs ───────────────────────────────────────────
+
+  loadInputs() {
+    console.log('\n[1/6] Loading inputs...');
+    this.contextDna = this._readJSON(this.contextDnaPath);
+    if (!this.contextDna) {
+      throw new Error(`Cannot read context-dna.json at ${this.contextDnaPath}`);
+    }
+    console.log(`  context-dna.json loaded — ${this.contextDna.businessName || 'unnamed'}`);
+
+    const dsPath = path.join(this.projectDir, 'design-system.json');
+    this.designSystem = this._readJSON(dsPath) || {};
+    if (Object.keys(this.designSystem).length) {
+      console.log('  design-system.json loaded');
+    }
+
+    const cbPath = path.join(this.projectDir, 'creative-brief.json');
+    this.creativeBrief = this._readJSON(cbPath) || {};
+    if (Object.keys(this.creativeBrief).length) {
+      console.log('  creative-brief.json loaded');
+    }
+  }
+
+  // ── Resolve colors from design system ─────────────────────
+
+  resolveColors() {
+    const ds = this.designSystem;
+    const palette = ds.colorPalette || ds.colors || {};
+    if (palette.primary)   this.colors['--blue']   = palette.primary;
+    if (palette.secondary) this.colors['--cyan']   = palette.secondary;
+    if (palette.accent)    this.colors['--purple']  = palette.accent;
+    if (palette.highlight) this.colors['--pink']    = palette.highlight;
+    if (palette.background) this.colors['--bg']     = palette.background;
+    if (palette.text)      this.colors['--text']    = palette.text;
+    if (palette.textDim)   this.colors['--text-dim'] = palette.textDim;
+  }
+
+  // ── Select components ─────────────────────────────────────
+
+  selectComponents() {
+    console.log('\n[2/6] Selecting components...');
+    const btype = (this.contextDna.businessType || 'default').toLowerCase();
+    const extras = BUSINESS_COMPONENTS[btype] || BUSINESS_COMPONENTS.default;
+    const set = new Set([...ALWAYS_ON, ...extras]);
+    this.activeComponents = [...set];
+    console.log(`  Business type: ${btype}`);
+    console.log(`  Active components (${this.activeComponents.length}): ${this.activeComponents.join(', ')}`);
+  }
+
+  // ── Convenience accessors into context-dna ────────────────
+
+  get dna() { return this.contextDna; }
+  get brief() { return this.creativeBrief; }
+
+  _txt(field, fallback = '') {
+    // Try context DNA → creative brief → fallback
+    return this.dna[field] || this.brief[field] || fallback;
+  }
+
+  _arr(field, fallback = []) {
+    const v = this.dna[field] || this.brief[field];
+    return Array.isArray(v) ? v : fallback;
+  }
+
+  // ── Build the page ────────────────────────────────────────
+
+  buildPage() {
+    console.log('\n[3/6] Building page sections...');
+    this.resolveColors();
+
+    // Derive content
+    const businessName = this._txt('businessName', 'Business');
+    const tagline      = this._txt('tagline', this._txt('headline', 'Transform Your Business'));
+    const subtitle     = this._txt('subtitle', this._txt('subheadline', 'Premium solutions for modern professionals'));
+    const ctaText      = this._txt('ctaPrimary', this._txt('cta', 'Get Started'));
+    const ctaUrl       = this._txt('ctaUrl', '#pricing');
+    const ctaSecondary = this._txt('ctaSecondary', 'Learn More');
+    const ctaSecondaryUrl = this._txt('ctaSecondaryUrl', '#method');
+    const description  = this._txt('description', this._txt('metaDescription', subtitle));
+    const benefits     = this._arr('benefits', this._arr('features', ['Premium Quality', 'Expert Support', 'Proven Results']));
+    const stats        = this._arr('stats', [
+      { value: '1,000+', label: 'Clients Served' },
+      { value: '98%', label: 'Satisfaction Rate' },
+      { value: '5/5', label: 'Average Rating' },
+      { value: '24/7', label: 'Support' }
+    ]);
+    const features = this._arr('features', this._arr('benefits', []));
+    const testimonials = this._arr('testimonials', [
+      { name: 'John S.', role: 'CEO', text: 'Absolutely transformed our business. The results speak for themselves.' },
+      { name: 'Maria L.', role: 'Director', text: 'Professional, efficient, and truly premium. Highly recommended.' },
+      { name: 'Carlos R.', role: 'Founder', text: 'The best investment we made this year. Outstanding service.' }
+    ]);
+    const pricingPlans = this._arr('pricingPlans', this._arr('pricing', []));
+    const flipWords    = this._arr('flipWords', this._arr('keywords', ['Professional', 'Premium', 'Powerful', 'Proven']));
+    const footerText   = this._txt('footerText', `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`);
+    const navLinks     = this._arr('navLinks', [
+      { label: 'Method', href: '#method' },
+      { label: 'Results', href: '#stats' },
+      { label: 'Pricing', href: '#pricing' },
+      { label: 'Testimonials', href: '#testimonials' }
+    ]);
+    const socialProof = this._txt('socialProof', '');
+    const language    = this._txt('language', 'en');
+    const ogImage     = this._txt('ogImage', '');
+
+    // ── Assemble sections ──────────────────────────────────
+
+    // -- HERO SECTION --
+    const flipWordsHtml = this._has('aceternity-flip-words') ? `
+              <span class="flip-words-wrapper">
+                <span class="flip-words-inner">
+                  <span class="flip-word">${flipWords[0] || 'Professional'}</span>
+                  <span class="flip-word">${flipWords[1] || 'Premium'}</span>
+                  <span class="flip-word">${flipWords[2] || 'Powerful'}</span>
+                  <span class="flip-word">${flipWords[3] || 'Proven'}</span>
+                  <span class="flip-word">${flipWords[0] || 'Professional'}</span>
+                </span>
+              </span>` : '';
+
+    const heroHtml = `
+    <!-- HERO -->
+    <section id="hero" class="section hero-section">
+      ${this._has('aceternity-meteors') ? '<div class="meteors-container"><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div></div>' : ''}
+      <div class="container hero-content">
+        ${socialProof ? `<div class="hero-badge gsap-reveal"><span class="hero-badge-dot"></span>${this._escHtml(socialProof)}</div>` : ''}
+        <h1 class="hero-title gsap-reveal">
+          ${this._escHtml(tagline)}${flipWordsHtml ? `<br>${flipWordsHtml}` : ''}
+        </h1>
+        <p class="hero-subtitle gsap-reveal">${this._escHtml(subtitle)}</p>
+        <div class="hero-buttons gsap-reveal">
+          <a href="${ctaUrl}" class="magnetic-area">
+            <span class="glass-btn glass-btn-primary">
+              ${this._escHtml(ctaText)}
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+            </span>
+          </a>
+          <a href="${ctaSecondaryUrl}" class="magnetic-area">
+            <span class="glass-btn glass-btn-secondary">
+              ${this._escHtml(ctaSecondary)}
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>`;
+
+    // -- WAVE DIVIDER HELPER --
+    let waveIdx = 0;
+    const waveDivider = () => {
+      waveIdx++;
+      return `
+    <div class="wave-divider">
+      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="waveGrad${waveIdx}" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:rgba(59,130,246,0.1)"/>
+            <stop offset="50%" style="stop-color:rgba(139,92,246,0.08)"/>
+            <stop offset="100%" style="stop-color:rgba(34,211,238,0.1)"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#waveGrad${waveIdx})">
+          <animate attributeName="d"
+            values="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z;M0,50 C360,10 720,70 1080,30 C1260,10 1380,50 1440,40 L1440,80 L0,80 Z;M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z"
+            dur="8s" repeatCount="indefinite"/>
+        </path>
+      </svg>
+    </div>`;
+    };
+
+    // -- STATS / TRUST SECTION --
+    const statsArr = stats.length >= 4 ? stats : [...stats, ...Array(4 - stats.length).fill({ value: '-', label: '-' })];
+    const statsHtml = `
+    <!-- STATS -->
+    <section id="stats" class="section">
+      <div class="container">
+        <div class="section-header gsap-reveal">
+          <span class="section-label">Results</span>
+          <h2 class="section-title"><span class="gradient-text">Proven Track Record</span></h2>
+          <p class="section-desc">${this._escHtml(this._txt('statsDescription', 'Numbers that demonstrate our commitment to excellence'))}</p>
+        </div>
+        <div class="stats-grid">
+          ${statsArr.slice(0, 4).map((s, i) => `
+          <div class="stat-card gsap-reveal">
+            <div class="stat-shimmer"></div>
+            <div class="stat-number" data-count="${this._escAttr(String(s.value || s.number || '0').replace(/[^0-9.]/g, ''))}" data-prefix="${this._escAttr(String(s.value || s.number || '').replace(/[0-9.,]+.*/, ''))}" data-suffix="${this._escAttr(String(s.value || s.number || '').replace(/.*?[0-9.,]+/, ''))}">${this._escHtml(String(s.value || s.number || '0'))}</div>
+            <div class="stat-label">${this._escHtml(s.label || s.description || '')}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </section>`;
+
+    // -- FEATURES / METHOD SECTION --
+    const featureIcons = ['&#9889;', '&#9881;', '&#127919;', '&#128640;', '&#128161;', '&#128171;', '&#9733;', '&#128296;'];
+    const featureColors = [
+      { bg: 'rgba(59,130,246,0.15)', border: 'rgba(59,130,246,0.2)', tagBg: 'rgba(59,130,246,0.15)', tagColor: 'var(--blue)' },
+      { bg: 'rgba(34,211,238,0.15)', border: 'rgba(34,211,238,0.2)', tagBg: 'rgba(34,211,238,0.15)', tagColor: 'var(--cyan)' },
+      { bg: 'rgba(139,92,246,0.15)', border: 'rgba(139,92,246,0.2)', tagBg: 'rgba(139,92,246,0.15)', tagColor: 'var(--purple)' },
+      { bg: 'rgba(236,72,153,0.15)', border: 'rgba(236,72,153,0.2)', tagBg: 'rgba(236,72,153,0.15)', tagColor: 'var(--pink)' },
+      { bg: 'rgba(34,197,94,0.15)',  border: 'rgba(34,197,94,0.2)',  tagBg: 'rgba(34,197,94,0.15)',  tagColor: '#22c55e' },
+      { bg: 'rgba(249,115,22,0.15)', border: 'rgba(249,115,22,0.2)', tagBg: 'rgba(249,115,22,0.15)', tagColor: '#f97316' },
+    ];
+
+    const featureItems = features.length > 0 ? features : benefits.map((b, i) => {
+      if (typeof b === 'string') return { title: b, description: '', tag: `Step ${i + 1}` };
+      return b;
+    });
+
+    const methodHtml = featureItems.length > 0 ? `
+    <!-- METHOD / FEATURES -->
+    <section id="method" class="section">
+      <div class="container">
+        <div class="section-header gsap-reveal">
+          <span class="section-label">Method</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('featuresTitle', this._txt('methodTitle', 'How It Works')))}</span></h2>
+          <p class="section-desc">${this._escHtml(this._txt('featuresSubtitle', this._txt('methodSubtitle', 'Our proven approach delivers consistent results')))}</p>
+        </div>
+        <div class="method-grid">
+          ${featureItems.slice(0, 6).map((f, i) => {
+            const c = featureColors[i % featureColors.length];
+            const title = typeof f === 'string' ? f : (f.title || f.name || f);
+            const desc  = typeof f === 'string' ? '' : (f.description || f.text || '');
+            const tag   = typeof f === 'string' ? `Step ${i + 1}` : (f.tag || f.label || `Step ${i + 1}`);
+            return `
+          <div class="card-3d-wrapper">
+            <div class="card-3d">
+              <div class="card-3d-glow"></div>
+              <div class="card-3d-icon" style="background:${c.bg}; border:1px solid ${c.border};">${featureIcons[i % featureIcons.length]}</div>
+              <h3>${this._escHtml(String(title))}</h3>
+              <p>${this._escHtml(String(desc))}</p>
+              <span class="card-3d-tag" style="background:${c.tagBg}; color:${c.tagColor};">${this._escHtml(String(tag))}</span>
+            </div>
+          </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>` : '';
+
+    // -- TESTIMONIALS SECTION --
+    const testimonialsHtml = testimonials.length > 0 ? `
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="section">
+      ${this._has('aceternity-glowing-stars') ? '<div class="stars-container" id="testimonialsStars"></div>' : ''}
+      <div class="container">
+        <div class="section-header gsap-reveal">
+          <span class="section-label">Testimonials</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('testimonialsTitle', 'What Our Clients Say'))}</span></h2>
+        </div>
+        <div class="testimonials-grid">
+          ${testimonials.slice(0, 3).map((t, i) => `
+          <div class="moving-border-card testimonial-card-outer gsap-reveal">
+            <div class="moving-border"></div>
+            <div class="testimonial-card">
+              <div class="testimonial-stars">${'&#9733;'.repeat(5)}</div>
+              <p class="testimonial-text">"${this._escHtml(t.text || t.content || t.quote || '')}"</p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">${(t.name || 'A')[0].toUpperCase()}</div>
+                <div>
+                  <div class="testimonial-name">${this._escHtml(t.name || t.author || 'Anonymous')}</div>
+                  <div class="testimonial-role">${this._escHtml(t.role || t.title || t.position || '')}</div>
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </section>` : '';
+
+    // -- PRICING SECTION --
+    const hasPricing = pricingPlans.length >= 2;
+    const defaultPlans = [
+      { name: 'Starter', desc: 'For beginners', price: '97', features: ['Core access', 'Email support', 'Basic resources'], cta: 'Get Started' },
+      { name: 'Professional', desc: 'Most popular', price: '197', features: ['Everything in Starter', 'Priority support', 'Premium resources', 'Live sessions'], cta: 'Choose Pro', featured: true },
+      { name: 'VIP', desc: 'Complete access', price: '397', features: ['Everything in Pro', '1-on-1 mentoring', 'Lifetime access', 'Exclusive community', 'Certificates'], cta: 'Go VIP' }
+    ];
+    const plans = hasPricing ? pricingPlans : (this._has('fintech-pricing-cards') ? defaultPlans : []);
+    const currency = this._txt('currency', this._txt('currencySymbol', 'R$'));
+    const period   = this._txt('pricingPeriod', '/mo');
+    const securityText = this._txt('securityText', 'Secure payment');
+
+    const pricingHtml = plans.length >= 2 ? `
+    <!-- PRICING -->
+    <section id="pricing" class="section">
+      <div class="container">
+        <div class="section-header gsap-reveal">
+          <span class="section-label">Pricing</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('pricingTitle', 'Choose Your Plan'))}</span></h2>
+          <p class="section-desc">${this._escHtml(this._txt('pricingSubtitle', 'Invest in your future with the plan that fits your goals'))}</p>
+        </div>
+        <div class="pricing-grid">
+          ${plans.slice(0, 3).map((p, i) => {
+            const isFeatured = p.featured || (plans.length >= 3 && i === 1);
+            const feats = Array.isArray(p.features) ? p.features : [];
+            return `
+          <div class="pricing-card${isFeatured ? ' featured' : ''} gsap-reveal">
+            ${isFeatured ? '<div class="moving-border"></div>' : ''}
+            ${isFeatured ? `<div class="pricing-badge">${this._escHtml(p.badge || 'Most Popular')}</div>` : ''}
+            <div class="pricing-name">${this._escHtml(p.name || p.title || `Plan ${i + 1}`)}</div>
+            <div class="pricing-desc">${this._escHtml(p.desc || p.description || '')}</div>
+            <div class="pricing-price">
+              <span class="pricing-currency">${this._escHtml(currency)}</span>
+              <span class="pricing-amount">${this._escHtml(String(p.price || p.amount || '0'))}</span>
+              <span class="pricing-period">${this._escHtml(period)}</span>
+            </div>
+            <ul class="pricing-features">
+              ${feats.map(f => `<li><span class="check">&#10003;</span> ${this._escHtml(typeof f === 'string' ? f : (f.text || f.name || ''))}</li>`).join('\n              ')}
+            </ul>
+            <button class="pricing-btn ${isFeatured ? 'pricing-btn-primary' : 'pricing-btn-outline'}">${this._escHtml(p.cta || p.ctaText || 'Select')}</button>
+            <div class="pricing-security">&#128274; ${this._escHtml(securityText)}</div>
+          </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>` : '';
+
+    // -- CTA SECTION --
+    const ctaHtml = `
+    <!-- CTA -->
+    <section id="cta" class="section cta-section">
+      <div class="container cta-content">
+        <h2 class="section-title gsap-reveal"><span class="gradient-text">${this._escHtml(this._txt('ctaTitle', this._txt('finalCta', 'Ready to Get Started?')))}</span></h2>
+        <p class="section-desc gsap-reveal">${this._escHtml(this._txt('ctaSubtitle', this._txt('ctaDescription', "Don't wait. Take the first step today.")))}</p>
+        <div class="hero-buttons gsap-reveal">
+          <a href="${ctaUrl}" class="magnetic-area">
+            <span class="glass-btn glass-btn-primary">
+              ${this._escHtml(ctaText)}
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>`;
+
+    // -- NAV --
+    const navHtml = `
+    <!-- NAV -->
+    <nav class="nav-glass" id="navbar">
+      <div class="container nav-inner">
+        <a href="#" class="nav-logo"><span class="gradient-text">${this._escHtml(businessName)}</span></a>
+        <div class="nav-links" id="navLinks">
+          ${navLinks.map(l => `<a href="${l.href || '#'}" class="nav-link">${this._escHtml(l.label || l.text || '')}</a>`).join('\n          ')}
+        </div>
+        <a href="${ctaUrl}" class="glass-btn glass-btn-primary nav-cta">${this._escHtml(ctaText)}</a>
+        <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>`;
+
+    // -- FOOTER --
+    const footerHtml = `
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <span class="gradient-text footer-logo">${this._escHtml(businessName)}</span>
+          <p class="footer-desc">${this._escHtml(description.substring(0, 160))}</p>
+        </div>
+        <div class="footer-links">
+          ${navLinks.map(l => `<a href="${l.href || '#'}">${this._escHtml(l.label || l.text || '')}</a>`).join('\n          ')}
+        </div>
+        <div class="footer-bottom">
+          <p>${footerText}</p>
+        </div>
+      </div>
+    </footer>`;
+
+    // ── Assemble full HTML ──────────────────────────────────
+
+    const fullHtml = this._renderFullPage({
+      language,
+      businessName,
+      description,
+      ogImage,
+      navHtml,
+      heroHtml,
+      statsHtml,
+      methodHtml,
+      testimonialsHtml,
+      pricingHtml,
+      ctaHtml,
+      footerHtml,
+      waveDivider
+    });
+
+    return fullHtml;
+  }
+
+  // ── Has component check ───────────────────────────────────
+
+  _has(id) {
+    return this.activeComponents.includes(id);
+  }
+
+  // ── HTML escaping helpers ─────────────────────────────────
+
+  _escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  _escAttr(str) {
+    return this._escHtml(str);
+  }
+
+  // ── Full Page Renderer ────────────────────────────────────
+
+  _renderFullPage({ language, businessName, description, ogImage, navHtml, heroHtml, statsHtml, methodHtml, testimonialsHtml, pricingHtml, ctaHtml, footerHtml, waveDivider }) {
+
+    const c = this.colors;
+
+    return `<!DOCTYPE html>
+<html lang="${language}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Business — Premium Landing Page</title>
-  <meta name="description" content="Premium solutions for modern professionals">
-  <meta property="og:title" content="Business">
-  <meta property="og:description" content="Premium solutions for modern professionals">
+  <title>${this._escHtml(businessName)} — ${this._escHtml(this._txt('tagline', 'Premium Landing Page'))}</title>
+  <meta name="description" content="${this._escAttr(description)}">
+  <meta property="og:title" content="${this._escAttr(businessName)}">
+  <meta property="og:description" content="${this._escAttr(description)}">
   <meta property="og:type" content="website">
-  
+  ${ogImage ? `<meta property="og:image" content="${this._escAttr(ogImage)}">` : ''}
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,20 +538,20 @@
        CSS VARIABLES
     ═══════════════════════════════════════════════════════ */
     :root {
-      --bg: #0a0a0f;
-      --bg-card: #12121a;
-      --bg-card-hover: #1a1a2e;
-      --blue: #3b82f6;
-      --cyan: #22d3ee;
-      --purple: #8b5cf6;
-      --pink: #ec4899;
-      --text: #e2e8f0;
-      --text-dim: #94a3b8;
-      --text-bright: #f8fafc;
-      --border: rgba(255,255,255,0.06);
-      --glow-blue: 0 0 30px rgba(59,130,246,0.3);
-      --glow-cyan: 0 0 30px rgba(34,211,238,0.3);
-      --glow-purple: 0 0 30px rgba(139,92,246,0.3);
+      --bg: ${c['--bg']};
+      --bg-card: ${c['--bg-card']};
+      --bg-card-hover: ${c['--bg-card-hover']};
+      --blue: ${c['--blue']};
+      --cyan: ${c['--cyan']};
+      --purple: ${c['--purple']};
+      --pink: ${c['--pink']};
+      --text: ${c['--text']};
+      --text-dim: ${c['--text-dim']};
+      --text-bright: ${c['--text-bright']};
+      --border: ${c['--border']};
+      --glow-blue: ${c['--glow-blue']};
+      --glow-cyan: ${c['--glow-cyan']};
+      --glow-purple: ${c['--glow-purple']};
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -568,383 +1088,23 @@
   <!-- Floating Particles Container -->
   <div id="floating-particles"></div>
 
-  
-    <!-- NAV -->
-    <nav class="nav-glass" id="navbar">
-      <div class="container nav-inner">
-        <a href="#" class="nav-logo"><span class="gradient-text">Business</span></a>
-        <div class="nav-links" id="navLinks">
-          <a href="#method" class="nav-link">Method</a>
-          <a href="#stats" class="nav-link">Results</a>
-          <a href="#pricing" class="nav-link">Pricing</a>
-          <a href="#testimonials" class="nav-link">Testimonials</a>
-        </div>
-        <a href="#pricing" class="glass-btn glass-btn-primary nav-cta">Get Started</a>
-        <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </nav>
-  
-    <!-- HERO -->
-    <section id="hero" class="section hero-section">
-      <div class="meteors-container"><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div></div>
-      <div class="container hero-content">
-        
-        <h1 class="hero-title gsap-reveal">
-          Transform Your Business<br>
-              <span class="flip-words-wrapper">
-                <span class="flip-words-inner">
-                  <span class="flip-word">Professional</span>
-                  <span class="flip-word">Premium</span>
-                  <span class="flip-word">Powerful</span>
-                  <span class="flip-word">Proven</span>
-                  <span class="flip-word">Professional</span>
-                </span>
-              </span>
-        </h1>
-        <p class="hero-subtitle gsap-reveal">Premium solutions for modern professionals</p>
-        <div class="hero-buttons gsap-reveal">
-          <a href="#pricing" class="magnetic-area">
-            <span class="glass-btn glass-btn-primary">
-              Get Started
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-            </span>
-          </a>
-          <a href="#method" class="magnetic-area">
-            <span class="glass-btn glass-btn-secondary">
-              Learn More
-            </span>
-          </a>
-        </div>
-      </div>
-    </section>
-  
-    <div class="wave-divider">
-      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:rgba(59,130,246,0.1)"/>
-            <stop offset="50%" style="stop-color:rgba(139,92,246,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(34,211,238,0.1)"/>
-          </linearGradient>
-        </defs>
-        <path fill="url(#waveGrad1)">
-          <animate attributeName="d"
-            values="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z;M0,50 C360,10 720,70 1080,30 C1260,10 1380,50 1440,40 L1440,80 L0,80 Z;M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z"
-            dur="8s" repeatCount="indefinite"/>
-        </path>
-      </svg>
-    </div>
-  
-    <!-- STATS -->
-    <section id="stats" class="section">
-      <div class="container">
-        <div class="section-header gsap-reveal">
-          <span class="section-label">Results</span>
-          <h2 class="section-title"><span class="gradient-text">Proven Track Record</span></h2>
-          <p class="section-desc">Numbers that demonstrate our commitment to excellence</p>
-        </div>
-        <div class="stats-grid">
-          
-          <div class="stat-card gsap-reveal">
-            <div class="stat-shimmer"></div>
-            <div class="stat-number" data-count="1000" data-prefix="" data-suffix="+">1,000+</div>
-            <div class="stat-label">Clients Served</div>
-          </div>
-          <div class="stat-card gsap-reveal">
-            <div class="stat-shimmer"></div>
-            <div class="stat-number" data-count="98" data-prefix="" data-suffix="%">98%</div>
-            <div class="stat-label">Satisfaction Rate</div>
-          </div>
-          <div class="stat-card gsap-reveal">
-            <div class="stat-shimmer"></div>
-            <div class="stat-number" data-count="55" data-prefix="" data-suffix="/5">5/5</div>
-            <div class="stat-label">Average Rating</div>
-          </div>
-          <div class="stat-card gsap-reveal">
-            <div class="stat-shimmer"></div>
-            <div class="stat-number" data-count="247" data-prefix="" data-suffix="/7">24/7</div>
-            <div class="stat-label">Support</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  
-    <div class="wave-divider">
-      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="waveGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:rgba(59,130,246,0.1)"/>
-            <stop offset="50%" style="stop-color:rgba(139,92,246,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(34,211,238,0.1)"/>
-          </linearGradient>
-        </defs>
-        <path fill="url(#waveGrad2)">
-          <animate attributeName="d"
-            values="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z;M0,50 C360,10 720,70 1080,30 C1260,10 1380,50 1440,40 L1440,80 L0,80 Z;M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z"
-            dur="8s" repeatCount="indefinite"/>
-        </path>
-      </svg>
-    </div>
-  
-    <!-- METHOD / FEATURES -->
-    <section id="method" class="section">
-      <div class="container">
-        <div class="section-header gsap-reveal">
-          <span class="section-label">Method</span>
-          <h2 class="section-title"><span class="gradient-text">How It Works</span></h2>
-          <p class="section-desc">Our proven approach delivers consistent results</p>
-        </div>
-        <div class="method-grid">
-          
-          <div class="card-3d-wrapper">
-            <div class="card-3d">
-              <div class="card-3d-glow"></div>
-              <div class="card-3d-icon" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.2);">&#9889;</div>
-              <h3>Premium Quality</h3>
-              <p></p>
-              <span class="card-3d-tag" style="background:rgba(59,130,246,0.15); color:var(--blue);">Step 1</span>
-            </div>
-          </div>
-          <div class="card-3d-wrapper">
-            <div class="card-3d">
-              <div class="card-3d-glow"></div>
-              <div class="card-3d-icon" style="background:rgba(34,211,238,0.15); border:1px solid rgba(34,211,238,0.2);">&#9881;</div>
-              <h3>Expert Support</h3>
-              <p></p>
-              <span class="card-3d-tag" style="background:rgba(34,211,238,0.15); color:var(--cyan);">Step 2</span>
-            </div>
-          </div>
-          <div class="card-3d-wrapper">
-            <div class="card-3d">
-              <div class="card-3d-glow"></div>
-              <div class="card-3d-icon" style="background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.2);">&#127919;</div>
-              <h3>Proven Results</h3>
-              <p></p>
-              <span class="card-3d-tag" style="background:rgba(139,92,246,0.15); color:var(--purple);">Step 3</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  
-    <div class="wave-divider">
-      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="waveGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:rgba(59,130,246,0.1)"/>
-            <stop offset="50%" style="stop-color:rgba(139,92,246,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(34,211,238,0.1)"/>
-          </linearGradient>
-        </defs>
-        <path fill="url(#waveGrad3)">
-          <animate attributeName="d"
-            values="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z;M0,50 C360,10 720,70 1080,30 C1260,10 1380,50 1440,40 L1440,80 L0,80 Z;M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z"
-            dur="8s" repeatCount="indefinite"/>
-        </path>
-      </svg>
-    </div>
-  
-    <!-- TESTIMONIALS -->
-    <section id="testimonials" class="section">
-      <div class="stars-container" id="testimonialsStars"></div>
-      <div class="container">
-        <div class="section-header gsap-reveal">
-          <span class="section-label">Testimonials</span>
-          <h2 class="section-title"><span class="gradient-text">What Our Clients Say</span></h2>
-        </div>
-        <div class="testimonials-grid">
-          
-          <div class="moving-border-card testimonial-card-outer gsap-reveal">
-            <div class="moving-border"></div>
-            <div class="testimonial-card">
-              <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-              <p class="testimonial-text">"Absolutely transformed our business. The results speak for themselves."</p>
-              <div class="testimonial-author">
-                <div class="testimonial-avatar">J</div>
-                <div>
-                  <div class="testimonial-name">John S.</div>
-                  <div class="testimonial-role">CEO</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="moving-border-card testimonial-card-outer gsap-reveal">
-            <div class="moving-border"></div>
-            <div class="testimonial-card">
-              <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-              <p class="testimonial-text">"Professional, efficient, and truly premium. Highly recommended."</p>
-              <div class="testimonial-author">
-                <div class="testimonial-avatar">M</div>
-                <div>
-                  <div class="testimonial-name">Maria L.</div>
-                  <div class="testimonial-role">Director</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="moving-border-card testimonial-card-outer gsap-reveal">
-            <div class="moving-border"></div>
-            <div class="testimonial-card">
-              <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-              <p class="testimonial-text">"The best investment we made this year. Outstanding service."</p>
-              <div class="testimonial-author">
-                <div class="testimonial-avatar">C</div>
-                <div>
-                  <div class="testimonial-name">Carlos R.</div>
-                  <div class="testimonial-role">Founder</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  
-    <div class="wave-divider">
-      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="waveGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:rgba(59,130,246,0.1)"/>
-            <stop offset="50%" style="stop-color:rgba(139,92,246,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(34,211,238,0.1)"/>
-          </linearGradient>
-        </defs>
-        <path fill="url(#waveGrad4)">
-          <animate attributeName="d"
-            values="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z;M0,50 C360,10 720,70 1080,30 C1260,10 1380,50 1440,40 L1440,80 L0,80 Z;M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z"
-            dur="8s" repeatCount="indefinite"/>
-        </path>
-      </svg>
-    </div>
-  
-    <!-- PRICING -->
-    <section id="pricing" class="section">
-      <div class="container">
-        <div class="section-header gsap-reveal">
-          <span class="section-label">Pricing</span>
-          <h2 class="section-title"><span class="gradient-text">Choose Your Plan</span></h2>
-          <p class="section-desc">Invest in your future with the plan that fits your goals</p>
-        </div>
-        <div class="pricing-grid">
-          
-          <div class="pricing-card gsap-reveal">
-            
-            
-            <div class="pricing-name">Starter</div>
-            <div class="pricing-desc">For beginners</div>
-            <div class="pricing-price">
-              <span class="pricing-currency">R$</span>
-              <span class="pricing-amount">97</span>
-              <span class="pricing-period">/mo</span>
-            </div>
-            <ul class="pricing-features">
-              <li><span class="check">&#10003;</span> Core access</li>
-              <li><span class="check">&#10003;</span> Email support</li>
-              <li><span class="check">&#10003;</span> Basic resources</li>
-            </ul>
-            <button class="pricing-btn pricing-btn-outline">Get Started</button>
-            <div class="pricing-security">&#128274; Secure payment</div>
-          </div>
-          <div class="pricing-card featured gsap-reveal">
-            <div class="moving-border"></div>
-            <div class="pricing-badge">Most Popular</div>
-            <div class="pricing-name">Professional</div>
-            <div class="pricing-desc">Most popular</div>
-            <div class="pricing-price">
-              <span class="pricing-currency">R$</span>
-              <span class="pricing-amount">197</span>
-              <span class="pricing-period">/mo</span>
-            </div>
-            <ul class="pricing-features">
-              <li><span class="check">&#10003;</span> Everything in Starter</li>
-              <li><span class="check">&#10003;</span> Priority support</li>
-              <li><span class="check">&#10003;</span> Premium resources</li>
-              <li><span class="check">&#10003;</span> Live sessions</li>
-            </ul>
-            <button class="pricing-btn pricing-btn-primary">Choose Pro</button>
-            <div class="pricing-security">&#128274; Secure payment</div>
-          </div>
-          <div class="pricing-card gsap-reveal">
-            
-            
-            <div class="pricing-name">VIP</div>
-            <div class="pricing-desc">Complete access</div>
-            <div class="pricing-price">
-              <span class="pricing-currency">R$</span>
-              <span class="pricing-amount">397</span>
-              <span class="pricing-period">/mo</span>
-            </div>
-            <ul class="pricing-features">
-              <li><span class="check">&#10003;</span> Everything in Pro</li>
-              <li><span class="check">&#10003;</span> 1-on-1 mentoring</li>
-              <li><span class="check">&#10003;</span> Lifetime access</li>
-              <li><span class="check">&#10003;</span> Exclusive community</li>
-              <li><span class="check">&#10003;</span> Certificates</li>
-            </ul>
-            <button class="pricing-btn pricing-btn-outline">Go VIP</button>
-            <div class="pricing-security">&#128274; Secure payment</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  
-    <div class="wave-divider">
-      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="waveGrad5" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:rgba(59,130,246,0.1)"/>
-            <stop offset="50%" style="stop-color:rgba(139,92,246,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(34,211,238,0.1)"/>
-          </linearGradient>
-        </defs>
-        <path fill="url(#waveGrad5)">
-          <animate attributeName="d"
-            values="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z;M0,50 C360,10 720,70 1080,30 C1260,10 1380,50 1440,40 L1440,80 L0,80 Z;M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z"
-            dur="8s" repeatCount="indefinite"/>
-        </path>
-      </svg>
-    </div>
-  
-    <!-- CTA -->
-    <section id="cta" class="section cta-section">
-      <div class="container cta-content">
-        <h2 class="section-title gsap-reveal"><span class="gradient-text">Ready to Get Started?</span></h2>
-        <p class="section-desc gsap-reveal">Don't wait. Take the first step today.</p>
-        <div class="hero-buttons gsap-reveal">
-          <a href="#pricing" class="magnetic-area">
-            <span class="glass-btn glass-btn-primary">
-              Get Started
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-            </span>
-          </a>
-        </div>
-      </div>
-    </section>
-  
-    <!-- FOOTER -->
-    <footer class="footer">
-      <div class="container footer-inner">
-        <div class="footer-brand">
-          <span class="gradient-text footer-logo">Business</span>
-          <p class="footer-desc">Premium solutions for modern professionals</p>
-        </div>
-        <div class="footer-links">
-          <a href="#method">Method</a>
-          <a href="#stats">Results</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#testimonials">Testimonials</a>
-        </div>
-        <div class="footer-bottom">
-          <p>© 2026 Business. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+  ${navHtml}
+  ${heroHtml}
+  ${waveDivider()}
+  ${statsHtml}
+  ${waveDivider()}
+  ${methodHtml}
+  ${waveDivider()}
+  ${testimonialsHtml}
+  ${waveDivider()}
+  ${pricingHtml}
+  ${waveDivider()}
+  ${ctaHtml}
+  ${footerHtml}
 
   <!-- GSAP CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"><\/script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"><\/script>
 
   <!-- INLINE JS -->
   <script>
@@ -1113,7 +1273,7 @@
         }
       });
     });
-  </script>
+  <\/script>
 
   <!-- THREE.JS MODULE -->
   <script type="module">
@@ -1189,6 +1349,81 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
       });
     }
-  </script>
+  <\/script>
 </body>
-</html>
+</html>`;
+  }
+
+  // ── Write outputs ─────────────────────────────────────────
+
+  writeOutputs(html) {
+    console.log('\n[5/6] Writing output files...');
+
+    const projectName = this.dna.projectName || this.dna.businessName || path.basename(this.projectDir);
+    const slug = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    // Output 1: projects/<slug>/output/index.html
+    const projOutputDir = path.join(this.projectDir, 'output');
+    const projOutputFile = path.join(projOutputDir, 'index.html');
+    this._writeFile(projOutputFile, html);
+
+    // Output 2: generated-site/index.html (relative to workspace root)
+    const workspaceRoot = path.resolve(this.projectDir, '..');
+    const genSiteDir = path.join(workspaceRoot, 'generated-site');
+    const genSiteFile = path.join(genSiteDir, 'index.html');
+    this._writeFile(genSiteFile, html);
+
+    return { projOutputFile, genSiteFile };
+  }
+
+  // ── Main run ──────────────────────────────────────────────
+
+  run() {
+    console.log('╔══════════════════════════════════════════════════╗');
+    console.log('║      NEXUS Code Agent v2 — Page Generator       ║');
+    console.log('╚══════════════════════════════════════════════════╝');
+
+    const startTime = Date.now();
+
+    try {
+      this.loadInputs();
+      this.selectComponents();
+      const html = this.buildPage();
+
+      console.log(`\n[4/6] Page built — ${html.length} chars (${(Buffer.byteLength(html) / 1024).toFixed(1)} KB)`);
+
+      const paths = this.writeOutputs(html);
+
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+      console.log(`\n[6/6] Done in ${elapsed}s`);
+      console.log('╔══════════════════════════════════════════════════╗');
+      console.log('║  Generation complete!                            ║');
+      console.log(`║  Output: ${paths.projOutputFile}`);
+      console.log(`║  Mirror: ${paths.genSiteFile}`);
+      console.log('╚══════════════════════════════════════════════════╝\n');
+
+      return paths;
+
+    } catch (err) {
+      console.error(`\n[ERROR] ${err.message}`);
+      console.error(err.stack);
+      process.exit(1);
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Export & CLI
+// ─────────────────────────────────────────────────────────────
+
+module.exports = NexusCodeAgentV2;
+
+if (require.main === module) {
+  const args = process.argv.slice(2);
+  if (args.length < 1) {
+    console.error('Usage: node nexus-code-agent-v2.js <path-to-context-dna.json>');
+    process.exit(1);
+  }
+  const agent = new NexusCodeAgentV2(args[0]);
+  agent.run();
+}

@@ -1,0 +1,382 @@
+{
+  "meta": {
+    "name": "Nexus Premium Components Library",
+    "version": "1.0.0",
+    "source": "escola-trader-financiado-v5.html",
+    "extracted": "2026-03-12",
+    "total_components": 16
+  },
+  "global_dependencies": {
+    "fonts": ["https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"],
+    "css_variables": {
+      "--bg": "#0a0a0f",
+      "--bg-card": "#12121a",
+      "--bg-card-hover": "#1a1a2e",
+      "--blue": "#3b82f6",
+      "--cyan": "#22d3ee",
+      "--purple": "#8b5cf6",
+      "--pink": "#ec4899",
+      "--text": "#e2e8f0",
+      "--text-dim": "#94a3b8",
+      "--text-bright": "#f8fafc",
+      "--border": "rgba(255,255,255,0.06)",
+      "--glow-blue": "0 0 30px rgba(59,130,246,0.3)",
+      "--glow-cyan": "0 0 30px rgba(34,211,238,0.3)",
+      "--glow-purple": "0 0 30px rgba(139,92,246,0.3)"
+    }
+  },
+  "components": [
+    {
+      "id": "threejs-wireframe",
+      "name": "Three.js Wireframe Background",
+      "category": "3D/Background",
+      "description": "Fixed fullscreen canvas with a rotating wireframe TorusKnot and 2500 floating particles. Mouse parallax on camera and mesh.",
+      "dependencies": [
+        "https://unpkg.com/three@0.158.0/build/three.module.js"
+      ],
+      "css": "#three-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }",
+      "html_template": "<canvas id=\"three-canvas\"></canvas>",
+      "js_init": "import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';\nconst canvas = document.getElementById('three-canvas');\nconst renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });\nrenderer.setSize(window.innerWidth, window.innerHeight);\nrenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));\nconst scene = new THREE.Scene();\nconst camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);\ncamera.position.z = 5;\nconst torusGeo = new THREE.TorusKnotGeometry({{torusRadius}}, {{torusTube}}, 128, 32);\nconst torusMat = new THREE.MeshBasicMaterial({ color: {{wireframeColor}}, wireframe: true, transparent: true, opacity: {{wireframeOpacity}} });\nconst torusKnot = new THREE.Mesh(torusGeo, torusMat);\nscene.add(torusKnot);\nconst particleCount = {{particleCount}};\nconst positions = new Float32Array(particleCount * 3);\nconst colors = new Float32Array(particleCount * 3);\nconst c1 = new THREE.Color({{particleColor1}});\nconst c2 = new THREE.Color({{particleColor2}});\nfor (let i = 0; i < particleCount; i++) {\n  positions[i*3] = (Math.random()-0.5)*20;\n  positions[i*3+1] = (Math.random()-0.5)*20;\n  positions[i*3+2] = (Math.random()-0.5)*20;\n  const t = Math.random();\n  const col = c1.clone().lerp(c2, t);\n  colors[i*3] = col.r; colors[i*3+1] = col.g; colors[i*3+2] = col.b;\n}\nconst particleGeo = new THREE.BufferGeometry();\nparticleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));\nparticleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));\nconst particleMat = new THREE.PointsMaterial({ size: 0.025, vertexColors: true, transparent: true, opacity: 0.6, sizeAttenuation: true });\nconst particles = new THREE.Points(particleGeo, particleMat);\nscene.add(particles);\nlet mouseX = 0, mouseY = 0;\ndocument.addEventListener('mousemove', (e) => { mouseX = (e.clientX/window.innerWidth - 0.5)*2; mouseY = (e.clientY/window.innerHeight - 0.5)*2; });\nfunction animate() {\n  requestAnimationFrame(animate);\n  torusKnot.rotation.x += 0.003; torusKnot.rotation.y += 0.005;\n  torusKnot.position.x += (mouseX*0.5 - torusKnot.position.x)*0.02;\n  torusKnot.position.y += (-mouseY*0.5 - torusKnot.position.y)*0.02;\n  particles.rotation.y += 0.0003; particles.rotation.x += 0.0001;\n  camera.position.x += (mouseX*0.3 - camera.position.x)*0.01;\n  camera.position.y += (-mouseY*0.3 - camera.position.y)*0.01;\n  camera.lookAt(scene.position);\n  renderer.render(scene, camera);\n}\nanimate();\nwindow.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });",
+      "js_type": "module",
+      "variables": {
+        "torusRadius": { "default": 1.2, "type": "number", "description": "TorusKnot main radius" },
+        "torusTube": { "default": 0.35, "type": "number", "description": "TorusKnot tube radius" },
+        "wireframeColor": { "default": "0x3b82f6", "type": "hex", "description": "Wireframe color" },
+        "wireframeOpacity": { "default": 0.12, "type": "number", "description": "Wireframe opacity 0-1" },
+        "particleCount": { "default": 2500, "type": "number", "description": "Number of particles" },
+        "particleColor1": { "default": "0x3b82f6", "type": "hex", "description": "Particle gradient start" },
+        "particleColor2": { "default": "0x22d3ee", "type": "hex", "description": "Particle gradient end" }
+      }
+    },
+    {
+      "id": "gsap-scroll-reveal",
+      "name": "GSAP ScrollTrigger Animations",
+      "category": "Animation/Scroll",
+      "description": "Scroll-triggered reveal animations for sections, cards, and elements with stagger support.",
+      "dependencies": [
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"
+      ],
+      "css": "",
+      "html_template": "<div class=\"gsap-reveal\" data-gsap-stagger=\"{{stagger}}\">{{content}}</div>",
+      "js_init": "gsap.registerPlugin(ScrollTrigger);\ngsap.utils.toArray('{{selector}}').forEach(el => {\n  gsap.from(el, {\n    scrollTrigger: { trigger: el, start: '{{triggerStart}}', toggleActions: 'play none none none' },\n    opacity: 0, y: {{yOffset}}, duration: {{duration}}, ease: '{{ease}}'\n  });\n});\n// Stagger variant for grids:\ngsap.from('{{gridItemSelector}}', {\n  scrollTrigger: { trigger: '{{gridContainer}}', start: '{{triggerStart}}' },\n  opacity: 0, y: {{yOffset}}, stagger: {{stagger}}, duration: {{duration}}, ease: '{{ease}}'\n});",
+      "js_type": "inline",
+      "variables": {
+        "selector": { "default": ".section-label, .section-title, .section-desc", "type": "string", "description": "CSS selector for elements to animate" },
+        "gridItemSelector": { "default": ".card-3d-wrapper", "type": "string", "description": "CSS selector for staggered grid items" },
+        "gridContainer": { "default": ".method-grid", "type": "string", "description": "CSS selector for grid container (trigger)" },
+        "triggerStart": { "default": "top 85%", "type": "string", "description": "ScrollTrigger start position" },
+        "yOffset": { "default": 30, "type": "number", "description": "Vertical offset in px" },
+        "duration": { "default": 0.8, "type": "number", "description": "Animation duration in seconds" },
+        "stagger": { "default": 0.15, "type": "number", "description": "Stagger delay between items" },
+        "ease": { "default": "power2.out", "type": "string", "description": "GSAP easing function" }
+      }
+    },
+    {
+      "id": "gsap-typewriter",
+      "name": "GSAP TextPlugin Typewriter",
+      "category": "Animation/Text",
+      "description": "Typewriter text effect using GSAP TextPlugin. Useful for hero subtitles or dynamic text reveals.",
+      "dependencies": [
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"
+      ],
+      "css": ".typewriter-cursor { display: inline-block; width: 2px; height: 1em; background: {{cursorColor}}; margin-left: 2px; animation: blink 1s step-end infinite; }\n@keyframes blink { 50% { opacity: 0; } }",
+      "html_template": "<span id=\"{{elementId}}\"></span><span class=\"typewriter-cursor\"></span>",
+      "js_init": "gsap.registerPlugin(TextPlugin);\ngsap.to('#{{elementId}}', {\n  duration: {{duration}},\n  text: { value: '{{text}}', delimiter: '' },\n  ease: 'none',\n  delay: {{delay}}\n});",
+      "js_type": "inline",
+      "variables": {
+        "elementId": { "default": "typewriter-text", "type": "string", "description": "Target element ID" },
+        "text": { "default": "Your text here...", "type": "string", "description": "Text to type" },
+        "duration": { "default": 2, "type": "number", "description": "Typing duration in seconds" },
+        "delay": { "default": 1, "type": "number", "description": "Delay before typing starts" },
+        "cursorColor": { "default": "var(--blue)", "type": "string", "description": "Cursor color" }
+      }
+    },
+    {
+      "id": "gsap-counter",
+      "name": "GSAP Counter Animation",
+      "category": "Animation/Number",
+      "description": "Animated number counter triggered on scroll. Supports prefix, suffix, decimals, and locale formatting.",
+      "dependencies": [
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"
+      ],
+      "css": ".stat-card { background: linear-gradient(135deg, rgba(18,18,26,0.9), rgba(26,26,46,0.6)); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(10px); }\n.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, {{accentColor1}}, {{accentColor2}}); }\n.stat-number { font-size: 42px; font-weight: 900; color: {{numberColor}}; line-height: 1; margin-bottom: 8px; letter-spacing: -1px; }\n.stat-label { font-size: 14px; color: var(--text-dim); font-weight: 500; }\n.stat-shimmer { position: absolute; inset: 0; background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.03) 50%, transparent 75%); background-size: 200% 100%; animation: shimmer 2s infinite; }\n@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }",
+      "html_template": "<div class=\"stat-card\">\n  <div class=\"stat-shimmer\"></div>\n  <div class=\"stat-number\" data-count=\"{{targetValue}}\" data-prefix=\"{{prefix}}\" data-suffix=\"{{suffix}}\">0</div>\n  <div class=\"stat-label\">{{label}}</div>\n</div>",
+      "js_init": "gsap.registerPlugin(ScrollTrigger);\nlet triggered = false;\nScrollTrigger.create({\n  trigger: '{{triggerSelector}}',\n  start: 'top 80%',\n  onEnter: () => {\n    if (triggered) return;\n    triggered = true;\n    document.querySelectorAll('.stat-shimmer').forEach(s => gsap.to(s, { opacity: 0, duration: 0.5, onComplete: () => s.remove() }));\n    document.querySelectorAll('.stat-number').forEach(el => {\n      const raw = el.dataset.count;\n      const prefix = el.dataset.prefix || '';\n      const suffix = el.dataset.suffix || '';\n      const target = parseFloat(raw);\n      const isDecimal = raw.includes('.');\n      gsap.to({ val: 0 }, {\n        val: target, duration: {{duration}}, ease: 'power2.out',\n        onUpdate: function() {\n          const v = this.targets()[0].val;\n          el.textContent = prefix + (isDecimal ? v.toFixed(1) : Math.floor(v).toLocaleString('{{locale}}')) + suffix;\n        }\n      });\n    });\n  }\n});",
+      "js_type": "inline",
+      "variables": {
+        "triggerSelector": { "default": "#stats", "type": "string", "description": "Scroll trigger selector" },
+        "targetValue": { "default": "1047", "type": "string", "description": "Target number (string, supports decimals)" },
+        "prefix": { "default": "", "type": "string", "description": "Prefix before number (e.g. R$)" },
+        "suffix": { "default": "+", "type": "string", "description": "Suffix after number (e.g. +, %, /5)" },
+        "label": { "default": "Traders Aprovados", "type": "string", "description": "Label below the number" },
+        "duration": { "default": 2, "type": "number", "description": "Count duration in seconds" },
+        "locale": { "default": "pt-BR", "type": "string", "description": "Number locale formatting" },
+        "numberColor": { "default": "var(--blue)", "type": "string", "description": "Number text color" },
+        "accentColor1": { "default": "var(--blue)", "type": "string", "description": "Top border gradient start" },
+        "accentColor2": { "default": "var(--cyan)", "type": "string", "description": "Top border gradient end" }
+      }
+    },
+    {
+      "id": "aceternity-3d-cards",
+      "name": "Aceternity 3D Tilt Cards",
+      "category": "Cards/Interactive",
+      "description": "Cards with perspective 3D tilt on mouse move, cursor-following glow effect, and smooth reset on mouse leave.",
+      "dependencies": [],
+      "css": ".card-3d-wrapper { perspective: 1000px; cursor: pointer; }\n.card-3d { background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(10,10,15,0.95)); border: 1px solid var(--border); border-radius: 20px; padding: 40px 32px; position: relative; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; transform-style: preserve-3d; will-change: transform; }\n.card-3d:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(59,130,246,0.1); }\n.card-3d-glow { position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, {{glowColor}}, transparent 70%); pointer-events: none; opacity: 0; transition: opacity 0.3s; transform: translate(-50%, -50%); }\n.card-3d:hover .card-3d-glow { opacity: 1; }\n.card-3d-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 24px; position: relative; z-index: 1; }\n.card-3d h3 { font-size: 22px; font-weight: 700; color: var(--text-bright); margin-bottom: 12px; position: relative; z-index: 1; }\n.card-3d p { font-size: 15px; color: var(--text-dim); line-height: 1.7; position: relative; z-index: 1; }\n.card-3d-tag { display: inline-block; margin-top: 20px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; position: relative; z-index: 1; }",
+      "html_template": "<div class=\"card-3d-wrapper\">\n  <div class=\"card-3d\">\n    <div class=\"card-3d-glow\"></div>\n    <div class=\"card-3d-icon\" style=\"background: {{iconBg}}; border: 1px solid {{iconBorder}};\">{{icon}}</div>\n    <h3>{{title}}</h3>\n    <p>{{description}}</p>\n    <span class=\"card-3d-tag\" style=\"background: {{tagBg}}; color: {{tagColor}};\">{{tag}}</span>\n  </div>\n</div>",
+      "js_init": "document.querySelectorAll('.card-3d-wrapper').forEach(wrapper => {\n  const card = wrapper.querySelector('.card-3d');\n  const glow = card.querySelector('.card-3d-glow');\n  wrapper.addEventListener('mousemove', (e) => {\n    const rect = wrapper.getBoundingClientRect();\n    const x = e.clientX - rect.left;\n    const y = e.clientY - rect.top;\n    const centerX = rect.width / 2;\n    const centerY = rect.height / 2;\n    const rotateX = (y - centerY) / centerY * -{{maxTilt}};\n    const rotateY = (x - centerX) / centerX * {{maxTilt}};\n    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;\n    if (glow) { glow.style.left = x + 'px'; glow.style.top = y + 'px'; }\n  });\n  wrapper.addEventListener('mouseleave', () => {\n    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';\n  });\n});",
+      "js_type": "inline",
+      "variables": {
+        "maxTilt": { "default": 10, "type": "number", "description": "Max tilt angle in degrees" },
+        "glowColor": { "default": "rgba(59,130,246,0.15)", "type": "string", "description": "Cursor glow color" },
+        "icon": { "default": "&#9881;", "type": "string", "description": "Icon HTML entity or emoji" },
+        "iconBg": { "default": "rgba(59,130,246,0.15)", "type": "string", "description": "Icon background color" },
+        "iconBorder": { "default": "rgba(59,130,246,0.2)", "type": "string", "description": "Icon border color" },
+        "title": { "default": "Card Title", "type": "string", "description": "Card heading" },
+        "description": { "default": "Card description text.", "type": "string", "description": "Card body text" },
+        "tag": { "default": "Tag Label", "type": "string", "description": "Tag text" },
+        "tagBg": { "default": "rgba(59,130,246,0.15)", "type": "string", "description": "Tag background" },
+        "tagColor": { "default": "var(--blue)", "type": "string", "description": "Tag text color" }
+      }
+    },
+    {
+      "id": "aceternity-flip-words",
+      "name": "Aceternity Flip Words",
+      "category": "Animation/Text",
+      "description": "Vertically flipping word rotator using pure CSS animation. Words cycle through with a sliding transition.",
+      "dependencies": [],
+      "css": ".flip-words-wrapper { display: inline-block; position: relative; height: 1.1em; overflow: hidden; vertical-align: bottom; }\n.flip-words-inner { display: flex; flex-direction: column; animation: flipWord {{cycleDuration}} infinite; }\n.flip-word { height: 1.1em; display: flex; align-items: center; background: linear-gradient(135deg, {{gradientStart}}, {{gradientEnd}}); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }\n@keyframes flipWord { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-1.1em); } 50%, 70% { transform: translateY(-2.2em); } 75%, 95% { transform: translateY(-3.3em); } 100% { transform: translateY(-4.4em); } }",
+      "html_template": "<span class=\"flip-words-wrapper\">\n  <span class=\"flip-words-inner\">\n    <span class=\"flip-word\">{{word1}}</span>\n    <span class=\"flip-word\">{{word2}}</span>\n    <span class=\"flip-word\">{{word3}}</span>\n    <span class=\"flip-word\">{{word4}}</span>\n    <span class=\"flip-word\">{{word1}}</span>\n  </span>\n</span>",
+      "js_init": "",
+      "js_type": "none",
+      "variables": {
+        "word1": { "default": "Financiado", "type": "string", "description": "First word (also repeated at end for seamless loop)" },
+        "word2": { "default": "Consistente", "type": "string", "description": "Second word" },
+        "word3": { "default": "Lucrativo", "type": "string", "description": "Third word" },
+        "word4": { "default": "Profissional", "type": "string", "description": "Fourth word" },
+        "cycleDuration": { "default": "10s", "type": "string", "description": "Full cycle duration" },
+        "gradientStart": { "default": "var(--blue)", "type": "string", "description": "Text gradient start color" },
+        "gradientEnd": { "default": "var(--cyan)", "type": "string", "description": "Text gradient end color" }
+      }
+    },
+    {
+      "id": "aceternity-meteors",
+      "name": "Aceternity Meteors",
+      "category": "Effects/Background",
+      "description": "Animated meteor shower with glowing head and gradient trail. Randomized positions, speeds, and delays.",
+      "dependencies": [],
+      "css": ".meteors-container { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }\n.meteor { position: absolute; width: 150px; height: 1px; background: linear-gradient(90deg, {{trailColor}}, transparent); transform: rotate(-45deg); animation: meteorFall linear infinite; opacity: 0; filter: drop-shadow(0 0 4px {{glowColor}}); }\n.meteor::before { content: ''; position: absolute; left: 0; top: -1px; width: 4px; height: 3px; border-radius: 50%; background: white; box-shadow: 0 0 8px 2px {{glowColor}}; }\n@keyframes meteorFall { 0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 0; } 5% { opacity: 1; } 30% { opacity: 1; } 100% { transform: translateX(-800px) translateY(800px) rotate(-45deg); opacity: 0; } }\n.meteor:nth-child(1) { top: 5%; left: 70%; animation-duration: 3s; animation-delay: 0s; width: 120px; }\n.meteor:nth-child(2) { top: 15%; left: 85%; animation-duration: 2.5s; animation-delay: 0.8s; width: 100px; }\n.meteor:nth-child(3) { top: 8%; left: 50%; animation-duration: 3.5s; animation-delay: 1.5s; width: 180px; }\n.meteor:nth-child(4) { top: 25%; left: 90%; animation-duration: 2.8s; animation-delay: 2.2s; width: 90px; }\n.meteor:nth-child(5) { top: 2%; left: 60%; animation-duration: 4s; animation-delay: 0.4s; width: 140px; }\n.meteor:nth-child(6) { top: 20%; left: 75%; animation-duration: 3.2s; animation-delay: 3s; width: 110px; }\n.meteor:nth-child(7) { top: 12%; left: 95%; animation-duration: 2.6s; animation-delay: 1.8s; width: 160px; }\n.meteor:nth-child(8) { top: 30%; left: 80%; animation-duration: 3.8s; animation-delay: 2.6s; width: 130px; }\n.meteor:nth-child(9) { top: -2%; left: 45%; animation-duration: 3.3s; animation-delay: 4s; width: 100px; }\n.meteor:nth-child(10) { top: 18%; left: 55%; animation-duration: 2.9s; animation-delay: 3.4s; width: 170px; }",
+      "html_template": "<div class=\"meteors-container\">\n  <div class=\"meteor\"></div><div class=\"meteor\"></div><div class=\"meteor\"></div>\n  <div class=\"meteor\"></div><div class=\"meteor\"></div><div class=\"meteor\"></div>\n  <div class=\"meteor\"></div><div class=\"meteor\"></div><div class=\"meteor\"></div>\n  <div class=\"meteor\"></div>\n</div>",
+      "js_init": "",
+      "js_type": "none",
+      "variables": {
+        "meteorCount": { "default": 10, "type": "number", "description": "Number of meteor elements" },
+        "trailColor": { "default": "rgba(255,255,255,0.6)", "type": "string", "description": "Meteor trail color" },
+        "glowColor": { "default": "rgba(255,255,255,0.4)", "type": "string", "description": "Meteor head glow color" }
+      }
+    },
+    {
+      "id": "aceternity-glowing-stars",
+      "name": "Aceternity Glowing Stars",
+      "category": "Effects/Background",
+      "description": "Randomly positioned glowing star dots with pulsating opacity and color-shifting box-shadow. Generated via JS.",
+      "dependencies": [],
+      "css": ".stars-container { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }\n.star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: starGlow 3s ease-in-out infinite; }\n@keyframes starGlow { 0%, 100% { opacity: 0.2; box-shadow: 0 0 4px {{glowColor1}}; } 50% { opacity: 0.8; box-shadow: 0 0 12px {{glowColor2}}; } }",
+      "html_template": "<div class=\"stars-container\" id=\"{{containerId}}\"></div>",
+      "js_init": "(function() {\n  const container = document.getElementById('{{containerId}}');\n  for (let i = 0; i < {{starCount}}; i++) {\n    const star = document.createElement('div');\n    star.className = 'star';\n    star.style.cssText = `left:${Math.random()*100}%; top:${Math.random()*100}%; animation-delay:${Math.random()*3}s; animation-duration:${Math.random()*2+2}s; width:${Math.random()*2+1}px; height:${Math.random()*2+1}px;`;\n    container.appendChild(star);\n  }\n})();",
+      "js_type": "inline",
+      "variables": {
+        "containerId": { "default": "starsContainer", "type": "string", "description": "Container element ID" },
+        "starCount": { "default": 80, "type": "number", "description": "Number of stars" },
+        "glowColor1": { "default": "rgba(139,92,246,0.3)", "type": "string", "description": "Star glow color at dim state" },
+        "glowColor2": { "default": "rgba(34,211,238,0.6)", "type": "string", "description": "Star glow color at bright state" }
+      }
+    },
+    {
+      "id": "aceternity-moving-borders",
+      "name": "Aceternity Moving Borders",
+      "category": "Effects/Border",
+      "description": "Rotating conic-gradient border animation around a card. Uses an inner pseudo-element mask to create the border illusion.",
+      "dependencies": [],
+      "css": ".moving-border-card { position: relative; border-radius: 20px; overflow: hidden; }\n.moving-border { position: absolute; inset: -2px; border-radius: 22px; z-index: -1; overflow: hidden; }\n.moving-border::before { content: ''; position: absolute; inset: -50%; background: conic-gradient(from 0deg, transparent, {{color1}}, {{color2}}, {{color3}}, transparent); animation: rotateBorder {{speed}} linear infinite; }\n@keyframes rotateBorder { to { transform: rotate(360deg); } }\n.moving-border::after { content: ''; position: absolute; inset: {{borderWidth}}; background: linear-gradient(145deg, rgba(18,18,26,0.98), rgba(10,10,15,0.98)); border-radius: 20px; }",
+      "html_template": "<div class=\"moving-border-card\">\n  <div class=\"moving-border\"></div>\n  {{content}}\n</div>",
+      "js_init": "",
+      "js_type": "none",
+      "variables": {
+        "color1": { "default": "var(--blue)", "type": "string", "description": "First gradient color" },
+        "color2": { "default": "var(--cyan)", "type": "string", "description": "Second gradient color" },
+        "color3": { "default": "var(--purple)", "type": "string", "description": "Third gradient color" },
+        "speed": { "default": "4s", "type": "string", "description": "Rotation speed" },
+        "borderWidth": { "default": "2px", "type": "string", "description": "Border thickness" }
+      }
+    },
+    {
+      "id": "magicui-border-beam",
+      "name": "Magic UI Border Beam",
+      "category": "Effects/Border",
+      "description": "Animated conic-gradient border beam using CSS @property for smooth angle interpolation. Falls back to moving-border for unsupported browsers.",
+      "dependencies": [],
+      "css": "@property --border-beam-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }\n.border-beam-card { position: relative; border-radius: 20px; }\n.border-beam-card::after { content: ''; position: absolute; inset: -2px; border-radius: 22px; background: conic-gradient(from var(--border-beam-angle, 0deg), transparent 60%, {{color1}}, {{color2}}, transparent 100%); z-index: -1; animation: borderBeam {{speed}} linear infinite; }\n@keyframes borderBeam { to { --border-beam-angle: 360deg; } }",
+      "html_template": "<div class=\"border-beam-card\">\n  {{content}}\n</div>",
+      "js_init": "",
+      "js_type": "none",
+      "variables": {
+        "color1": { "default": "var(--blue)", "type": "string", "description": "Beam color 1" },
+        "color2": { "default": "var(--cyan)", "type": "string", "description": "Beam color 2" },
+        "speed": { "default": "4s", "type": "string", "description": "Full rotation speed" }
+      }
+    },
+    {
+      "id": "magicui-gradient-text",
+      "name": "Magic UI Gradient Text",
+      "category": "Text/Effect",
+      "description": "Animated multi-color gradient text with shifting background-position for a flowing color effect.",
+      "dependencies": [],
+      "css": ".gradient-text { background: linear-gradient(90deg, {{color1}}, {{color2}}, {{color3}}, {{color4}}, {{color1}}); background-size: 400% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift {{speed}} ease infinite; }\n@keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }",
+      "html_template": "<span class=\"gradient-text\">{{text}}</span>",
+      "js_init": "",
+      "js_type": "none",
+      "variables": {
+        "text": { "default": "gradient text", "type": "string", "description": "Display text" },
+        "color1": { "default": "var(--blue)", "type": "string", "description": "Gradient color 1" },
+        "color2": { "default": "var(--cyan)", "type": "string", "description": "Gradient color 2" },
+        "color3": { "default": "var(--purple)", "type": "string", "description": "Gradient color 3" },
+        "color4": { "default": "var(--pink)", "type": "string", "description": "Gradient color 4" },
+        "speed": { "default": "6s", "type": "string", "description": "Animation cycle speed" }
+      }
+    },
+    {
+      "id": "magicui-floating-particles",
+      "name": "Magic UI Floating Particles",
+      "category": "Effects/Background",
+      "description": "Small colored dots that float upward from bottom to top of viewport with random sizes, positions, and speeds.",
+      "dependencies": [],
+      "css": ".floating-particle { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; animation: particleFloat linear infinite; }\n@keyframes particleFloat { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-100vh) scale(1); opacity: 0; } }",
+      "html_template": "<div id=\"{{containerId}}\"></div>",
+      "js_init": "(function() {\n  const container = document.getElementById('{{containerId}}');\n  const colors = [{{colors}}];\n  for (let i = 0; i < {{count}}; i++) {\n    const p = document.createElement('div');\n    p.className = 'floating-particle';\n    const size = Math.random() * {{maxSize}} + {{minSize}};\n    const color = colors[Math.floor(Math.random() * colors.length)];\n    p.style.cssText = `width:${size}px; height:${size}px; left:${Math.random()*100}%; background:${color}; box-shadow:0 0 ${size*4}px ${color}; animation-duration:${Math.random()*15+10}s; animation-delay:${Math.random()*-20}s;`;\n    container.appendChild(p);\n  }\n})();",
+      "js_type": "inline",
+      "variables": {
+        "containerId": { "default": "floating-particles", "type": "string", "description": "Container element ID" },
+        "count": { "default": 10, "type": "number", "description": "Number of particles" },
+        "minSize": { "default": 2, "type": "number", "description": "Min particle size in px" },
+        "maxSize": { "default": 6, "type": "number", "description": "Additional random max size in px" },
+        "colors": { "default": "'rgba(59,130,246,0.4)','rgba(34,211,238,0.3)','rgba(139,92,246,0.3)','rgba(236,72,153,0.2)'", "type": "string", "description": "Comma-separated color strings for particles" }
+      }
+    },
+    {
+      "id": "magicui-wave-dividers",
+      "name": "Magic UI Wave Dividers",
+      "category": "Layout/Decoration",
+      "description": "Animated SVG wave section dividers with gradient fill and morphing path animation.",
+      "dependencies": [],
+      "css": ".wave-divider { position: relative; z-index: 1; height: {{height}}; overflow: hidden; }\n.wave-divider svg { position: absolute; bottom: 0; width: 100%; height: {{height}}; }",
+      "html_template": "<div class=\"wave-divider\">\n  <svg viewBox=\"0 0 1440 80\" preserveAspectRatio=\"none\">\n    <defs>\n      <linearGradient id=\"{{gradientId}}\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n        <stop offset=\"0%\" style=\"stop-color:{{stopColor1}}\"/>\n        <stop offset=\"50%\" style=\"stop-color:{{stopColor2}}\"/>\n        <stop offset=\"100%\" style=\"stop-color:{{stopColor3}}\"/>\n      </linearGradient>\n    </defs>\n    <path fill=\"url(#{{gradientId}})\">\n      <animate attributeName=\"d\"\n        values=\"M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z;M0,50 C360,10 720,70 1080,30 C1260,10 1380,50 1440,40 L1440,80 L0,80 Z;M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z\"\n        dur=\"{{animDuration}}\" repeatCount=\"indefinite\"/>\n    </path>\n  </svg>\n</div>",
+      "js_init": "",
+      "js_type": "none",
+      "variables": {
+        "gradientId": { "default": "waveGrad", "type": "string", "description": "SVG gradient ID (unique per instance)" },
+        "height": { "default": "80px", "type": "string", "description": "Divider height" },
+        "stopColor1": { "default": "rgba(59,130,246,0.1)", "type": "string", "description": "Gradient stop 1" },
+        "stopColor2": { "default": "rgba(139,92,246,0.08)", "type": "string", "description": "Gradient stop 2" },
+        "stopColor3": { "default": "rgba(34,211,238,0.1)", "type": "string", "description": "Gradient stop 3" },
+        "animDuration": { "default": "8s", "type": "string", "description": "Wave morph animation duration" }
+      }
+    },
+    {
+      "id": "apple-glass-buttons",
+      "name": "Apple Glass Buttons",
+      "category": "UI/Buttons",
+      "description": "Glassmorphism buttons with backdrop-filter blur, gradient backgrounds, shimmer sweep on hover, and optional magnetic cursor attraction.",
+      "dependencies": [],
+      "css": ".glass-btn { position: relative; display: inline-flex; align-items: center; gap: 10px; padding: {{padding}}; border-radius: 50px; font-family: 'Inter', sans-serif; font-size: {{fontSize}}; font-weight: 600; text-decoration: none; cursor: pointer; border: none; overflow: hidden; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }\n.glass-btn-primary { background: linear-gradient(135deg, {{primaryBg1}}, {{primaryBg2}}); color: white; backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px {{primaryShadow}}, inset 0 1px 0 rgba(255,255,255,0.15); }\n.glass-btn-primary:hover { box-shadow: 0 8px 40px {{primaryHoverShadow}}, 0 0 20px {{primaryHoverGlow}}, inset 0 1px 0 rgba(255,255,255,0.2); transform: translateY(-2px); }\n.glass-btn-secondary { background: rgba(255,255,255,0.05); color: var(--text); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border: 1px solid rgba(255,255,255,0.1); }\n.glass-btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }\n.glass-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transition: left 0.5s ease; }\n.glass-btn:hover::after { left: 100%; }\n.magnetic-area { display: inline-block; transition: transform 0.2s ease-out; }",
+      "html_template": "<a href=\"{{href}}\" class=\"magnetic-area\">\n  <span class=\"glass-btn glass-btn-{{variant}}\">\n    {{text}}\n    {{arrowSvg}}\n  </span>\n</a>",
+      "js_init": "document.querySelectorAll('.magnetic-area').forEach(area => {\n  area.addEventListener('mousemove', (e) => {\n    const rect = area.getBoundingClientRect();\n    const x = e.clientX - rect.left - rect.width/2;\n    const y = e.clientY - rect.top - rect.height/2;\n    area.style.transform = `translate(${x*{{magnetStrength}}}px, ${y*{{magnetStrength}}}px)`;\n  });\n  area.addEventListener('mouseleave', () => { area.style.transform = 'translate(0, 0)'; });\n});",
+      "js_type": "inline",
+      "variables": {
+        "variant": { "default": "primary", "type": "string", "description": "Button variant: primary or secondary" },
+        "text": { "default": "Get Started", "type": "string", "description": "Button label" },
+        "href": { "default": "#", "type": "string", "description": "Link URL" },
+        "arrowSvg": { "default": "<svg width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14m-7-7 7 7-7 7\"/></svg>", "type": "string", "description": "Optional arrow icon SVG" },
+        "padding": { "default": "16px 36px", "type": "string", "description": "Button padding" },
+        "fontSize": { "default": "16px", "type": "string", "description": "Font size" },
+        "magnetStrength": { "default": 0.15, "type": "number", "description": "Magnetic cursor attraction strength" },
+        "primaryBg1": { "default": "rgba(59,130,246,0.8)", "type": "string", "description": "Primary gradient start" },
+        "primaryBg2": { "default": "rgba(34,211,238,0.6)", "type": "string", "description": "Primary gradient end" },
+        "primaryShadow": { "default": "rgba(59,130,246,0.3)", "type": "string", "description": "Primary box-shadow color" },
+        "primaryHoverShadow": { "default": "rgba(59,130,246,0.5)", "type": "string", "description": "Primary hover shadow" },
+        "primaryHoverGlow": { "default": "rgba(59,130,246,0.3)", "type": "string", "description": "Primary hover glow" }
+      }
+    },
+    {
+      "id": "fintech-trust-cards",
+      "name": "Fintech Trust/Metrics Cards",
+      "category": "Cards/Stats",
+      "description": "Stat metric cards with top gradient accent bar, shimmer loading state, counter number, and label. Used for social proof trust indicators.",
+      "dependencies": [],
+      "css": ".stats-grid { display: grid; grid-template-columns: repeat({{columns}}, 1fr); gap: 20px; }\n.stat-card { background: linear-gradient(135deg, rgba(18,18,26,0.9), rgba(26,26,46,0.6)); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(10px); }\n.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, {{accentColor1}}, {{accentColor2}}); }\n.stat-number { font-size: {{numberSize}}; font-weight: 900; color: {{numberColor}}; text-shadow: 0 0 40px {{numberGlow}}; line-height: 1; margin-bottom: 8px; letter-spacing: -1px; }\n.stat-label { font-size: 14px; color: var(--text-dim); font-weight: 500; }",
+      "html_template": "<div class=\"stats-grid\">\n  <div class=\"stat-card\">\n    <div class=\"stat-number\">{{value1}}</div>\n    <div class=\"stat-label\">{{label1}}</div>\n  </div>\n  <div class=\"stat-card\">\n    <div class=\"stat-number\">{{value2}}</div>\n    <div class=\"stat-label\">{{label2}}</div>\n  </div>\n  <div class=\"stat-card\">\n    <div class=\"stat-number\">{{value3}}</div>\n    <div class=\"stat-label\">{{label3}}</div>\n  </div>\n  <div class=\"stat-card\">\n    <div class=\"stat-number\">{{value4}}</div>\n    <div class=\"stat-label\">{{label4}}</div>\n  </div>\n</div>",
+      "js_init": "",
+      "js_type": "none",
+      "variables": {
+        "columns": { "default": 4, "type": "number", "description": "Grid columns" },
+        "numberSize": { "default": "42px", "type": "string", "description": "Number font size" },
+        "numberColor": { "default": "var(--blue)", "type": "string", "description": "Number color" },
+        "numberGlow": { "default": "rgba(59,130,246,0.3)", "type": "string", "description": "Number text-shadow glow" },
+        "accentColor1": { "default": "var(--blue)", "type": "string", "description": "Top bar gradient start" },
+        "accentColor2": { "default": "var(--cyan)", "type": "string", "description": "Top bar gradient end" },
+        "value1": { "default": "1,047+", "type": "string", "description": "First metric value" },
+        "label1": { "default": "Traders Approved", "type": "string", "description": "First metric label" },
+        "value2": { "default": "R$2.8M+", "type": "string", "description": "Second metric value" },
+        "label2": { "default": "Profits Withdrawn", "type": "string", "description": "Second metric label" },
+        "value3": { "default": "4.9/5", "type": "string", "description": "Third metric value" },
+        "label3": { "default": "Student Rating", "type": "string", "description": "Third metric label" },
+        "value4": { "default": "87%", "type": "string", "description": "Fourth metric value" },
+        "label4": { "default": "Approval Rate", "type": "string", "description": "Fourth metric label" }
+      }
+    },
+    {
+      "id": "fintech-pricing-cards",
+      "name": "Fintech Pricing Cards",
+      "category": "Cards/Pricing",
+      "description": "Three-tier pricing cards with featured highlight, gradient top bar, feature checklist, CTA buttons, and optional border-beam/moving-border on the featured card.",
+      "dependencies": [],
+      "css": ".pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; }\n.pricing-card { background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(10,10,15,0.95)); border: 1px solid var(--border); border-radius: 20px; padding: 40px 32px; position: relative; overflow: hidden; transition: all 0.3s ease; }\n.pricing-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, {{accentColor1}}, {{accentColor2}}); }\n.pricing-card.featured { transform: scale(1.05); border-color: {{featuredBorderColor}}; z-index: 2; }\n.pricing-card.featured::before { background: linear-gradient(90deg, {{featuredGrad1}}, {{featuredGrad2}}, {{featuredGrad3}}); }\n.pricing-badge { position: absolute; top: -1px; right: 24px; background: linear-gradient(135deg, {{badgeGrad1}}, {{badgeGrad2}}); color: white; font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 0 0 10px 10px; letter-spacing: 0.5px; }\n.pricing-name { font-size: 18px; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }\n.pricing-desc { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }\n.pricing-price { margin-bottom: 32px; }\n.pricing-currency { font-size: 18px; font-weight: 600; color: var(--text-dim); vertical-align: top; }\n.pricing-amount { font-size: 52px; font-weight: 900; color: var(--text-bright); letter-spacing: -2px; line-height: 1; }\n.pricing-period { font-size: 14px; color: var(--text-dim); font-weight: 400; }\n.pricing-features { list-style: none; margin-bottom: 32px; padding: 0; }\n.pricing-features li { display: flex; align-items: center; gap: 10px; padding: 10px 0; font-size: 14px; color: var(--text-dim); border-bottom: 1px solid var(--border); }\n.pricing-features li:last-child { border-bottom: none; }\n.pricing-features .check { color: {{checkColor}}; font-size: 16px; flex-shrink: 0; }\n.pricing-btn { display: block; width: 100%; padding: 14px; border-radius: 50px; text-align: center; font-size: 15px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }\n.pricing-btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }\n.pricing-btn-outline:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); }\n.pricing-btn-primary { background: linear-gradient(135deg, var(--blue), rgba(59,130,246,0.8)); color: white; box-shadow: 0 4px 20px rgba(59,130,246,0.3); }\n.pricing-btn-primary:hover { box-shadow: 0 4px 30px rgba(59,130,246,0.5); transform: translateY(-2px); }\n.pricing-security { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px; font-size: 12px; color: var(--text-dim); }",
+      "html_template": "<div class=\"pricing-grid\">\n  <div class=\"pricing-card\">\n    <div class=\"pricing-name\">{{plan1Name}}</div>\n    <div class=\"pricing-desc\">{{plan1Desc}}</div>\n    <div class=\"pricing-price\">\n      <span class=\"pricing-currency\">{{currency}}</span>\n      <span class=\"pricing-amount\">{{plan1Price}}</span>\n      <span class=\"pricing-period\">{{period}}</span>\n    </div>\n    <ul class=\"pricing-features\">\n      {{plan1Features}}\n    </ul>\n    <button class=\"pricing-btn pricing-btn-outline\">{{plan1Cta}}</button>\n    <div class=\"pricing-security\">&#128274; {{securityText}}</div>\n  </div>\n  <div class=\"pricing-card featured\">\n    <div class=\"moving-border\"></div>\n    <div class=\"pricing-badge\">{{featuredBadge}}</div>\n    <div class=\"pricing-name\">{{plan2Name}}</div>\n    <div class=\"pricing-desc\">{{plan2Desc}}</div>\n    <div class=\"pricing-price\">\n      <span class=\"pricing-currency\">{{currency}}</span>\n      <span class=\"pricing-amount\">{{plan2Price}}</span>\n      <span class=\"pricing-period\">{{period}}</span>\n    </div>\n    <ul class=\"pricing-features\">\n      {{plan2Features}}\n    </ul>\n    <button class=\"pricing-btn pricing-btn-primary\">{{plan2Cta}}</button>\n    <div class=\"pricing-security\">&#128274; {{securityText}}</div>\n  </div>\n  <div class=\"pricing-card\">\n    <div class=\"pricing-name\">{{plan3Name}}</div>\n    <div class=\"pricing-desc\">{{plan3Desc}}</div>\n    <div class=\"pricing-price\">\n      <span class=\"pricing-currency\">{{currency}}</span>\n      <span class=\"pricing-amount\">{{plan3Price}}</span>\n      <span class=\"pricing-period\">{{period}}</span>\n    </div>\n    <ul class=\"pricing-features\">\n      {{plan3Features}}\n    </ul>\n    <button class=\"pricing-btn pricing-btn-outline\">{{plan3Cta}}</button>\n    <div class=\"pricing-security\">&#128274; {{securityText}}</div>\n  </div>\n</div>",
+      "js_init": "",
+      "js_type": "none",
+      "variables": {
+        "currency": { "default": "R$", "type": "string", "description": "Currency symbol" },
+        "period": { "default": "/mes", "type": "string", "description": "Billing period" },
+        "plan1Name": { "default": "Starter", "type": "string" },
+        "plan1Desc": { "default": "For beginners", "type": "string" },
+        "plan1Price": { "default": "197", "type": "string" },
+        "plan1Features": { "default": "<li><span class=\"check\">&#10003;</span> Feature 1</li>", "type": "string", "description": "HTML list items" },
+        "plan1Cta": { "default": "Get Started", "type": "string" },
+        "plan2Name": { "default": "Pro", "type": "string" },
+        "plan2Desc": { "default": "Most popular", "type": "string" },
+        "plan2Price": { "default": "397", "type": "string" },
+        "plan2Features": { "default": "<li><span class=\"check\">&#10003;</span> Everything in Starter</li>", "type": "string" },
+        "plan2Cta": { "default": "Choose Pro", "type": "string" },
+        "plan3Name": { "default": "VIP", "type": "string" },
+        "plan3Desc": { "default": "Full mentorship", "type": "string" },
+        "plan3Price": { "default": "797", "type": "string" },
+        "plan3Features": { "default": "<li><span class=\"check\">&#10003;</span> Everything in Pro</li>", "type": "string" },
+        "plan3Cta": { "default": "Go VIP", "type": "string" },
+        "featuredBadge": { "default": "Most Popular", "type": "string" },
+        "securityText": { "default": "Secure payment", "type": "string" },
+        "checkColor": { "default": "#22c55e", "type": "string", "description": "Checkmark color" },
+        "accentColor1": { "default": "var(--blue)", "type": "string" },
+        "accentColor2": { "default": "var(--cyan)", "type": "string" },
+        "featuredBorderColor": { "default": "rgba(59,130,246,0.3)", "type": "string" },
+        "featuredGrad1": { "default": "var(--blue)", "type": "string" },
+        "featuredGrad2": { "default": "var(--purple)", "type": "string" },
+        "featuredGrad3": { "default": "var(--cyan)", "type": "string" },
+        "badgeGrad1": { "default": "var(--blue)", "type": "string" },
+        "badgeGrad2": { "default": "var(--purple)", "type": "string" }
+      }
+    }
+  ]
+}
