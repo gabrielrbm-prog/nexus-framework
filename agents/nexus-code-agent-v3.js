@@ -1163,7 +1163,7 @@ class NexusCodeAgentV3 {
       -webkit-font-smoothing: antialiased;
     }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-    .section { position: relative; padding: 100px 0; z-index: 1; }
+    .section { position: relative; padding: 80px 0; z-index: 1; }
 
     /* ═══════════════════════════════════════════════════════
        THREE.JS CANVAS
@@ -1434,8 +1434,14 @@ class NexusCodeAgentV3 {
        3D TILT CARDS
     ═══════════════════════════════════════════════════════ */
     .method-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px;
+    }
+    @media (min-width: 769px) {
+      .method-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1100px) {
+      .method-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .card-3d-wrapper { perspective: 1000px; cursor: pointer; }
     .card-3d {
@@ -1513,8 +1519,14 @@ class NexusCodeAgentV3 {
        TESTIMONIALS
     ═══════════════════════════════════════════════════════ */
     .testimonials-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px;
+    }
+    @media (min-width: 769px) {
+      .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1100px) {
+      .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .testimonial-card-outer { z-index: 1; }
     .testimonial-card {
@@ -1542,8 +1554,11 @@ class NexusCodeAgentV3 {
        PRICING
     ═══════════════════════════════════════════════════════ */
     .pricing-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px; align-items: start;
+    }
+    @media (min-width: 900px) {
+      .pricing-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .pricing-card {
       background: var(--card-bg);
