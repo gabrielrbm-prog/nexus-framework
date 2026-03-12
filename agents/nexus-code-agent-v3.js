@@ -101,6 +101,7 @@ class NexusCodeAgentV3 {
     this.contextDna      = {};
     this.designSystem    = {};
     this.creativeBrief   = {};
+    this.contentData     = {};          // all-content.json from Content Agent
     this.library         = [];          // all 721 components
     this.premiumMap      = {};          // id → component (16 originals)
     this.extractedPool   = [];          // 700+ extracted components
@@ -154,19 +155,28 @@ class NexusCodeAgentV3 {
     // Check flat fields first, then nested sections
     if (this.dna[field]) return this.dna[field];
     if (this.brief[field]) return this.brief[field];
-    // Search in common nested sections
+    if (this.contentData[field]) return this.contentData[field];
+    // Search in common nested sections of context-dna
     for (const section of ['project', 'brand', 'content', 'visual', 'audience', 'technical']) {
       if (this.dna[section] && this.dna[section][field]) return this.dna[section][field];
+    }
+    // Search in content data nested sections
+    for (const section of ['sectionContent', 'metaContent', 'headlines', 'ctas']) {
+      if (this.contentData[section] && this.contentData[section][field]) return this.contentData[section][field];
     }
     return fallback;
   }
 
   _arr(field, fallback = []) {
-    let v = this.dna[field] || this.brief[field];
+    let v = this.dna[field] || this.brief[field] || this.contentData[field];
     if (Array.isArray(v)) return v;
-    // Search nested sections
+    // Search nested sections of context-dna
     for (const section of ['project', 'brand', 'content', 'visual', 'audience', 'technical']) {
       if (this.dna[section] && Array.isArray(this.dna[section][field])) return this.dna[section][field];
+    }
+    // Search in content data nested sections
+    for (const section of ['sectionContent', 'metaContent']) {
+      if (this.contentData[section] && Array.isArray(this.contentData[section][field])) return this.contentData[section][field];
     }
     return fallback;
   }
@@ -226,6 +236,26 @@ class NexusCodeAgentV3 {
     this.creativeBrief = this._readJSON(cbPath) || {};
     if (Object.keys(this.creativeBrief).length) {
       console.log('  creative-brief.json loaded');
+    }
+
+    // Load all-content.json from Content Agent (search project dir, then workspace)
+    const contentPaths = [
+      path.join(this.projectDir, 'content', 'all-content.json'),
+      path.join(this.projectDir, 'all-content.json'),
+      path.join(this.projectDir, 'content-assets', 'all-content.json'),
+      path.resolve(this.agentsDir, '../content/all-content.json'),
+      path.resolve(this.agentsDir, '../content-assets/all-content.json')
+    ];
+    for (const cp of contentPaths) {
+      const data = this._readJSON(cp);
+      if (data && Object.keys(data).length > 0) {
+        this.contentData = data;
+        console.log(`  all-content.json loaded from ${path.relative(path.resolve(this.agentsDir, '..'), cp)}`);
+        break;
+      }
+    }
+    if (!Object.keys(this.contentData).length) {
+      console.log('  all-content.json not found — using defaults');
     }
   }
 
@@ -316,6 +346,11 @@ class NexusCodeAgentV3 {
       return '0x' + cssHex.replace('#', '');
     };
 
+    // Content data shortcuts
+    const cd     = this.contentData;
+    const hlData = cd.headlines || {};
+    const hlVars = Array.isArray(hlData.variants) ? hlData.variants : [];
+
     return {
       // ── Three.js wireframe ──
       wireframeColor:      toNumHex(pal.primary || c['--blue']),
@@ -330,11 +365,11 @@ class NexusCodeAgentV3 {
       gradientExtra:       pal.highlight  || c['--pink'],
       gradientDuration:    '6s',
 
-      // ── Flip words ──
-      flipWord1:  this._arr('flipWords', this._arr('keywords', ['Professional', 'Premium', 'Powerful', 'Proven']))[0] || 'Professional',
-      flipWord2:  this._arr('flipWords', this._arr('keywords', ['Professional', 'Premium', 'Powerful', 'Proven']))[1] || 'Premium',
-      flipWord3:  this._arr('flipWords', this._arr('keywords', ['Professional', 'Premium', 'Powerful', 'Proven']))[2] || 'Powerful',
-      flipWord4:  this._arr('flipWords', this._arr('keywords', ['Professional', 'Premium', 'Powerful', 'Proven']))[3] || 'Proven',
+      // ── Flip words (from content headlines variants or context-dna) ──
+      flipWord1:  (hlVars[0] || this._arr('flipWords', this._arr('keywords', ['Profissional', 'Premium', 'Poderoso', 'Comprovado']))[0] || 'Profissional'),
+      flipWord2:  (hlVars[1] || this._arr('flipWords', this._arr('keywords', ['Profissional', 'Premium', 'Poderoso', 'Comprovado']))[1] || 'Premium'),
+      flipWord3:  (hlVars[2] || this._arr('flipWords', this._arr('keywords', ['Profissional', 'Premium', 'Poderoso', 'Comprovado']))[2] || 'Poderoso'),
+      flipWord4:  (hlVars[3] || this._arr('flipWords', this._arr('keywords', ['Profissional', 'Premium', 'Poderoso', 'Comprovado']))[3] || 'Comprovado'),
 
       // ── Meteors ──
       meteorCount:  '10',
@@ -403,13 +438,13 @@ class NexusCodeAgentV3 {
       '--text-bright': c['--text-bright'],
       '--border':      c['--border'],
 
-      // ── Content ──
-      businessName: this._txt('businessName', 'Business'),
-      tagline:      this._txt('tagline', this._txt('headline', 'Transform Your Business')),
-      subtitle:     this._txt('subtitle', this._txt('subheadline', 'Premium solutions for modern professionals')),
-      ctaText:      this._txt('ctaPrimary', this._txt('cta', 'Get Started')),
+      // ── Content (from all-content.json → context-dna → defaults) ──
+      businessName: this._txt('businessName', this._txt('projectName', 'Business')),
+      tagline:      hlData.primary || this._txt('tagline', this._txt('headline', 'Transforme Seu Negócio')),
+      subtitle:     (cd.sectionContent && cd.sectionContent.hero && cd.sectionContent.hero.subheadline) || this._txt('subtitle', this._txt('subheadline', 'Soluções premium para profissionais modernos')),
+      ctaText:      (cd.ctas && cd.ctas.primary) || this._txt('ctaPrimary', this._txt('cta', 'Começar Agora')),
       ctaUrl:       this._txt('ctaUrl', '#pricing'),
-      description:  this._txt('description', this._txt('metaDescription', 'Premium landing page')),
+      description:  (cd.metaContent && cd.metaContent.description) || this._txt('description', this._txt('metaDescription', 'Landing page premium')),
       year:         String(new Date().getFullYear()),
     };
   }
@@ -540,43 +575,92 @@ class NexusCodeAgentV3 {
   buildPage() {
     console.log('\n[5/7] Building page...');
 
-    // ── Derive content ──
-    const businessName    = this._txt('businessName', 'Business');
-    const tagline         = this._txt('tagline',       this._txt('headline',     'Transform Your Business'));
-    const subtitle        = this._txt('subtitle',      this._txt('subheadline',  'Premium solutions for modern professionals'));
-    const ctaText         = this._txt('ctaPrimary',    this._txt('cta',          'Get Started'));
-    const ctaUrl          = this._txt('ctaUrl',        '#pricing');
-    const ctaSecondary    = this._txt('ctaSecondary',  'Learn More');
-    const ctaSecondaryUrl = this._txt('ctaSecondaryUrl', '#method');
-    const description     = this._txt('description',   this._txt('metaDescription', subtitle));
-    const language        = this._txt('language',      'en');
-    const ogImage         = this._txt('ogImage',       '');
-    const socialProof     = this._txt('socialProof',   '');
-    const currency        = this._txt('currency',      this._txt('currencySymbol', 'R$'));
-    const period          = this._txt('pricingPeriod', '/mo');
-    const securityText    = this._txt('securityText',  'Secure payment');
-    const footerText      = this._txt('footerText',    `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`);
+    // ── Derive content from all-content.json → context-dna → creative-brief → defaults ──
+    const cd  = this.contentData;
+    const hl  = cd.headlines || {};
+    const ct  = cd.ctas || {};
+    const sc  = cd.sectionContent || {};
+    const mc  = cd.metaContent || {};
+    const hero = sc.hero || {};
 
-    const benefits     = this._arr('benefits',     this._arr('features',  ['Premium Quality', 'Expert Support', 'Proven Results']));
-    const stats        = this._arr('stats',        [
-      { value: '1,000+', label: 'Clients Served' },
-      { value: '98%',    label: 'Satisfaction Rate' },
-      { value: '5/5',    label: 'Average Rating' },
-      { value: '24/7',   label: 'Support' }
-    ]);
-    const features     = this._arr('features',     this._arr('benefits', []));
-    const testimonials = this._arr('testimonials', [
-      { name: 'John S.',   role: 'CEO',      text: 'Absolutely transformed our business. The results speak for themselves.' },
-      { name: 'Maria L.',  role: 'Director', text: 'Professional, efficient, and truly premium. Highly recommended.' },
-      { name: 'Carlos R.', role: 'Founder',  text: 'The best investment we made this year. Outstanding service.' }
-    ]);
+    const businessName    = this._txt('businessName', this._txt('projectName', 'Business'));
+    const tagline         = hl.primary || this._txt('tagline', this._txt('headline', 'Transform Your Business'));
+    const subtitle        = hero.subheadline || this._txt('subtitle', this._txt('subheadline', 'Premium solutions for modern professionals'));
+    const ctaText         = ct.primary || this._txt('ctaPrimary', this._txt('cta', 'Get Started'));
+    const ctaUrl          = this._txt('ctaUrl', '#pricing');
+    const ctaSecondary    = ct.secondary || this._txt('ctaSecondary', 'Learn More');
+    const ctaSecondaryUrl = this._txt('ctaSecondaryUrl', '#method');
+    const description     = mc.description || this._txt('description', this._txt('metaDescription', subtitle));
+    const pageTitle       = mc.title || '';
+    const language        = this._txt('language', 'pt-BR');
+    const ogImage         = this._txt('ogImage', '');
+    const socialProof     = hero.social_proof || this._txt('socialProof', '');
+    const currency        = this._txt('currency', this._txt('currencySymbol', 'R$'));
+    const period          = this._txt('pricingPeriod', '/mês');
+    const securityText    = this._txt('securityText', 'Pagamento seguro');
+    const footerText      = this._txt('footerText', `© ${new Date().getFullYear()} ${businessName}. Todos os direitos reservados.`);
+
+    // Features: from content agent sections → context-dna → defaults
+    const contentFeatures = Array.isArray(sc.features) ? sc.features : [];
+    const heroBenefits    = Array.isArray(hero.benefits) ? hero.benefits : [];
+    const defaultFeatures = ['Qualidade Premium', 'Suporte Especializado', 'Resultados Comprovados'];
+    const features = contentFeatures.length > 0
+      ? contentFeatures
+      : this._arr('features', this._arr('benefits', defaultFeatures.map(f => ({ title: f, description: '' }))));
+
+    // Benefits for hero badge area
+    const benefits = heroBenefits.length > 0
+      ? heroBenefits
+      : this._arr('benefits', this._arr('features', defaultFeatures));
+
+    // Stats/trust elements from hero or context-dna
+    const heroTrust = Array.isArray(hero.trust_elements) ? hero.trust_elements : [];
+    const defaultStats = [
+      { value: '1.000+', label: 'Clientes Atendidos' },
+      { value: '98%',    label: 'Taxa de Satisfação' },
+      { value: '5/5',    label: 'Avaliação Média' },
+      { value: '24/7',   label: 'Suporte' }
+    ];
+    let stats = this._arr('stats', defaultStats);
+    // If stats came as strings from trust_elements, convert them
+    if (stats.length === 0 && heroTrust.length > 0) {
+      stats = heroTrust.slice(0, 4).map(t => {
+        if (typeof t === 'string') {
+          const numMatch = t.match(/[\d.,]+[+%]?/);
+          return { value: numMatch ? numMatch[0] : '-', label: t.replace(/[\d.,]+[+%]?\s*/, '') };
+        }
+        return t;
+      });
+    }
+
+    // Testimonials from content agent or context-dna
+    const contentTestimonials = Array.isArray(sc.testimonials) ? sc.testimonials : [];
+    const defaultTestimonials = [
+      { name: 'João S.',   role: 'CEO',      text: 'Transformou completamente nosso negócio. Os resultados falam por si.' },
+      { name: 'Maria L.',  role: 'Diretora', text: 'Profissional, eficiente e premium. Altamente recomendado.' },
+      { name: 'Carlos R.', role: 'Fundador', text: 'O melhor investimento que fizemos este ano. Serviço excepcional.' }
+    ];
+    const testimonials = contentTestimonials.length > 0
+      ? contentTestimonials
+      : this._arr('testimonials', defaultTestimonials);
+
+    // Pricing from content agent or context-dna
     const pricingPlans = this._arr('pricingPlans', this._arr('pricing', []));
-    const flipWords    = this._arr('flipWords',    this._arr('keywords', ['Professional', 'Premium', 'Powerful', 'Proven']));
-    const navLinks     = this._arr('navLinks',     [
-      { label: 'Method',       href: '#method'       },
-      { label: 'Results',      href: '#stats'        },
-      { label: 'Pricing',      href: '#pricing'      },
-      { label: 'Testimonials', href: '#testimonials' }
+    const pricingMeta  = (typeof sc.pricing === 'object' && !Array.isArray(sc.pricing)) ? sc.pricing : {};
+
+    // Flip words from headlines variants or keywords
+    const hlVariants = Array.isArray(hl.variants) ? hl.variants : [];
+    const defaultFlip = ['Profissional', 'Premium', 'Poderoso', 'Comprovado'];
+    const flipWords = hlVariants.length > 0
+      ? hlVariants.slice(0, 4)
+      : this._arr('flipWords', this._arr('keywords', defaultFlip));
+
+    // Nav links
+    const navLinks = this._arr('navLinks', [
+      { label: 'Método',        href: '#method'       },
+      { label: 'Resultados',    href: '#stats'        },
+      { label: 'Preços',        href: '#pricing'      },
+      { label: 'Depoimentos',   href: '#testimonials' }
     ]);
 
     // ── Wave divider helper ──
@@ -663,9 +747,9 @@ class NexusCodeAgentV3 {
     <section id="stats" class="section">
       <div class="container">
         <div class="section-header gsap-reveal">
-          <span class="section-label">Results</span>
-          <h2 class="section-title"><span class="gradient-text">Proven Track Record</span></h2>
-          <p class="section-desc">${this._escHtml(this._txt('statsDescription', 'Numbers that demonstrate our commitment to excellence'))}</p>
+          <span class="section-label">Resultados</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('statsTitle', 'Resultados Comprovados'))}</span></h2>
+          <p class="section-desc">${this._escHtml(this._txt('statsDescription', 'Números que demonstram nosso compromisso com a excelência'))}</p>
         </div>
         <div class="stats-grid">
           ${statsArr.slice(0, 4).map((s) => {
@@ -705,9 +789,9 @@ class NexusCodeAgentV3 {
     <section id="method" class="section">
       <div class="container">
         <div class="section-header gsap-reveal">
-          <span class="section-label">Method</span>
-          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('featuresTitle', this._txt('methodTitle', 'How It Works')))}</span></h2>
-          <p class="section-desc">${this._escHtml(this._txt('featuresSubtitle', this._txt('methodSubtitle', 'Our proven approach delivers consistent results')))}</p>
+          <span class="section-label">Método</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('featuresTitle', this._txt('methodTitle', 'Como Funciona')))}</span></h2>
+          <p class="section-desc">${this._escHtml(this._txt('featuresSubtitle', this._txt('methodSubtitle', 'Nossa abordagem comprovada entrega resultados consistentes')))}</p>
         </div>
         <div class="method-grid">
           ${featureItems.slice(0, 6).map((f, i) => {
@@ -737,8 +821,8 @@ class NexusCodeAgentV3 {
       ${this._has('aceternity-glowing-stars') ? '<div class="stars-container" id="testimonialsStars"></div>' : ''}
       <div class="container">
         <div class="section-header gsap-reveal">
-          <span class="section-label">Testimonials</span>
-          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('testimonialsTitle', 'What Our Clients Say'))}</span></h2>
+          <span class="section-label">Depoimentos</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('testimonialsTitle', 'O Que Nossos Clientes Dizem'))}</span></h2>
         </div>
         <div class="testimonials-grid">
           ${testimonials.slice(0, 3).map((t) => `
@@ -763,9 +847,9 @@ class NexusCodeAgentV3 {
     // ── Pricing ──
     const hasPricing = pricingPlans.length >= 2;
     const defaultPlans = [
-      { name: 'Starter',      desc: 'For beginners',   price: '97',  features: ['Core access', 'Email support', 'Basic resources'],                              cta: 'Get Started' },
-      { name: 'Professional', desc: 'Most popular',    price: '197', features: ['Everything in Starter', 'Priority support', 'Premium resources', 'Live sessions'], cta: 'Choose Pro', featured: true },
-      { name: 'VIP',          desc: 'Complete access', price: '397', features: ['Everything in Pro', '1-on-1 mentoring', 'Lifetime access', 'Exclusive community', 'Certificates'], cta: 'Go VIP' }
+      { name: 'Básico',         desc: 'Para iniciantes',   price: '97',  features: ['Acesso ao conteúdo', 'Suporte por email', 'Recursos básicos'],                                          cta: 'Começar' },
+      { name: 'Profissional',   desc: 'Mais popular',     price: '197', features: ['Tudo do Básico', 'Suporte prioritário', 'Recursos premium', 'Sessões ao vivo'], cta: 'Escolher Pro', featured: true },
+      { name: 'VIP',             desc: 'Acesso completo',  price: '397', features: ['Tudo do Pro', 'Mentoria individual', 'Acesso vitalício', 'Comunidade exclusiva', 'Certificados'], cta: 'Quero VIP' }
     ];
     const plans      = hasPricing ? pricingPlans : (this._has('fintech-pricing-cards') ? defaultPlans : []);
 
@@ -774,9 +858,9 @@ class NexusCodeAgentV3 {
     <section id="pricing" class="section">
       <div class="container">
         <div class="section-header gsap-reveal">
-          <span class="section-label">Pricing</span>
-          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('pricingTitle', 'Choose Your Plan'))}</span></h2>
-          <p class="section-desc">${this._escHtml(this._txt('pricingSubtitle', 'Invest in your future with the plan that fits your goals'))}</p>
+          <span class="section-label">Preços</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('pricingTitle', 'Escolha Seu Plano'))}</span></h2>
+          <p class="section-desc">${this._escHtml(this._txt('pricingSubtitle', 'Invista no seu futuro com o plano ideal para seus objetivos'))}</p>
         </div>
         <div class="pricing-grid">
           ${plans.slice(0, 3).map((p, i) => {
@@ -785,7 +869,7 @@ class NexusCodeAgentV3 {
             return `
           <div class="pricing-card${isFeatured ? ' featured' : ''} gsap-reveal">
             ${isFeatured ? '<div class="moving-border"></div>' : ''}
-            ${isFeatured ? `<div class="pricing-badge">${this._escHtml(p.badge || 'Most Popular')}</div>` : ''}
+            ${isFeatured ? `<div class="pricing-badge">${this._escHtml(p.badge || 'Mais Popular')}</div>` : ''}
             <div class="pricing-name">${this._escHtml(p.name || p.title || `Plan ${i + 1}`)}</div>
             <div class="pricing-desc">${this._escHtml(p.desc || p.description || '')}</div>
             <div class="pricing-price">
@@ -809,8 +893,8 @@ class NexusCodeAgentV3 {
     <!-- CTA -->
     <section id="cta" class="section cta-section">
       <div class="container cta-content">
-        <h2 class="section-title gsap-reveal"><span class="gradient-text">${this._escHtml(this._txt('ctaTitle', this._txt('finalCta', 'Ready to Get Started?')))}</span></h2>
-        <p class="section-desc gsap-reveal">${this._escHtml(this._txt('ctaSubtitle', this._txt('ctaDescription', "Don't wait. Take the first step today.")))}</p>
+        <h2 class="section-title gsap-reveal"><span class="gradient-text">${this._escHtml(this._txt('ctaTitle', this._txt('finalCta', 'Pronto Para Começar?')))}</span></h2>
+        <p class="section-desc gsap-reveal">${this._escHtml(this._txt('ctaSubtitle', this._txt('ctaDescription', 'Não espere. Dê o primeiro passo hoje.')))}</p>
         <div class="hero-buttons gsap-reveal">
           <a href="${ctaUrl}" class="magnetic-area">
             <span class="glass-btn glass-btn-primary">
@@ -845,6 +929,7 @@ class NexusCodeAgentV3 {
     return this._renderFullPage({
       language,
       businessName,
+      pageTitle,
       description,
       ogImage,
       navHtml,
@@ -885,7 +970,7 @@ class NexusCodeAgentV3 {
 
   // ─── Render full HTML page ─────────────────────────────────
 
-  _renderFullPage({ language, businessName, description, ogImage,
+  _renderFullPage({ language, businessName, pageTitle, description, ogImage,
                     navHtml, heroHtml, statsHtml, methodHtml,
                     testimonialsHtml, pricingHtml, ctaHtml, footerHtml, waveDivider }) {
 
@@ -928,7 +1013,7 @@ class NexusCodeAgentV3 {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${this._escHtml(businessName)} — ${this._escHtml(this._txt('tagline', 'Premium Landing Page'))}</title>
+  <title>${this._escHtml(pageTitle || (businessName + ' — Premium Landing Page'))}</title>
   <meta name="description" content="${this._escAttr(description)}">
   <meta property="og:title"       content="${this._escAttr(businessName)}">
   <meta property="og:description" content="${this._escAttr(description)}">
