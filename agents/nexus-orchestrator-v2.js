@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const board = require('./nexus-blackboard');
+const NexusBridge = require('./nexus-bridge');
 
 const WORKSPACE = path.join(__dirname, '..');
 const AGENTS_DIR = __dirname;
@@ -158,13 +159,13 @@ class NexusOrchestratorV2 {
           result = await this._runReport(projectName, opts);
           break;
         case 'context':
-          result = await this._runShellAgent('nexus-context.sh', projectName, opts);
+          result = await this._runViaBridge(projectName, 'context');
           break;
         case 'design':
-          result = await this._runShellAgent('nexus-design.sh', projectName, opts);
+          result = await this._runViaBridge(projectName, 'design');
           break;
         case 'content':
-          result = await this._runShellAgent('nexus-content.sh', projectName, opts);
+          result = await this._runViaBridge(projectName, 'content');
           break;
         case 'image':
           result = await this._runShellAgent('nexus-images.sh', projectName, opts);
@@ -173,10 +174,10 @@ class NexusOrchestratorV2 {
           result = await this._runShellAgent('nexus-video.sh', projectName, opts);
           break;
         case 'code':
-          result = await this._runShellAgent('nexus-code.sh', projectName, opts);
+          result = await this._runViaBridge(projectName, 'code');
           break;
         case 'quality':
-          result = await this._runShellAgent('nexus-quality.sh', projectName, opts);
+          result = await this._runViaBridge(projectName, 'quality');
           break;
         case 'deploy':
           result = await this._runDeploy(projectName, opts);
@@ -205,6 +206,16 @@ class NexusOrchestratorV2 {
   }
 
   // ========== AGENT RUNNERS ==========
+
+  async _runViaBridge(projectName, stage) {
+    try {
+      const bridge = new NexusBridge(projectName);
+      const ok = bridge.runAgent(stage);
+      return { success: ok, error: ok ? null : `${stage}: no output collected` };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
 
   async _runDiscovery(projectName, opts) {
     const args = [path.join(AGENTS_DIR, 'nexus-discovery-agent.js')];

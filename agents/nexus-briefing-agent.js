@@ -1122,7 +1122,7 @@ async function main() {
     const questions = agent.generateQuestions(companyProfile);
     console.log(`Setor detectado: ${questions.sector}`);
     console.log(`Total de perguntas: ${questions.total_questions}`);
-    agent.saveQuestions('summit-prop-demo', questions);
+    agent.saveQuestions(projectName, questions);
 
     // Mostrar perguntas
     console.log('');
@@ -1138,7 +1138,7 @@ async function main() {
     console.log('');
     console.log('--- FASE 2: Gerando creative brief ---');
     const brief = agent.generateCreativeBrief(companyProfile, answers);
-    agent.saveCreativeBrief('summit-prop-demo', brief);
+    agent.saveCreativeBrief(projectName, brief);
     console.log(`Completude: ${brief.completeness_score}%`);
     console.log(`Pronto para pipeline: ${brief.ready_for_pipeline ? 'SIM' : 'NAO'}`);
 
@@ -1147,7 +1147,7 @@ async function main() {
     console.log('--- FASE 3: Gerando relatório HTML ---');
     const ReportGenerator = require('./nexus-briefing-report.js');
     const reportGen = new ReportGenerator();
-    const reportPath = reportGen.generate(brief, 'summit-prop-demo');
+    const reportPath = reportGen.generate(brief, projectName);
     console.log(`Relatório salvo em: ${reportPath}`);
 
     console.log('');
@@ -1156,9 +1156,9 @@ async function main() {
     console.log('='.repeat(60));
     console.log('');
     console.log('Arquivos gerados:');
-    console.log(`  projects/summit-prop-demo/briefing-questions.json`);
-    console.log(`  projects/summit-prop-demo/creative-brief.json`);
-    console.log(`  projects/summit-prop-demo/briefing-report.html`);
+    console.log(`  projects/${projectName}/briefing-questions.json`);
+    console.log(`  projects/${projectName}/creative-brief.json`);
+    console.log(`  projects/${projectName}/briefing-report.html`);
     console.log('');
     return;
   }
