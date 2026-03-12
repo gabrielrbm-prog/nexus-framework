@@ -670,7 +670,8 @@ class NexusCodeAgentV3 {
     const footerText      = this._txt('footerText', `© ${new Date().getFullYear()} ${businessName}. Todos os direitos reservados.`);
 
     // Features: from content agent sections → context-dna → defaults
-    const contentFeatures = Array.isArray(sc.features) ? sc.features : [];
+    const contentFeatures = Array.isArray(sc.features) ? sc.features
+      : (sc.features && Array.isArray(sc.features.items) ? sc.features.items : []);
     const heroBenefits    = Array.isArray(hero.benefits) ? hero.benefits : [];
     const defaultFeatures = ['Qualidade Premium', 'Suporte Especializado', 'Resultados Comprovados'];
     const features = contentFeatures.length > 0
@@ -690,7 +691,9 @@ class NexusCodeAgentV3 {
       { value: '5/5',    label: 'Avaliação Média' },
       { value: '24/7',   label: 'Suporte' }
     ];
-    let stats = this._arr('stats', defaultStats);
+    const scStats = Array.isArray(sc.stats) ? sc.stats
+      : (sc.stats && Array.isArray(sc.stats.items)) ? sc.stats.items : [];
+    let stats = scStats.length > 0 ? scStats : this._arr('stats', defaultStats);
     // If stats came as strings from trust_elements, convert them
     if (stats.length === 0 && heroTrust.length > 0) {
       stats = heroTrust.slice(0, 4).map(t => {
@@ -703,7 +706,8 @@ class NexusCodeAgentV3 {
     }
 
     // Testimonials from content agent or context-dna
-    const contentTestimonials = Array.isArray(sc.testimonials) ? sc.testimonials : [];
+    const contentTestimonials = Array.isArray(sc.testimonials) ? sc.testimonials
+      : (sc.testimonials && Array.isArray(sc.testimonials.items) ? sc.testimonials.items : []);
     const defaultTestimonials = [
       { name: 'João S.',   role: 'CEO',      text: 'Transformou completamente nosso negócio. Os resultados falam por si.' },
       { name: 'Maria L.',  role: 'Diretora', text: 'Profissional, eficiente e premium. Altamente recomendado.' },
@@ -714,7 +718,9 @@ class NexusCodeAgentV3 {
       : this._arr('testimonials', defaultTestimonials);
 
     // Pricing from content agent or context-dna
-    const pricingPlans = this._arr('pricingPlans', this._arr('pricing', []));
+    const scPricingPlans = (sc.pricing && Array.isArray(sc.pricing.plans)) ? sc.pricing.plans
+      : (sc.pricing && Array.isArray(sc.pricing.items)) ? sc.pricing.items : [];
+    const pricingPlans = scPricingPlans.length > 0 ? scPricingPlans : this._arr('pricingPlans', this._arr('pricing', []));
     const pricingMeta  = (typeof sc.pricing === 'object' && !Array.isArray(sc.pricing)) ? sc.pricing : {};
 
     // Flip words from headlines variants or keywords
@@ -1266,7 +1272,7 @@ class NexusCodeAgentV3 {
     ═══════════════════════════════════════════════════════ */
     .gradient-text {
       background: linear-gradient(90deg, var(--blue), var(--cyan), var(--purple), var(--pink), var(--blue));
-      background-size: 400% 100%;
+      background-size: 300% 100%;
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text; animation: gradientShift 6s ease infinite;
     }
