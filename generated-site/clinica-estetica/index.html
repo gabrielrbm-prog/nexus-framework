@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Escola de Trading Profissional | Método SMC Completo | ETF Trading School</title>
-  <meta name="description" content="Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida.">
+  <title>Clínica Médica Premium | Atendimento Especializado | Tecnologia de Ponta</title>
+  <meta name="description" content="Atendimento médico personalizado com equipe especializada. Tecnologia de última geração, cuidado humanizado. Sua saúde em primeiro lugar.">
   <meta property="og:title"       content="Business">
-  <meta property="og:description" content="Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida.">
+  <meta property="og:description" content="Atendimento médico personalizado com equipe especializada. Tecnologia de última geração, cuidado humanizado. Sua saúde em primeiro lugar.">
   <meta property="og:type"        content="website">
   
   <meta name="twitter:card" content="summary_large_image">
@@ -16,7 +16,7 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Business",
-    "description": "Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida.",
+    "description": "Atendimento médico personalizado com equipe especializada. Tecnologia de última geração, cuidado humanizado. Sua saúde em primeiro lugar.",
     "publisher": { "@type": "Organization", "name": "Business" }
   }
   </script>
@@ -617,17 +617,17 @@
 .flip-word { height: 1.1em; display: flex; align-items: center; background: linear-gradient(135deg, var(--blue), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 @keyframes flipWord { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-1.1em); } 50%, 70% { transform: translateY(-2.2em); } 75%, 95% { transform: translateY(-3.3em); } 100% { transform: translateY(-4.4em); } }
 
-    /* component: gsap-counter */
-    .stat-card { background: linear-gradient(135deg, rgba(18,18,26,0.9), rgba(26,26,46,0.6)); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
-.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
-.stat-number { font-size: 42px; font-weight: 900; color: var(--blue); line-height: 1; margin-bottom: 8px; letter-spacing: -1px; }
-.stat-label { font-size: 14px; color: var(--text-dim); font-weight: 500; }
-.stat-shimmer { position: absolute; inset: 0; background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.03) 50%, transparent 75%); background-size: 200% 100%; animation: shimmer 2s infinite; }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    /* component: aceternity-glowing-stars */
+    .stars-container { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: starGlow 3s ease-in-out infinite; }
+@keyframes starGlow { 0%, 100% { opacity: 0.2; box-shadow: 0 0 4px rgba(139,92,246,0.3); } 50% { opacity: 0.8; box-shadow: 0 0 12px rgba(34,211,238,0.6); } }
 
-    /* component: gsap-typewriter */
-    .typewriter-cursor { display: inline-block; width: 2px; height: 1em; background: var(--blue); margin-left: 2px; animation: blink 1s step-end infinite; }
-@keyframes blink { 50% { opacity: 0; } }
+    /* component: fintech-trust-cards */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.stat-card { background: linear-gradient(135deg, rgba(18,18,26,0.9), rgba(26,26,46,0.6)); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+.stat-number { font-size: 42px; font-weight: 900; color: var(--blue); text-shadow: 0 0 40px rgba(59,130,246,0.3); line-height: 1; margin-bottom: 8px; letter-spacing: -1px; }
+.stat-label { font-size: 14px; color: var(--text-dim); font-weight: 500; }
 
     /* component: aceternity-3d-cards */
     .card-3d-wrapper { perspective: 1000px; cursor: pointer; }
@@ -640,54 +640,11 @@
 .card-3d p { font-size: 15px; color: var(--text-dim); line-height: 1.7; position: relative; z-index: 1; }
 .card-3d-tag { display: inline-block; margin-top: 20px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; position: relative; z-index: 1; }
 
-    /* component: aceternity-glowing-stars */
-    .stars-container { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: starGlow 3s ease-in-out infinite; }
-@keyframes starGlow { 0%, 100% { opacity: 0.2; box-shadow: 0 0 4px rgba(139,92,246,0.3); } 50% { opacity: 0.8; box-shadow: 0 0 12px rgba(34,211,238,0.6); } }
-
-    /* component: aceternity-moving-borders */
-    .moving-border-card { position: relative; border-radius: 20px; overflow: hidden; }
-.moving-border { position: absolute; inset: -2px; border-radius: 22px; z-index: -1; overflow: hidden; }
-.moving-border::before { content: ''; position: absolute; inset: -50%; background: conic-gradient(from 0deg, transparent, var(--blue), var(--cyan), var(--purple), transparent); animation: rotateBorder 4s linear infinite; }
-@keyframes rotateBorder { to { transform: rotate(360deg); } }
-.moving-border::after { content: ''; position: absolute; inset: 2px; background: linear-gradient(145deg, rgba(18,18,26,0.98), rgba(10,10,15,0.98)); border-radius: 20px; }
-
     /* component: magicui-border-beam */
     @property --border-beam-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 .border-beam-card { position: relative; border-radius: 20px; }
 .border-beam-card::after { content: ''; position: absolute; inset: -2px; border-radius: 22px; background: conic-gradient(from var(--border-beam-angle, 0deg), transparent 60%, var(--blue), var(--cyan), transparent 100%); z-index: -1; animation: borderBeam 4s linear infinite; }
 @keyframes borderBeam { to { --border-beam-angle: 360deg; } }
-
-    /* component: fintech-trust-cards */
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.stat-card { background: linear-gradient(135deg, rgba(18,18,26,0.9), rgba(26,26,46,0.6)); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
-.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
-.stat-number { font-size: 42px; font-weight: 900; color: var(--blue); text-shadow: 0 0 40px rgba(59,130,246,0.3); line-height: 1; margin-bottom: 8px; letter-spacing: -1px; }
-.stat-label { font-size: 14px; color: var(--text-dim); font-weight: 500; }
-
-    /* component: fintech-pricing-cards */
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; }
-.pricing-card { background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(10,10,15,0.95)); border: 1px solid var(--border); border-radius: 20px; padding: 40px 32px; position: relative; overflow: hidden; transition: all 0.3s ease; }
-.pricing-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
-.pricing-card.featured { transform: scale(1.05); border-color: rgba(59,130,246,0.3); z-index: 2; }
-.pricing-card.featured::before { background: linear-gradient(90deg, var(--blue), var(--purple), var(--cyan)); }
-.pricing-badge { position: absolute; top: -1px; right: 24px; background: linear-gradient(135deg, var(--blue), var(--purple)); color: white; font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 0 0 10px 10px; letter-spacing: 0.5px; }
-.pricing-name { font-size: 18px; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }
-.pricing-desc { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }
-.pricing-price { margin-bottom: 32px; }
-.pricing-currency { font-size: 18px; font-weight: 600; color: var(--text-dim); vertical-align: top; }
-.pricing-amount { font-size: 52px; font-weight: 900; color: var(--text-bright); letter-spacing: -2px; line-height: 1; }
-.pricing-period { font-size: 14px; color: var(--text-dim); font-weight: 400; }
-.pricing-features { list-style: none; margin-bottom: 32px; padding: 0; }
-.pricing-features li { display: flex; align-items: center; gap: 10px; padding: 10px 0; font-size: 14px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
-.pricing-features li:last-child { border-bottom: none; }
-.pricing-features .check { color: #22c55e; font-size: 16px; flex-shrink: 0; }
-.pricing-btn { display: block; width: 100%; padding: 14px; border-radius: 50px; text-align: center; font-size: 15px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
-.pricing-btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
-.pricing-btn-outline:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); }
-.pricing-btn-primary { background: linear-gradient(135deg, var(--blue), rgba(59,130,246,0.8)); color: white; box-shadow: 0 4px 20px rgba(59,130,246,0.3); }
-.pricing-btn-primary:hover { box-shadow: 0 4px 30px rgba(59,130,246,0.5); transform: translateY(-2px); }
-.pricing-security { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px; font-size: 12px; color: var(--text-dim); }
 
     /* ═══════════════════════════════════════════════════════
        CSS ENRICHMENTS (from extracted pool)
@@ -1191,7 +1148,7 @@
           <a href="#pricing" class="nav-link">Preços</a>
           <a href="#testimonials" class="nav-link">Depoimentos</a>
         </div>
-        <a href="#pricing" class="glass-btn glass-btn-primary nav-cta">Começar Com Segurança</a>
+        <a href="#pricing" class="glass-btn glass-btn-primary nav-cta">Conhecer Equipe</a>
         <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
           <span></span><span></span><span></span>
         </button>
@@ -1202,9 +1159,9 @@
     <section id="hero" class="section hero-section">
       <div class="meteors-container"><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div></div>
       <div class="container hero-content">
-        <div class="hero-badge gsap-reveal"><span class="hero-badge-dot"></span>⭐⭐⭐⭐⭐ 4.9/5 baseado em 500+ avaliações</div>
+        <div class="hero-badge gsap-reveal"><span class="hero-badge-dot"></span>🏥 Confiança de milhares de famílias</div>
         <h1 class="hero-title gsap-reveal">
-          Transforme Sua Carreira em Trading Profissional<br><span class="flip-words-wrapper">
+          Confiança Construída ao Longo de Anos<br><span class="flip-words-wrapper">
   <span class="flip-words-inner">
     <span class="flip-word">Financiado</span>
     <span class="flip-word">Consistente</span>
@@ -1214,17 +1171,17 @@
   </span>
 </span>
         </h1>
-        <p class="hero-subtitle gsap-reveal">Método SMC + PO3 comprovado. Do zero ao financiado em 90 dias. 1.000+ traders aprovados em prop firms internacionais.</p>
+        <p class="hero-subtitle gsap-reveal">Atendimento médico personalizado com tecnologia de ponta. Sua saúde é nossa prioridade máxima.</p>
         <div class="hero-buttons gsap-reveal">
           <a href="#pricing" class="magnetic-area">
             <span class="glass-btn glass-btn-primary">
-              Começar Com Segurança
+              Conhecer Equipe
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
             </span>
           </a>
           <a href="#method" class="magnetic-area">
             <span class="glass-btn glass-btn-secondary">
-              Acessar Método Comprovado
+              Ver Credenciais
             </span>
           </a>
         </div>
@@ -1416,76 +1373,6 @@
       </svg>
     </div>
   
-    <!-- PRICING -->
-    <section id="pricing" class="section">
-      <div class="container">
-        <div class="section-header gsap-reveal">
-          <span class="section-label">Preços</span>
-          <h2 class="section-title"><span class="gradient-text">Escolha Seu Plano</span></h2>
-          <p class="section-desc">Invista no seu futuro com o plano ideal para seus objetivos</p>
-        </div>
-        <div class="pricing-grid">
-          
-          <div class="pricing-card gsap-reveal">
-            
-            
-            <div class="pricing-name">Básico</div>
-            <div class="pricing-desc">Para iniciantes</div>
-            <div class="pricing-price">
-              <span class="pricing-currency">R$</span>
-              <span class="pricing-amount">97</span>
-              <span class="pricing-period">/mês</span>
-            </div>
-            <ul class="pricing-features">
-              <li><span class="check">&#10003;</span> Acesso ao conteúdo</li>
-              <li><span class="check">&#10003;</span> Suporte por email</li>
-              <li><span class="check">&#10003;</span> Recursos básicos</li>
-            </ul>
-            <button class="pricing-btn pricing-btn-outline">Começar</button>
-            <div class="pricing-security">&#128274; Pagamento seguro</div>
-          </div>
-          <div class="pricing-card featured gsap-reveal">
-            <div class="moving-border"></div>
-            <div class="pricing-badge">Mais Popular</div>
-            <div class="pricing-name">Profissional</div>
-            <div class="pricing-desc">Mais popular</div>
-            <div class="pricing-price">
-              <span class="pricing-currency">R$</span>
-              <span class="pricing-amount">197</span>
-              <span class="pricing-period">/mês</span>
-            </div>
-            <ul class="pricing-features">
-              <li><span class="check">&#10003;</span> Tudo do Básico</li>
-              <li><span class="check">&#10003;</span> Suporte prioritário</li>
-              <li><span class="check">&#10003;</span> Recursos premium</li>
-              <li><span class="check">&#10003;</span> Sessões ao vivo</li>
-            </ul>
-            <button class="pricing-btn pricing-btn-primary">Escolher Pro</button>
-            <div class="pricing-security">&#128274; Pagamento seguro</div>
-          </div>
-          <div class="pricing-card gsap-reveal">
-            
-            
-            <div class="pricing-name">VIP</div>
-            <div class="pricing-desc">Acesso completo</div>
-            <div class="pricing-price">
-              <span class="pricing-currency">R$</span>
-              <span class="pricing-amount">397</span>
-              <span class="pricing-period">/mês</span>
-            </div>
-            <ul class="pricing-features">
-              <li><span class="check">&#10003;</span> Tudo do Pro</li>
-              <li><span class="check">&#10003;</span> Mentoria individual</li>
-              <li><span class="check">&#10003;</span> Acesso vitalício</li>
-              <li><span class="check">&#10003;</span> Comunidade exclusiva</li>
-              <li><span class="check">&#10003;</span> Certificados</li>
-            </ul>
-            <button class="pricing-btn pricing-btn-outline">Quero VIP</button>
-            <div class="pricing-security">&#128274; Pagamento seguro</div>
-          </div>
-        </div>
-      </div>
-    </section>
   
     <div class="wave-divider">
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
@@ -1512,7 +1399,7 @@
         <div class="hero-buttons gsap-reveal">
           <a href="#pricing" class="magnetic-area">
             <span class="glass-btn glass-btn-primary">
-              Começar Com Segurança
+              Conhecer Equipe
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
             </span>
           </a>
@@ -1525,7 +1412,7 @@
       <div class="container footer-inner">
         <div class="footer-brand">
           <span class="gradient-text footer-logo">Business</span>
-          <p class="footer-desc">Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida.</p>
+          <p class="footer-desc">Atendimento médico personalizado com equipe especializada. Tecnologia de última geração, cuidado humanizado. Sua saúde em primeiro lugar.</p>
         </div>
         <div class="footer-links">
           <a href="#method">Método</a>
@@ -1748,14 +1635,8 @@ document.querySelectorAll('.magnetic-area').forEach(area => {
 /* aceternity-flip-words */
 
 
-/* gsap-typewriter */
-gsap.registerPlugin(TextPlugin);
-gsap.to('#typewriter-text', {
-  duration: 2,
-  text: { value: 'Your text here...', delimiter: '' },
-  ease: 'none',
-  delay: 1
-});
+/* fintech-trust-cards */
+
 
 /* aceternity-3d-cards */
 document.querySelectorAll('.card-3d-wrapper').forEach(wrapper => {
@@ -1777,16 +1658,7 @@ document.querySelectorAll('.card-3d-wrapper').forEach(wrapper => {
   });
 });
 
-/* aceternity-moving-borders */
-
-
 /* magicui-border-beam */
-
-
-/* fintech-trust-cards */
-
-
-/* fintech-pricing-cards */
 
   </script>
 
