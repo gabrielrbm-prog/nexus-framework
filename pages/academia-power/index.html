@@ -76,7 +76,7 @@
       -webkit-font-smoothing: antialiased;
     }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-    .section { position: relative; padding: 100px 0; z-index: 1; }
+    .section { position: relative; padding: 80px 0; z-index: 1; }
 
     /* ═══════════════════════════════════════════════════════
        THREE.JS CANVAS
@@ -347,8 +347,14 @@
        3D TILT CARDS
     ═══════════════════════════════════════════════════════ */
     .method-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px;
+    }
+    @media (min-width: 769px) {
+      .method-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1100px) {
+      .method-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .card-3d-wrapper { perspective: 1000px; cursor: pointer; }
     .card-3d {
@@ -426,8 +432,14 @@
        TESTIMONIALS
     ═══════════════════════════════════════════════════════ */
     .testimonials-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px;
+    }
+    @media (min-width: 769px) {
+      .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1100px) {
+      .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .testimonial-card-outer { z-index: 1; }
     .testimonial-card {
@@ -455,8 +467,11 @@
        PRICING
     ═══════════════════════════════════════════════════════ */
     .pricing-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px; align-items: start;
+    }
+    @media (min-width: 900px) {
+      .pricing-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .pricing-card {
       background: var(--card-bg);
@@ -560,6 +575,9 @@
        GSAP REVEAL
     ═══════════════════════════════════════════════════════ */
     .gsap-reveal { opacity: 1; }
+    /* Fallback: ensure elements are visible even without JS/scroll */
+    .gsap-reveal { animation: gsapFallback 0.01s 2s forwards; }
+    @keyframes gsapFallback { to { opacity: 1 !important; transform: none !important; } }
 
     /* ═══════════════════════════════════════════════════════
        RESPONSIVE
@@ -1777,8 +1795,16 @@
       });
     });
 
-    // Refresh after hash navigation
-    setTimeout(() => ScrollTrigger.refresh(), 100);
+    // Refresh after hash navigation and force reveal
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+      // Force-reveal all elements that ScrollTrigger missed
+      document.querySelectorAll('.gsap-reveal').forEach(el => {
+        if (getComputedStyle(el).opacity === '0') {
+          gsap.to(el, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+        }
+      });
+    }, 500);
 
     /* ═══════════════════════════════════════════════════════
        COUNTER ANIMATION (gsap-counter)
@@ -1819,6 +1845,14 @@
         }
       });
     })();
+
+    /* Fallback: ensure all gsap-reveal elements are visible after animations */
+    setTimeout(function() {
+      document.querySelectorAll('.gsap-reveal').forEach(function(el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }, 3000);
 
     /* ═══════════════════════════════════════════════════════
        SMOOTH ANCHOR SCROLL

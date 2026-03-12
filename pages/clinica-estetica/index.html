@@ -575,6 +575,9 @@
        GSAP REVEAL
     ═══════════════════════════════════════════════════════ */
     .gsap-reveal { opacity: 1; }
+    /* Fallback: ensure elements are visible even without JS/scroll */
+    .gsap-reveal { animation: gsapFallback 0.01s 2s forwards; }
+    @keyframes gsapFallback { to { opacity: 1 !important; transform: none !important; } }
 
     /* ═══════════════════════════════════════════════════════
        RESPONSIVE
@@ -1748,8 +1751,16 @@
       });
     });
 
-    // Refresh after hash navigation
-    setTimeout(() => ScrollTrigger.refresh(), 100);
+    // Refresh after hash navigation and force reveal
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+      // Force-reveal all elements that ScrollTrigger missed
+      document.querySelectorAll('.gsap-reveal').forEach(el => {
+        if (getComputedStyle(el).opacity === '0') {
+          gsap.to(el, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+        }
+      });
+    }, 500);
 
     /* ═══════════════════════════════════════════════════════
        COUNTER ANIMATION (gsap-counter)
@@ -1790,6 +1801,14 @@
         }
       });
     })();
+
+    /* Fallback: ensure all gsap-reveal elements are visible after animations */
+    setTimeout(function() {
+      document.querySelectorAll('.gsap-reveal').forEach(function(el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }, 3000);
 
     /* ═══════════════════════════════════════════════════════
        SMOOTH ANCHOR SCROLL
