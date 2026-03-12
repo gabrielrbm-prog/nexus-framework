@@ -1,0 +1,94 @@
+{
+  "project_id": "Vida",
+  "company": {
+    "name": "Bella",
+    "sector": "Nao identificado (manual_input_needed)",
+    "description": "manual_input_needed",
+    "location": "manual_input_needed"
+  },
+  "current_site": {
+    "url": "http://www.w3.org",
+    "title": "Just a moment...",
+    "meta_description": null,
+    "language": "en-US",
+    "colors": [
+      "#313131"
+    ],
+    "fonts": [],
+    "sections": [],
+    "ctas": [],
+    "nav_items": [],
+    "tech": [
+      "Cloudflare"
+    ],
+    "og_image": null,
+    "favicon": null,
+    "screenshots": []
+  },
+  "social_media": {
+    "instagram": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de instagram nao foi fornecido. Use --instagram para especificar."
+    },
+    "youtube": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de youtube nao foi fornecido. Use --youtube para especificar."
+    },
+    "linkedin": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de linkedin nao foi fornecido. Use --linkedin para especificar."
+    }
+  },
+  "brand_assets": {
+    "logo_candidates": [],
+    "colors_detected": [
+      "#313131"
+    ],
+    "fonts_detected": []
+  },
+  "materials": [],
+  "web_search": {
+    "performed": true,
+    "website_found": true,
+    "social_profiles_found": [],
+    "mentions": [
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml"
+    ]
+  },
+  "data_completeness": {
+    "website": false,
+    "social": false,
+    "brand": "partial",
+    "score": 28
+  },
+  "missing_data": [
+    "Meta description",
+    "Fontes do site",
+    "Estrutura de secoes",
+    "CTAs do site",
+    "Perfil do Instagram",
+    "Bio e seguidores do Instagram",
+    "Canal do YouTube",
+    "Descricao e inscritos do YouTube",
+    "Perfil do LinkedIn",
+    "Descricao e setor do LinkedIn",
+    "Logo da empresa",
+    "Fontes da marca",
+    "Manual de marca / brand guidelines",
+    "Definicao do publico-alvo",
+    "Objetivos do projeto"
+  ],
+  "generated_at": "2026-03-12T19:40:18.893Z",
+  "agent": "NEXUS Discovery Agent",
+  "agent_version": "1.0.0"
+}

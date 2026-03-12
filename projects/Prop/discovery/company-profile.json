@@ -1,0 +1,163 @@
+{
+  "project_id": "Prop",
+  "company": {
+    "name": "Summit",
+    "sector": "Prop Trading / Mesa Proprietaria",
+    "description": "Como Funciona Sobre Nós Termos e Condições FAQ Área do Cliente Área do Cliente Bem-vindo à Summit Prop A Mesa Proprietária dos Sonhos de todo Trader Opere com até US$ 150.000 sem arriscar seu capital, em um ambiente justo, acessível e tecnológico. Conheça nossos planos Idealizada de Trader para Trader Cada aspecto da Summit foi",
+    "location": "manual_input_needed"
+  },
+  "current_site": {
+    "url": "https://summitprop.com.br",
+    "title": "Home Summit - Summit Prop",
+    "meta_description": "Como Funciona Sobre Nós Termos e Condições FAQ Área do Cliente Área do Cliente Bem-vindo à Summit Prop A Mesa Proprietária dos Sonhos de todo Trader Opere com até US$ 150.000 sem arriscar seu capital, em um ambiente justo, acessível e tecnológico. Conheça nossos planos Idealizada de Trader para Trader Cada aspecto da Summit foi",
+    "language": "pt-BR",
+    "colors": [
+      "#abb8c3",
+      "#f78da7",
+      "#cf2e2e",
+      "#ff6900",
+      "#fcb900",
+      "#7bdcb5",
+      "#00d084",
+      "#8ed1fc",
+      "#0693e3",
+      "#9b51e0",
+      "#32373c",
+      "#5636d1",
+      "#e2498a",
+      "#003388",
+      "#00ecbc",
+      "#00866b",
+      "#0e2448",
+      "#7adcb4",
+      "#00d082",
+      "#eeeeee",
+      "#720eec",
+      "#7ad03a",
+      "#aa0000",
+      "#ffba00",
+      "#2ea2cc"
+    ],
+    "fonts": [
+      "var(--wp--preset--font-family--inter) !important",
+      "var(--wp--preset--font-family--cardo) !important",
+      "Inter",
+      "Cardo",
+      "Poppins",
+      "WooCommerce",
+      "star"
+    ],
+    "sections": [
+      "Bem-vindo à Summit Prop",
+      "A Mesa Proprietária dos Sonhos de todo Trader",
+      "Idealizada de Trader para Trader",
+      "Financiamento Instantâneo de até US$ 150.000",
+      "Para traders experientes que buscam velocidade e praticidade.",
+      "Planos acessíveis",
+      "Comece sua jornada a partir de $74.",
+      "Saque diário",
+      "Retire seus lucros já nos primeiros dias.",
+      "Variedade de Ativos",
+      "Baixo Spreads",
+      "As melhores taxas e zero spread nos índices",
+      "Ferramentas tecnológicas",
+      "PLANOS",
+      "Escolha o Plano que melhor se adapta ao seu perfil"
+    ],
+    "ctas": [
+      "Comece Agora",
+      "E-mail: processos@escolatraderfinanciado.com.br"
+    ],
+    "nav_items": [],
+    "tech": [
+      "WordPress",
+      "jQuery",
+      "Google Tag Manager",
+      "Elementor",
+      "Divi",
+      "PHP"
+    ],
+    "og_image": null,
+    "favicon": null,
+    "screenshots": []
+  },
+  "social_media": {
+    "instagram": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de instagram nao foi fornecido. Use --instagram para especificar."
+    },
+    "youtube": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de youtube nao foi fornecido. Use --youtube para especificar."
+    },
+    "linkedin": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de linkedin nao foi fornecido. Use --linkedin para especificar."
+    }
+  },
+  "brand_assets": {
+    "logo_candidates": [
+      "https://summitprop.com.br/wp-content/uploads/2025/01/logo-menu.png"
+    ],
+    "colors_detected": [
+      "#abb8c3",
+      "#f78da7",
+      "#cf2e2e",
+      "#ff6900",
+      "#fcb900",
+      "#7bdcb5",
+      "#00d084",
+      "#8ed1fc",
+      "#0693e3",
+      "#9b51e0"
+    ],
+    "fonts_detected": [
+      "var(--wp--preset--font-family--inter) !important",
+      "var(--wp--preset--font-family--cardo) !important",
+      "Inter",
+      "Cardo",
+      "Poppins",
+      "WooCommerce",
+      "star"
+    ]
+  },
+  "materials": [],
+  "web_search": {
+    "performed": true,
+    "website_found": true,
+    "social_profiles_found": [],
+    "mentions": [
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml"
+    ]
+  },
+  "data_completeness": {
+    "website": true,
+    "social": false,
+    "brand": true,
+    "score": 61
+  },
+  "missing_data": [
+    "Perfil do Instagram",
+    "Bio e seguidores do Instagram",
+    "Canal do YouTube",
+    "Descricao e inscritos do YouTube",
+    "Perfil do LinkedIn",
+    "Descricao e setor do LinkedIn",
+    "Manual de marca / brand guidelines",
+    "Definicao do publico-alvo",
+    "Objetivos do projeto"
+  ],
+  "generated_at": "2026-03-12T14:38:03.655Z",
+  "agent": "NEXUS Discovery Agent",
+  "agent_version": "1.0.0"
+}

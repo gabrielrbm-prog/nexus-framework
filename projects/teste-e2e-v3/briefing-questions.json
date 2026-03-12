@@ -1,0 +1,178 @@
+{
+  "project": "Summit Prop",
+  "sector": "trading",
+  "total_questions": 11,
+  "questions": [
+    {
+      "id": "objective",
+      "category": "Objetivo",
+      "question": "Qual o principal objetivo desse site?",
+      "options": [
+        "Captar leads/clientes",
+        "Vender produto/serviço diretamente",
+        "Institucional / credibilidade",
+        "Landing page para campanha",
+        "Portfolio / Showcase",
+        "Outro"
+      ],
+      "required": true,
+      "skip": false
+    },
+    {
+      "id": "references",
+      "category": "Referências",
+      "question": "Tem sites que admira e gostaria de usar como referência? (pode enviar links)",
+      "type": "open",
+      "required": false,
+      "skip": false,
+      "hint": "Pode ser concorrentes, sites de outro setor, ou qualquer site que goste do visual."
+    },
+    {
+      "id": "sections",
+      "category": "Conteúdo",
+      "question": "Quais seções o site deve ter?",
+      "options": [
+        "Hero *",
+        "Como Funciona *",
+        "Planos de Conta *",
+        "Payouts / Resultados *",
+        "Regras e Condições *",
+        "Depoimentos de Traders *",
+        "Preview da Plataforma",
+        "Parceiros / Corretoras",
+        "FAQ *",
+        "CTA Final *"
+      ],
+      "multiSelect": true,
+      "required": true,
+      "skip": false,
+      "default": [
+        "Hero",
+        "Como Funciona",
+        "Planos de Conta",
+        "Payouts / Resultados",
+        "Regras e Condições",
+        "Depoimentos de Traders",
+        "FAQ",
+        "CTA Final"
+      ],
+      "hint": "As marcadas com * são recomendadas para o seu nicho."
+    },
+    {
+      "id": "colors",
+      "category": "Marca",
+      "question": "Detectamos as cores #1a365d e #c9a84c. Manter ou alterar?",
+      "options": [
+        "Manter as cores atuais",
+        "Quero cores diferentes",
+        "Manter mas adicionar cor de destaque"
+      ],
+      "required": true,
+      "skip": false,
+      "detected": {
+        "primary": "#1a365d",
+        "secondary": "#c9a84c",
+        "accent": "#22d3ee"
+      }
+    },
+    {
+      "id": "urgency",
+      "category": "Prazo",
+      "question": "Qual a urgência desse projeto?",
+      "options": [
+        "Urgente — preciso para ontem",
+        "Rápido — essa semana",
+        "Normal — 1-2 semanas",
+        "Tranquilo — sem pressa"
+      ],
+      "required": true,
+      "skip": false
+    },
+    {
+      "id": "materials",
+      "category": "Materiais",
+      "question": "Quais materiais você já tem prontos?",
+      "options": [
+        "Logo em alta resolução",
+        "Fotos profissionais",
+        "Textos/copy pronto",
+        "Manual da marca / Brand guide",
+        "Vídeo institucional",
+        "Nenhum — preciso de tudo"
+      ],
+      "multiSelect": true,
+      "required": true,
+      "skip": false
+    },
+    {
+      "id": "extras",
+      "category": "Funcionalidades",
+      "question": "Precisa de alguma funcionalidade especial?",
+      "options": [
+        "Formulário de contato/lead",
+        "Chat / WhatsApp widget",
+        "Integração com CRM",
+        "Blog",
+        "Área de membros",
+        "Animações avançadas",
+        "Background 3D",
+        "Multi-idioma",
+        "Nenhuma extra"
+      ],
+      "multiSelect": true,
+      "required": false,
+      "skip": false
+    },
+    {
+      "id": "trading_audience_level",
+      "question": "Qual o nível do trader que vocês buscam?",
+      "options": [
+        "Iniciante",
+        "Intermediário",
+        "Avançado",
+        "Todos os níveis"
+      ],
+      "required": true,
+      "category": "Específico do Nicho",
+      "skip": false
+    },
+    {
+      "id": "trading_instruments",
+      "question": "Quais instrumentos/mercados vocês operam?",
+      "options": [
+        "Forex",
+        "Índices",
+        "Criptomoedas",
+        "Commodities",
+        "Ações",
+        "Todos"
+      ],
+      "multiSelect": true,
+      "category": "Específico do Nicho",
+      "skip": false
+    },
+    {
+      "id": "trading_platform",
+      "question": "Qual plataforma de trading utilizam?",
+      "options": [
+        "MetaTrader 4",
+        "MetaTrader 5",
+        "cTrader",
+        "Proprietária",
+        "Outra"
+      ],
+      "type": "single",
+      "category": "Específico do Nicho",
+      "skip": false
+    },
+    {
+      "id": "trading_payout",
+      "question": "Qual o ciclo de payout para os traders?",
+      "type": "open",
+      "category": "Específico do Nicho",
+      "skip": false
+    }
+  ],
+  "generated_at": "2026-03-12T17:09:35.868Z",
+  "agent": "NEXUS Briefing Agent"
+}

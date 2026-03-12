@@ -67,6 +67,24 @@ class NexusBridge {
     const dnaPath = path.join(this.projectDir, 'context-dna.json');
     if (fs.existsSync(dnaPath)) {
       const dna = JSON.parse(fs.readFileSync(dnaPath, 'utf-8'));
+      // Map niche to businessType if context agent defaulted to 'general'
+      const niche = board.get('references.niche');
+      if (niche && (!dna.project || !dna.project.businessType || dna.project.businessType === 'general')) {
+        const nicheMap = {
+          healthcare: 'healthcare', saude: 'healthcare', clinica: 'healthcare', estetica: 'healthcare',
+          trading: 'fintech', fintech: 'fintech', finance: 'fintech', crypto: 'fintech',
+          fitness: 'fitness', academia: 'fitness', gym: 'fitness',
+          ecommerce: 'ecommerce', loja: 'ecommerce', store: 'ecommerce',
+          tech: 'saas', saas: 'saas', software: 'saas',
+          food: 'restaurant', restaurante: 'restaurant', restaurant: 'restaurant',
+          education: 'education', escola: 'education', curso: 'education'
+        };
+        const mapped = nicheMap[niche.toLowerCase()] || niche.toLowerCase();
+        if (!dna.project) dna.project = {};
+        dna.project.businessType = mapped;
+        fs.writeFileSync(dnaPath, JSON.stringify(dna, null, 2));
+        console.log('   🏷️  Business type mapped: ' + niche + ' → ' + mapped);
+      }
       board.set('context.dna', dna);
       board.set('context.keywords', dna.seo?.keywords || []);
       board.set('context.tone', dna.psychology?.primary || null);
@@ -110,6 +128,7 @@ class NexusBridge {
   // After content agent runs, collect its output
   collectContent() {
     const searchPaths = [
+      path.join(this.projectDir, 'content', 'all-content.json'),
       path.join(this.projectDir, 'content-assets', 'all-content.json'),
       path.join(this.projectDir, 'all-content.json'),
       path.join(WORKSPACE, 'content-assets', 'all-content.json'),
@@ -208,20 +227,30 @@ class NexusBridge {
     const runners = {
       context: () => {
         const briefing = this.prepareContext();
-        const cmd = `node ${path.join(AGENTS_DIR, 'nexus-context-agent.js')} "${briefing}" "${this.projectName}"`;
-        execSync(cmd, { cwd: WORKSPACE, timeout: 60000, stdio: 'inherit' });
+        const agentScript = fs.existsSync(path.join(AGENTS_DIR, 'nexus-context-agent-v2.js'))
+          ? 'nexus-context-agent-v2.js' : 'nexus-context-agent.js';
+        const niche = board.get('references.niche') || '';
+        const companyName = board.get('briefing.brief.projectName') || this.projectName;
+        const nicheFlag = niche ? ' --niche "' + niche + '"' : '';
+        const companyFlag = companyName ? ' --company "' + companyName + '"' : '';
+        const cmd = `node ${path.join(AGENTS_DIR, agentScript)} "${briefing}" "${this.projectName}"${nicheFlag}${companyFlag}`;
+        execSync(cmd, { cwd: WORKSPACE, timeout: 120000, stdio: 'inherit' });
         return this.collectContext();
       },
       design: () => {
         const dnaPath = path.join(this.projectDir, 'context-dna.json');
-        const cmd = `node ${path.join(AGENTS_DIR, 'nexus-design-agent.js')} "${dnaPath}"`;
-        execSync(cmd, { cwd: WORKSPACE, timeout: 90000, stdio: 'inherit' });
+        const agentScript2 = fs.existsSync(path.join(AGENTS_DIR, 'nexus-design-agent-v2.js'))
+          ? 'nexus-design-agent-v2.js' : 'nexus-design-agent.js';
+        const cmd = `node ${path.join(AGENTS_DIR, agentScript2)} "${dnaPath}"`;
+        execSync(cmd, { cwd: WORKSPACE, timeout: 120000, stdio: 'inherit' });
         return this.collectDesign();
       },
       content: () => {
         const dnaPath = path.join(this.projectDir, 'context-dna.json');
-        const cmd = `node ${path.join(AGENTS_DIR, 'nexus-content-agent.js')} "${dnaPath}"`;
-        execSync(cmd, { cwd: WORKSPACE, timeout: 60000, stdio: 'inherit' });
+        const agentScript3 = fs.existsSync(path.join(AGENTS_DIR, 'nexus-content-agent-v2.js'))
+          ? 'nexus-content-agent-v2.js' : 'nexus-content-agent.js';
+        const cmd = `node ${path.join(AGENTS_DIR, agentScript3)} "${dnaPath}"`;
+        execSync(cmd, { cwd: WORKSPACE, timeout: 120000, stdio: 'inherit' });
         return this.collectContent();
       },
       code: () => {

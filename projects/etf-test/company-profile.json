@@ -1,0 +1,147 @@
+{
+  "project_id": "etf-test",
+  "company": {
+    "name": "Escola Trader Financiado",
+    "sector": "Prop Trading / Mesa Proprietaria",
+    "description": "Sistema profissional de análise de trades com ranking por performance. Score ETF, métricas avançadas e gestão multi-conta.",
+    "location": "manual_input_needed"
+  },
+  "current_site": {
+    "url": "https://escolatraderfinanciado.club",
+    "title": "ETF - O maior ecossistema de traders do Brasil",
+    "meta_description": "Sistema profissional de análise de trades com ranking por performance. Score ETF, métricas avançadas e gestão multi-conta.",
+    "language": "pt-BR",
+    "colors": [
+      "#1a1f2e",
+      "#e5e7eb",
+      "#16161a",
+      "#fafafa",
+      "#777777",
+      "#e60000",
+      "#ff9900",
+      "#ffff00",
+      "#008a00",
+      "#0066cc",
+      "#9933ff",
+      "#444444",
+      "#f0f0f0",
+      "#23241f",
+      "#f8f8f2",
+      "#9ca3af",
+      "#f59e0b",
+      "#3b82f6",
+      "#d1d5db",
+      "#6b7280",
+      "#22c55e",
+      "#fb923c",
+      "#f97316",
+      "#a855f7",
+      "#facc15"
+    ],
+    "fonts": [
+      "PoppinsAsync",
+      "Helvetica",
+      "Arial",
+      "Georgia",
+      "Times New Roman",
+      "Monaco",
+      "Courier New",
+      "Helvetica Neue",
+      "Poppins",
+      "ui-monospace"
+    ],
+    "sections": [],
+    "ctas": [],
+    "nav_items": [],
+    "tech": [
+      "Cloudflare"
+    ],
+    "og_image": "https://storage.googleapis.com/gpt-engineer-file-uploads/32LX8WtqE8bmJJiWC0G7GYOUYLn2/social-images/social-1759456387670-Gemini_Generated_Image_x0jjyqx0jjyqx0jj.png",
+    "favicon": "https://storage.googleapis.com/gpt-engineer-file-uploads/32LX8WtqE8bmJJiWC0G7GYOUYLn2/uploads/1759456526130-Gemini_Generated_Image_x0jjyqx0jjyqx0jj.png",
+    "screenshots": []
+  },
+  "social_media": {
+    "instagram": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de instagram nao foi fornecido. Use --instagram para especificar."
+    },
+    "youtube": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de youtube nao foi fornecido. Use --youtube para especificar."
+    },
+    "linkedin": {
+      "handle": "not_provided",
+      "url": null,
+      "accessible": false,
+      "note": "Handle de linkedin nao foi fornecido. Use --linkedin para especificar."
+    }
+  },
+  "brand_assets": {
+    "logo_candidates": [
+      "https://storage.googleapis.com/gpt-engineer-file-uploads/32LX8WtqE8bmJJiWC0G7GYOUYLn2/social-images/social-1759456387670-Gemini_Generated_Image_x0jjyqx0jjyqx0jj.png"
+    ],
+    "colors_detected": [
+      "#1a1f2e",
+      "#e5e7eb",
+      "#16161a",
+      "#fafafa",
+      "#777777",
+      "#e60000",
+      "#ff9900",
+      "#ffff00",
+      "#008a00",
+      "#0066cc"
+    ],
+    "fonts_detected": [
+      "PoppinsAsync",
+      "Helvetica",
+      "Arial",
+      "Georgia",
+      "Times New Roman",
+      "Monaco",
+      "Courier New",
+      "Helvetica Neue",
+      "Poppins",
+      "ui-monospace"
+    ]
+  },
+  "materials": [],
+  "web_search": {
+    "performed": true,
+    "website_found": true,
+    "social_profiles_found": [],
+    "mentions": [
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml",
+      "http://www.w3.org/1999/xhtml"
+    ]
+  },
+  "data_completeness": {
+    "website": true,
+    "social": false,
+    "brand": true,
+    "score": 50
+  },
+  "missing_data": [
+    "Estrutura de secoes",
+    "CTAs do site",
+    "Perfil do Instagram",
+    "Bio e seguidores do Instagram",
+    "Canal do YouTube",
+    "Descricao e inscritos do YouTube",
+    "Perfil do LinkedIn",
+    "Descricao e setor do LinkedIn",
+    "Manual de marca / brand guidelines",
+    "Definicao do publico-alvo",
+    "Objetivos do projeto"
+  ],
+  "generated_at": "2026-03-12T14:09:20.954Z",
+  "agent": "NEXUS Discovery Agent",
+  "agent_version": "1.0.0"
+}

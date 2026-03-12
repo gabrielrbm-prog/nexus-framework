@@ -1,0 +1,19 @@
+{
+  "formLabels": {
+    "name": "Seu nome",
+    "email": "Seu melhor e-mail",
+    "phone": "WhatsApp",
+    "submit": "Agendar Consulta"
+  },
+  "navigation": [
+    "Início",
+    "Sobre",
+    "Serviços",
+    "Depoimentos",
+    "Preços",
+    "Contato"
+  ],
+  "loading": "Carregando sua consulta...",
+  "success": "Consulta agendada com sucesso! Em breve entraremos em contato.",
+  "error": "Ocorreu um erro. Por favor, tente novamente."
+}

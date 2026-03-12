@@ -1,0 +1,1034 @@
+{
+  "meta": {
+    "project": "academia-power",
+    "created": "2026-03-12T19:44:26.144Z",
+    "lastAccess": "2026-03-12T19:45:53.444Z",
+    "lastModified": "2026-03-12T19:45:54.356Z",
+    "version": "2.0",
+    "nexusVersion": "2.0.0"
+  },
+  "pipeline": {
+    "currentStage": "deploy",
+    "stages": {
+      "discovery": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:44:26.145Z",
+        "completedAt": "2026-03-12T19:44:27.197Z",
+        "agent": "nexus-discovery-agent"
+      },
+      "briefing": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:44:27.197Z",
+        "completedAt": "2026-03-12T19:44:27.235Z",
+        "agent": "nexus-briefing-agent"
+      },
+      "report": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T19:44:27.235Z",
+        "agent": "nexus-briefing-report"
+      },
+      "context": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:44:27.236Z",
+        "completedAt": "2026-03-12T19:44:53.247Z",
+        "agent": "nexus-context-agent"
+      },
+      "design": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:44:53.247Z",
+        "completedAt": "2026-03-12T19:45:04.384Z",
+        "agent": "nexus-design-agent"
+      },
+      "content": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:45:04.384Z",
+        "completedAt": "2026-03-12T19:45:53.366Z",
+        "agent": "nexus-content-agent"
+      },
+      "image": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T19:45:53.366Z",
+        "agent": "nexus-image-agent"
+      },
+      "video": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T19:45:53.367Z",
+        "agent": "nexus-video-agent"
+      },
+      "code": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:45:53.367Z",
+        "completedAt": "2026-03-12T19:45:53.442Z",
+        "agent": "nexus-code-agent"
+      },
+      "quality": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:45:53.443Z",
+        "completedAt": "2026-03-12T19:45:53.472Z",
+        "agent": "nexus-quality-agent"
+      },
+      "deploy": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:45:53.472Z",
+        "completedAt": "2026-03-12T19:45:54.357Z",
+        "agent": "nexus-deploy"
+      }
+    },
+    "history": [
+      {
+        "stage": "discovery",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:44:26.145Z"
+      },
+      {
+        "stage": "discovery",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:44:27.197Z"
+      },
+      {
+        "stage": "briefing",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:44:27.197Z"
+      },
+      {
+        "stage": "briefing",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:44:27.235Z"
+      },
+      {
+        "stage": "report",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T19:44:27.235Z"
+      },
+      {
+        "stage": "context",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:44:27.236Z"
+      },
+      {
+        "stage": "context",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:44:53.247Z"
+      },
+      {
+        "stage": "design",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:44:53.247Z"
+      },
+      {
+        "stage": "design",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:45:04.384Z"
+      },
+      {
+        "stage": "content",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:45:04.384Z"
+      },
+      {
+        "stage": "content",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:45:53.366Z"
+      },
+      {
+        "stage": "image",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T19:45:53.366Z"
+      },
+      {
+        "stage": "video",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T19:45:53.367Z"
+      },
+      {
+        "stage": "code",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:45:53.367Z"
+      },
+      {
+        "stage": "code",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:45:53.442Z"
+      },
+      {
+        "stage": "quality",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:45:53.443Z"
+      },
+      {
+        "stage": "quality",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:45:53.472Z"
+      },
+      {
+        "stage": "deploy",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:45:53.472Z"
+      },
+      {
+        "stage": "deploy",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:45:54.357Z"
+      }
+    ]
+  },
+  "discovery": {
+    "company": null,
+    "website": null,
+    "social": null,
+    "colors": [],
+    "fonts": [],
+    "techStack": [],
+    "sector": null,
+    "completeness": 0
+  },
+  "briefing": {
+    "questions": [],
+    "answers": {},
+    "brief": {
+      "project_id": "summit-prop",
+      "version": 1,
+      "created_at": "2026-03-12T19:44:27.216Z",
+      "agent": "NEXUS Briefing Agent",
+      "company": {
+        "name": "Summit Prop",
+        "sector": "trading",
+        "sector_label": "Prop Trading / Mesa Proprietária",
+        "description": "Mesa proprietária brasileira que oferece contas financiadas para traders de forex e índices. Foco em regras flexíveis, payout rápido e suporte totalmente em português.",
+        "differentials": [
+          "Payout em 24h",
+          "Regras mais flexíveis do mercado",
+          "Suporte 100% em português",
+          "Conta demo ilimitada"
+        ],
+        "current_presence": {
+          "website": "https://summitprop.com.br",
+          "social": {
+            "instagram": "@summitprop",
+            "telegram": "t.me/summitprop"
+          },
+          "detected_tech": [
+            "WordPress",
+            "WooCommerce"
+          ]
+        }
+      },
+      "project": {
+        "objective": "lead-generation",
+        "objective_detail": "Captar leads/clientes",
+        "type": "landing-page",
+        "urgency": "high",
+        "deadline": "2026-03-15"
+      },
+      "audience": {
+        "primary": "Traders intermediários e avançados, 25-40 anos, Brasil, buscando financiamento para operar forex e índices",
+        "secondary": "",
+        "demographics": {
+          "age": "25-40",
+          "gender": "masculino",
+          "income": "média-alta",
+          "tech": "alto"
+        },
+        "pain_points": [
+          "Capital insuficiente para operar",
+          "Props com regras muito rígidas",
+          "Suporte apenas em inglês"
+        ],
+        "desires": [
+          "Conta financiada sem risco pessoal",
+          "Payout rápido",
+          "Suporte em português"
+        ],
+        "behavior": "multi_device"
+      },
+      "brand": {
+        "tone": "premium",
+        "tone_label": "Premium / Sofisticado — Linguagem elevada, exclusividade",
+        "colors": {
+          "primary": "#1a365d",
+          "secondary": "#c9a84c",
+          "accent": "#22d3ee",
+          "keep_current": true
+        },
+        "fonts": {
+          "preference": "modern-sans",
+          "detected": [
+            "Montserrat",
+            "Inter"
+          ]
+        },
+        "style": "dark-premium"
+      },
+      "content": {
+        "sections": [
+          {
+            "id": "hero",
+            "title": "Hero",
+            "required": true
+          },
+          {
+            "id": "how-it-works",
+            "title": "Como Funciona",
+            "required": true
+          },
+          {
+            "id": "plans",
+            "title": "Planos de Conta",
+            "required": true
+          },
+          {
+            "id": "payouts",
+            "title": "Payouts / Resultados",
+            "required": true
+          },
+          {
+            "id": "rules",
+            "title": "Regras e Condições",
+            "required": true
+          },
+          {
+            "id": "testimonials",
+            "title": "Depoimentos de Traders",
+            "required": true
+          },
+          {
+            "id": "dashboard",
+            "title": "Preview da Plataforma",
+            "required": true
+          },
+          {
+            "id": "partners",
+            "title": "Parceiros / Corretoras",
+            "required": false
+          },
+          {
+            "id": "faq",
+            "title": "FAQ",
+            "required": true
+          },
+          {
+            "id": "cta",
+            "title": "CTA Final",
+            "required": true
+          }
+        ],
+        "references": [
+          {
+            "url": "https://ftmo.com",
+            "what_they_like": "Referência visual"
+          },
+          {
+            "url": "https://stripe.com",
+            "what_they_like": "Referência visual"
+          },
+          {
+            "url": "https://topstep.com",
+            "what_they_like": "Referência visual"
+          }
+        ]
+      },
+      "technical": {
+        "type": "static-html",
+        "hosting": "github-pages",
+        "integrations": [
+          "contact-form",
+          "whatsapp-widget"
+        ],
+        "special_features": [
+          "scroll-animations",
+          "3d-background"
+        ]
+      },
+      "materials_provided": {
+        "logo": true,
+        "photos": true,
+        "copy": false,
+        "brand_guide": false,
+        "video": false
+      },
+      "sector_specifics": {
+        "trading_audience_level": "Intermediário",
+        "trading_instruments": [
+          "Forex",
+          "Índices"
+        ],
+        "trading_platform": "MetaTrader 5",
+        "trading_payout": "Ciclo de 14 dias, payout em até 24h após solicitação"
+      },
+      "completeness_score": 100,
+      "ready_for_pipeline": true
+    },
+    "completeness": 0
+  },
+  "report": {
+    "htmlPath": null,
+    "pdfPath": null,
+    "generatedAt": null
+  },
+  "context": {
+    "dna": {
+      "project": {
+        "name": "academia-power",
+        "businessType": "fitness",
+        "industry": "academia de musculação e treinamento funcional",
+        "projectScale": "medium",
+        "goals": [
+          "captar novos alunos",
+          "aumentar a retenção de alunos",
+          "promover planos de assinatura"
+        ]
+      },
+      "brand": {
+        "name": "Academia Power",
+        "tagline": "Transforme seu corpo, potencialize sua vida",
+        "primaryTraits": [
+          "inovadora",
+          "acolhedora",
+          "motivadora"
+        ],
+        "voiceTone": "motivacional_confiável",
+        "brandArchetype": "hero",
+        "communicationStyle": "direta e motivacional",
+        "emotionalCore": "transformação_pessoal"
+      },
+      "audience": {
+        "primaryAge": "25-45",
+        "gender": "todos",
+        "income": "média",
+        "psychographics": [
+          "busca por saúde",
+          "interesse em bem-estar",
+          "desejo de melhorar a autoestima"
+        ],
+        "painPoints": [
+          "falta de tempo para treinar",
+          "dificuldade em manter a motivação",
+          "insatisfação com o próprio corpo"
+        ],
+        "motivations": [
+          "melhorar a saúde",
+          "ganhar condicionamento físico",
+          "aumentar a autoestima"
+        ],
+        "objections": [
+          "preço alto",
+          "medo de não conseguir resultados",
+          "falta de tempo"
+        ]
+      },
+      "psychology": {
+        "primary": "transformation",
+        "secondary": "social_proof",
+        "conversionTriggers": [
+          "testemunhos de alunos",
+          "antes e depois",
+          "garantia de resultados"
+        ],
+        "emotionalJourney": "Do desconforto com o próprio corpo à confiança e satisfação"
+      },
+      "visual": {
+        "mood": "moderno_energético_motivador",
+        "colorStrategy": "tons de vermelho para energia e preto para sofisticação",
+        "suggestedPalette": {
+          "primary": "#FF0000",
+          "secondary": "#000000",
+          "accent": "#FFFFFF",
+          "background": "#F5F5F5"
+        },
+        "typography": "sans-serif moderna",
+        "imageStyle": "fotos reais de alunos treinando"
+      },
+      "content": {
+        "keyMessages": [
+          "Transforme seu corpo com nossos treinos personalizados",
+          "Resultados garantidos com planos flexíveis",
+          "Ambiente acolhedor e motivador"
+        ],
+        "uniqueSellingPoints": [
+          "Treinos personalizados",
+          "Ambiente moderno e equipado",
+          "Professores especializados"
+        ],
+        "socialProof": "depoimentos de alunos",
+        "ctaStrategy": "agende uma aula experimental gratuita"
+      },
+      "seo": {
+        "primaryKeyword": "academia de musculação",
+        "secondaryKeywords": [
+          "treinamento funcional",
+          "planos de assinatura",
+          "aula experimental"
+        ],
+        "searchIntent": "informacional e transacional",
+        "localSEO": true
+      },
+      "technical": {
+        "layoutStyle": "hero_centric",
+        "prioritySections": [
+          "hero",
+          "benefícios",
+          "depoimentos",
+          "planos",
+          "cta"
+        ],
+        "interactionLevel": "medium",
+        "mobileFirst": true
+      },
+      "competitors": {
+        "directCompetitors": [
+          "Smart Fit",
+          "Bluefit",
+          "Bio Ritmo"
+        ],
+        "differentiators": [
+          "treinos personalizados",
+          "ambiente acolhedor",
+          "professores especializados"
+        ],
+        "marketPosition": "A academia que transforma vidas com treinos personalizados e ambiente motivador"
+      },
+      "filePath": "/root/.openclaw/workspace/nexus-project/projects/academia-power/context-dna.json",
+      "_generatedBy": "nexus-context-agent-v2",
+      "_generatedAt": "2026-03-12T19:44:53.229Z",
+      "_usedLLM": true
+    },
+    "keywords": [],
+    "tone": "transformation",
+    "audience": {
+      "primaryAge": "25-45",
+      "gender": "todos",
+      "income": "média",
+      "psychographics": [
+        "busca por saúde",
+        "interesse em bem-estar",
+        "desejo de melhorar a autoestima"
+      ],
+      "painPoints": [
+        "falta de tempo para treinar",
+        "dificuldade em manter a motivação",
+        "insatisfação com o próprio corpo"
+      ],
+      "motivations": [
+        "melhorar a saúde",
+        "ganhar condicionamento físico",
+        "aumentar a autoestima"
+      ],
+      "objections": [
+        "preço alto",
+        "medo de não conseguir resultados",
+        "falta de tempo"
+      ]
+    },
+    "competitors": []
+  },
+  "design": {
+    "system": {
+      "_generatedBy": "nexus-design-agent-v2",
+      "_generatedAt": "2026-03-12T19:45:04.366Z",
+      "_usedLLM": true,
+      "_rationale": "O uso da cor vermelha como primária comunica energia e motivação, essenciais para uma academia. A tipografia moderna e espaçamento generoso criam uma experiência visual limpa e motivadora.",
+      "colors": {
+        "primary": {
+          "50": "#fee7e7",
+          "100": "#fdb4b4",
+          "200": "#ff8080",
+          "300": "#ff4d4d",
+          "400": "#ff1a1a",
+          "500": "#FF0000",
+          "600": "#d60000",
+          "700": "#ad0000",
+          "800": "#850000",
+          "900": "#5c0000",
+          "base": "#FF0000"
+        },
+        "secondary": {
+          "50": "#7e6767",
+          "100": "#625050",
+          "200": "#404040",
+          "300": "#262626",
+          "400": "#0d0d0d",
+          "500": "#000000",
+          "600": "#282424",
+          "700": "#1c1717",
+          "800": "#161212",
+          "900": "#0f0b0b",
+          "base": "#000000"
+        },
+        "accent": {
+          "50": "#f8f7f7",
+          "100": "#f4f1f1",
+          "200": "#e6e6e6",
+          "300": "#cccccc",
+          "400": "#b3b3b3",
+          "500": "#FFFFFF",
+          "600": "#eceaea",
+          "700": "#dad2d2",
+          "800": "#c8bcbc",
+          "900": "#baa1a1",
+          "base": "#FFFFFF"
+        },
+        "background": "#F5F5F5",
+        "surface": "#FFFFFF",
+        "text": "#000000",
+        "textDim": "#666666",
+        "success": "#28A745",
+        "warning": "#FFC107",
+        "error": "#DC3545",
+        "darkMode": false
+      },
+      "typography": {
+        "fontFamily": "Poppins",
+        "headingFamily": "Sora",
+        "baseFontSize": "16px",
+        "headingWeight": "800",
+        "bodyWeight": "400",
+        "lineHeight": "1.6",
+        "sizes": {
+          "xs": "0.75rem",
+          "sm": "0.875rem",
+          "base": "1rem",
+          "lg": "1.125rem",
+          "xl": "1.25rem",
+          "2xl": "1.5rem",
+          "3xl": "1.875rem",
+          "4xl": "2.25rem",
+          "5xl": "3rem",
+          "6xl": "3.75rem",
+          "7xl": "4.5rem"
+        }
+      },
+      "spacing": {
+        "section": "8rem",
+        "card": "2rem",
+        "borderRadius": {
+          "sm": "4px",
+          "md": "16px",
+          "lg": "20px",
+          "xl": "24px",
+          "full": "9999px"
+        }
+      },
+      "effects": {
+        "glassmorphism": false,
+        "gradients": true,
+        "shadows": "medium",
+        "animations": "moderate",
+        "glassBg": "#FFFFFF",
+        "glassBlur": "none",
+        "primaryGlow": "0 0 40px #FF000026",
+        "gradient": "linear-gradient(135deg, #FF0000, #000000, #FFFFFF)"
+      },
+      "businessType": "fitness",
+      "brandName": "Academia Power"
+    },
+    "palette": {
+      "primary": {
+        "50": "#fee7e7",
+        "100": "#fdb4b4",
+        "200": "#ff8080",
+        "300": "#ff4d4d",
+        "400": "#ff1a1a",
+        "500": "#FF0000",
+        "600": "#d60000",
+        "700": "#ad0000",
+        "800": "#850000",
+        "900": "#5c0000",
+        "base": "#FF0000"
+      },
+      "secondary": {
+        "50": "#7e6767",
+        "100": "#625050",
+        "200": "#404040",
+        "300": "#262626",
+        "400": "#0d0d0d",
+        "500": "#000000",
+        "600": "#282424",
+        "700": "#1c1717",
+        "800": "#161212",
+        "900": "#0f0b0b",
+        "base": "#000000"
+      },
+      "accent": {
+        "50": "#f8f7f7",
+        "100": "#f4f1f1",
+        "200": "#e6e6e6",
+        "300": "#cccccc",
+        "400": "#b3b3b3",
+        "500": "#FFFFFF",
+        "600": "#eceaea",
+        "700": "#dad2d2",
+        "800": "#c8bcbc",
+        "900": "#baa1a1",
+        "base": "#FFFFFF"
+      },
+      "background": "#F5F5F5",
+      "surface": "#FFFFFF",
+      "text": "#000000",
+      "textDim": "#666666",
+      "success": "#28A745",
+      "warning": "#FFC107",
+      "error": "#DC3545",
+      "darkMode": false
+    },
+    "typography": {
+      "fontFamily": "Poppins",
+      "headingFamily": "Sora",
+      "baseFontSize": "16px",
+      "headingWeight": "800",
+      "bodyWeight": "400",
+      "lineHeight": "1.6",
+      "sizes": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "1rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "1.875rem",
+        "4xl": "2.25rem",
+        "5xl": "3rem",
+        "6xl": "3.75rem",
+        "7xl": "4.5rem"
+      }
+    },
+    "layout": null,
+    "components": []
+  },
+  "content": {
+    "hero": null,
+    "sections": [],
+    "cta": {
+      "primary": "Agende aula experimental",
+      "variants": [
+        "Comece sua transformação",
+        "Reserve sua aula grátis",
+        "Experimente sem compromisso"
+      ]
+    },
+    "seo": null,
+    "copy": {
+      "headlines": {
+        "primary": "Transforme seu corpo em 12 semanas",
+        "variants": [
+          "Resultados rápidos e garantidos",
+          "Pare de adiar sua transformação",
+          "Sua melhor versão começa aqui"
+        ],
+        "psychological_focus": "transformation"
+      },
+      "ctas": {
+        "primary": "Agende aula experimental",
+        "variants": [
+          "Comece sua transformação",
+          "Reserve sua aula grátis",
+          "Experimente sem compromisso"
+        ]
+      },
+      "sectionContent": {
+        "hero": {
+          "headline": "Transforme seu corpo em 12 semanas",
+          "subheadline": "Na Academia Power, você conquista o corpo que sempre sonhou com treinos personalizados e professores especializados.",
+          "social_proof": "+1.500 alunos transformados",
+          "trust_badges": [
+            "Avaliação 4.9/5",
+            "Certificados internacionais",
+            "Ambiente seguro"
+          ]
+        },
+        "about": {
+          "title": "Sobre a Academia Power",
+          "description": "Somos uma academia focada em resultados, oferecendo treinos personalizados e um ambiente acolhedor para você alcançar seus objetivos.",
+          "highlights": [
+            "Treinos personalizados",
+            "Professores especializados",
+            "Ambiente moderno"
+          ]
+        },
+        "features": {
+          "title": "O que oferecemos",
+          "items": [
+            {
+              "title": "Treinos personalizados",
+              "description": "Planos de treino adaptados ao seu objetivo e nível.",
+              "icon": "💪"
+            },
+            {
+              "title": "Professores especializados",
+              "description": "Equipe de profissionais certificados e experientes.",
+              "icon": "👨‍🏫"
+            },
+            {
+              "title": "Ambiente moderno",
+              "description": "Equipamentos de última geração e espaços confortáveis.",
+              "icon": "🏋️‍♂️"
+            },
+            {
+              "title": "Aulas experimentais",
+              "description": "Experimente nossa metodologia sem compromisso.",
+              "icon": "🎯"
+            }
+          ]
+        },
+        "benefits": {
+          "title": "Benefícios para você",
+          "items": [
+            {
+              "title": "Resultados rápidos",
+              "description": "Alcance seus objetivos em menos tempo com nossos treinos eficientes."
+            },
+            {
+              "title": "Aumento da autoestima",
+              "description": "Sinta-se mais confiante com seu corpo transformado."
+            },
+            {
+              "title": "Melhora na saúde",
+              "description": "Ganhe mais energia e disposição no seu dia a dia."
+            }
+          ]
+        },
+        "testimonials": {
+          "title": "Depoimentos de alunos",
+          "items": [
+            {
+              "name": "Carlos Silva",
+              "role": "Empresário",
+              "text": "Em 3 meses na Academia Power, perdi 10kg e ganhei muita disposição. Recomendo!",
+              "rating": 5
+            },
+            {
+              "name": "Ana Paula",
+              "role": "Professora",
+              "text": "Os treinos personalizados mudaram minha vida. Hoje me sinto mais confiante e saudável.",
+              "rating": 5
+            },
+            {
+              "name": "Roberto Santos",
+              "role": "Engenheiro",
+              "text": "A equipe é incrível e os resultados são visíveis em poucas semanas.",
+              "rating": 5
+            }
+          ]
+        },
+        "pricing": {
+          "title": "Nossos planos",
+          "subtitle": "Investimento que transforma",
+          "plans": [
+            {
+              "name": "Básico",
+              "price": "R$ 129/mês",
+              "features": [
+                "Acesso à musculação",
+                "Treino inicial",
+                "Avaliação física"
+              ],
+              "cta": "Assinar agora",
+              "highlighted": false
+            },
+            {
+              "name": "Premium",
+              "price": "R$ 199/mês",
+              "features": [
+                "Treinos personalizados",
+                "Acesso ilimitado",
+                "Avaliação mensal"
+              ],
+              "cta": "Assinar agora",
+              "highlighted": true
+            },
+            {
+              "name": "VIP",
+              "price": "R$ 299/mês",
+              "features": [
+                "Treinos exclusivos",
+                "Acompanhamento individual",
+                "Nutricionista"
+              ],
+              "cta": "Assinar agora",
+              "highlighted": false
+            }
+          ]
+        },
+        "faq": {
+          "title": "Perguntas Frequentes",
+          "items": [
+            {
+              "question": "Preciso ter experiência para treinar na Academia Power?",
+              "answer": "Não, nossos treinos são adaptados para todos os níveis, desde iniciantes até avançados."
+            },
+            {
+              "question": "Qual o horário de funcionamento?",
+              "answer": "Funcionamos de segunda a sexta, das 6h às 22h, e sábados das 8h às 14h."
+            },
+            {
+              "question": "Posso cancelar meu plano a qualquer momento?",
+              "answer": "Sim, nosso cancelamento é simples e sem burocracia."
+            },
+            {
+              "question": "Há acompanhamento nutricional?",
+              "answer": "Sim, oferecemos acompanhamento nutricional em nossos planos VIP."
+            }
+          ]
+        },
+        "footer": {
+          "tagline": "Transforme seu corpo, potencialize sua vida",
+          "contact": {
+            "phone": "(11) 9999-9999",
+            "email": "contato@academiapower.com.br",
+            "address": "Av. Paulista, 1000 - São Paulo, SP"
+          },
+          "links": [
+            "Início",
+            "Sobre",
+            "Serviços",
+            "Contato"
+          ]
+        }
+      },
+      "metaContent": {
+        "seo": {
+          "title": "Academia Power | Transforme seu corpo em 12 semanas",
+          "description": "Na Academia Power, você conquista o corpo que sempre sonhou com treinos personalizados e professores especializados. Agende sua aula experimental!",
+          "keywords": "academia de musculação, treinamento funcional, planos de assinatura, aula experimental",
+          "ogTitle": "Transforme seu corpo na Academia Power",
+          "ogDescription": "Conquiste seus objetivos com treinos personalizados e resultados garantidos. Agende sua aula experimental!"
+        }
+      },
+      "abVariants": {
+        "headlines": [
+          "Transforme seu corpo em 3 meses",
+          "Sua melhor versão começa aqui"
+        ],
+        "ctas": [
+          "Reserve sua aula grátis",
+          "Comece sua transformação"
+        ],
+        "valueProps": [
+          "Resultados rápidos e garantidos",
+          "Treinos personalizados e eficientes"
+        ]
+      },
+      "microcopy": {
+        "formLabels": {
+          "name": "Seu nome",
+          "email": "Seu melhor e-mail",
+          "phone": "WhatsApp",
+          "submit": "Agendar aula"
+        },
+        "navigation": [
+          "Início",
+          "Sobre",
+          "Serviços",
+          "Depoimentos",
+          "Preços",
+          "Contato"
+        ],
+        "loading": "Processando seu agendamento...",
+        "success": "Sua aula foi agendada com sucesso! Aguarde nosso contato.",
+        "error": "Ocorreu um erro. Por favor, tente novamente."
+      },
+      "stats": [
+        {
+          "value": "1.500+",
+          "label": "alunos transformados"
+        },
+        {
+          "value": "98%",
+          "label": "satisfação dos alunos"
+        },
+        {
+          "value": "12",
+          "label": "professores especializados"
+        },
+        {
+          "value": "4.9",
+          "label": "avaliação média"
+        }
+      ],
+      "_generatedBy": "nexus-content-agent-v2",
+      "_generatedAt": "2026-03-12T19:45:53.344Z",
+      "_usedLLM": true
+    }
+  },
+  "image": {
+    "prompts": [],
+    "generated": [],
+    "placeholders": []
+  },
+  "video": {
+    "prompts": [],
+    "scripts": [],
+    "animations": []
+  },
+  "code": {
+    "html": "/root/.openclaw/workspace/nexus-project/projects/academia-power/output/index.html",
+    "css": null,
+    "js": null,
+    "outputPath": "/root/.openclaw/workspace/nexus-project/projects/academia-power/output",
+    "components": [],
+    "libraries": []
+  },
+  "quality": {
+    "score": 0,
+    "lighthouse": null,
+    "accessibility": null,
+    "issues": [
+      "**Business Type:** fitness",
+      "**Target Audience:** 25-45",
+      "**Site Size:** 95KB",
+      "**Files:** 1 arquivos",
+      "**Audit Date:** undefined",
+      "**Total Size:** 95KB",
+      "**CSS Size:** 0KB  ",
+      "**JS Size:** 0KB",
+      "**Images:** 0KB",
+      "**Load Time:** 19 ms",
+      "💡 Verificar contraste de cores para WCAG AA compliance",
+      "**Title:** ✅ \"Academia Power | Transforme seu corpo em 12 semanas\"",
+      "**Description:** ✅ \"Na Academia Power, você conquista o corpo que semp...\"",
+      "**Keywords:** ⚠️ Ausente",
+      "💡 Considerar adicionar meta keywords relevantes",
+      "**HTML Lines:** 1934",
+      "**CSS Lines:** 0  ",
+      "**JS Lines:** 0",
+      "**Total Lines:** 1934",
+      "⚠️ index.html: Possíveis tags não fechadas"
+    ],
+    "passed": false
+  },
+  "deploy": {
+    "url": "https://gabrielrbm-prog.github.io/nexus-framework/generated-site/academia-power/",
+    "platform": "github-pages",
+    "deployedAt": "2026-03-12T19:45:54.356Z",
+    "indexUrl": "https://gabrielrbm-prog.github.io/nexus-framework/generated-site/",
+    "slug": "academia-power"
+  },
+  "references": {
+    "sites": [],
+    "components": [],
+    "niche": null
+  },
+  "errors": [],
+  "checkpoints": []
+}

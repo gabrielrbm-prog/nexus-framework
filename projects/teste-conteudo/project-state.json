@@ -1,0 +1,1362 @@
+{
+  "meta": {
+    "project": "teste-conteudo",
+    "created": "2026-03-12T17:39:06.395Z",
+    "lastAccess": "2026-03-12T17:39:07.581Z",
+    "lastModified": "2026-03-12T17:39:07.613Z",
+    "version": "2.0",
+    "nexusVersion": "2.0.0"
+  },
+  "pipeline": {
+    "currentStage": "quality",
+    "stages": {
+      "discovery": {
+        "status": "complete",
+        "startedAt": "2026-03-12T17:39:06.396Z",
+        "completedAt": "2026-03-12T17:39:07.364Z",
+        "agent": "nexus-discovery-agent"
+      },
+      "briefing": {
+        "status": "complete",
+        "startedAt": "2026-03-12T17:39:07.365Z",
+        "completedAt": "2026-03-12T17:39:07.398Z",
+        "agent": "nexus-briefing-agent"
+      },
+      "report": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T17:39:07.399Z",
+        "agent": "nexus-briefing-report"
+      },
+      "context": {
+        "status": "complete",
+        "startedAt": "2026-03-12T17:39:07.399Z",
+        "completedAt": "2026-03-12T17:39:07.425Z",
+        "agent": "nexus-context-agent"
+      },
+      "design": {
+        "status": "complete",
+        "startedAt": "2026-03-12T17:39:07.426Z",
+        "completedAt": "2026-03-12T17:39:07.462Z",
+        "agent": "nexus-design-agent"
+      },
+      "content": {
+        "status": "complete",
+        "startedAt": "2026-03-12T17:39:07.463Z",
+        "completedAt": "2026-03-12T17:39:07.494Z",
+        "agent": "nexus-content-agent"
+      },
+      "image": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T17:39:07.494Z",
+        "agent": "nexus-image-agent"
+      },
+      "video": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T17:39:07.495Z",
+        "agent": "nexus-video-agent"
+      },
+      "code": {
+        "status": "complete",
+        "startedAt": "2026-03-12T17:39:07.496Z",
+        "completedAt": "2026-03-12T17:39:07.580Z",
+        "agent": "nexus-code-agent"
+      },
+      "quality": {
+        "status": "complete",
+        "startedAt": "2026-03-12T17:39:07.581Z",
+        "completedAt": "2026-03-12T17:39:07.614Z",
+        "agent": "nexus-quality-agent"
+      },
+      "deploy": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T17:39:07.615Z",
+        "agent": "nexus-deploy"
+      }
+    },
+    "history": [
+      {
+        "stage": "discovery",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T17:39:06.396Z"
+      },
+      {
+        "stage": "discovery",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T17:39:07.364Z"
+      },
+      {
+        "stage": "briefing",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T17:39:07.365Z"
+      },
+      {
+        "stage": "briefing",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T17:39:07.398Z"
+      },
+      {
+        "stage": "report",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T17:39:07.399Z"
+      },
+      {
+        "stage": "context",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T17:39:07.399Z"
+      },
+      {
+        "stage": "context",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T17:39:07.425Z"
+      },
+      {
+        "stage": "design",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T17:39:07.426Z"
+      },
+      {
+        "stage": "design",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T17:39:07.462Z"
+      },
+      {
+        "stage": "content",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T17:39:07.463Z"
+      },
+      {
+        "stage": "content",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T17:39:07.494Z"
+      },
+      {
+        "stage": "image",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T17:39:07.494Z"
+      },
+      {
+        "stage": "video",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T17:39:07.495Z"
+      },
+      {
+        "stage": "code",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T17:39:07.496Z"
+      },
+      {
+        "stage": "code",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T17:39:07.580Z"
+      },
+      {
+        "stage": "quality",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T17:39:07.581Z"
+      },
+      {
+        "stage": "quality",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T17:39:07.614Z"
+      },
+      {
+        "stage": "deploy",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T17:39:07.615Z"
+      }
+    ]
+  },
+  "discovery": {
+    "company": null,
+    "website": null,
+    "social": null,
+    "colors": [],
+    "fonts": [],
+    "techStack": [],
+    "sector": null,
+    "completeness": 0
+  },
+  "briefing": {
+    "questions": [],
+    "answers": {},
+    "brief": {
+      "project_id": "summit-prop",
+      "version": 1,
+      "created_at": "2026-03-12T17:39:07.384Z",
+      "agent": "NEXUS Briefing Agent",
+      "company": {
+        "name": "Summit Prop",
+        "sector": "trading",
+        "sector_label": "Prop Trading / Mesa Proprietária",
+        "description": "Mesa proprietária brasileira que oferece contas financiadas para traders de forex e índices. Foco em regras flexíveis, payout rápido e suporte totalmente em português.",
+        "differentials": [
+          "Payout em 24h",
+          "Regras mais flexíveis do mercado",
+          "Suporte 100% em português",
+          "Conta demo ilimitada"
+        ],
+        "current_presence": {
+          "website": "https://summitprop.com.br",
+          "social": {
+            "instagram": "@summitprop",
+            "telegram": "t.me/summitprop"
+          },
+          "detected_tech": [
+            "WordPress",
+            "WooCommerce"
+          ]
+        }
+      },
+      "project": {
+        "objective": "lead-generation",
+        "objective_detail": "Captar leads/clientes",
+        "type": "landing-page",
+        "urgency": "high",
+        "deadline": "2026-03-15"
+      },
+      "audience": {
+        "primary": "Traders intermediários e avançados, 25-40 anos, Brasil, buscando financiamento para operar forex e índices",
+        "secondary": "",
+        "demographics": {
+          "age": "25-40",
+          "gender": "masculino",
+          "income": "média-alta",
+          "tech": "alto"
+        },
+        "pain_points": [
+          "Capital insuficiente para operar",
+          "Props com regras muito rígidas",
+          "Suporte apenas em inglês"
+        ],
+        "desires": [
+          "Conta financiada sem risco pessoal",
+          "Payout rápido",
+          "Suporte em português"
+        ],
+        "behavior": "multi_device"
+      },
+      "brand": {
+        "tone": "premium",
+        "tone_label": "Premium / Sofisticado — Linguagem elevada, exclusividade",
+        "colors": {
+          "primary": "#1a365d",
+          "secondary": "#c9a84c",
+          "accent": "#22d3ee",
+          "keep_current": true
+        },
+        "fonts": {
+          "preference": "modern-sans",
+          "detected": [
+            "Montserrat",
+            "Inter"
+          ]
+        },
+        "style": "dark-premium"
+      },
+      "content": {
+        "sections": [
+          {
+            "id": "hero",
+            "title": "Hero",
+            "required": true
+          },
+          {
+            "id": "how-it-works",
+            "title": "Como Funciona",
+            "required": true
+          },
+          {
+            "id": "plans",
+            "title": "Planos de Conta",
+            "required": true
+          },
+          {
+            "id": "payouts",
+            "title": "Payouts / Resultados",
+            "required": true
+          },
+          {
+            "id": "rules",
+            "title": "Regras e Condições",
+            "required": true
+          },
+          {
+            "id": "testimonials",
+            "title": "Depoimentos de Traders",
+            "required": true
+          },
+          {
+            "id": "dashboard",
+            "title": "Preview da Plataforma",
+            "required": true
+          },
+          {
+            "id": "partners",
+            "title": "Parceiros / Corretoras",
+            "required": false
+          },
+          {
+            "id": "faq",
+            "title": "FAQ",
+            "required": true
+          },
+          {
+            "id": "cta",
+            "title": "CTA Final",
+            "required": true
+          }
+        ],
+        "references": [
+          {
+            "url": "https://ftmo.com",
+            "what_they_like": "Referência visual"
+          },
+          {
+            "url": "https://stripe.com",
+            "what_they_like": "Referência visual"
+          },
+          {
+            "url": "https://topstep.com",
+            "what_they_like": "Referência visual"
+          }
+        ]
+      },
+      "technical": {
+        "type": "static-html",
+        "hosting": "github-pages",
+        "integrations": [
+          "contact-form",
+          "whatsapp-widget"
+        ],
+        "special_features": [
+          "scroll-animations",
+          "3d-background"
+        ]
+      },
+      "materials_provided": {
+        "logo": true,
+        "photos": true,
+        "copy": false,
+        "brand_guide": false,
+        "video": false
+      },
+      "sector_specifics": {
+        "trading_audience_level": "Intermediário",
+        "trading_instruments": [
+          "Forex",
+          "Índices"
+        ],
+        "trading_platform": "MetaTrader 5",
+        "trading_payout": "Ciclo de 14 dias, payout em até 24h após solicitação"
+      },
+      "completeness_score": 100,
+      "ready_for_pipeline": true
+    },
+    "completeness": 0
+  },
+  "report": {
+    "htmlPath": null,
+    "pdfPath": null,
+    "generatedAt": null
+  },
+  "context": {
+    "dna": {
+      "project": {
+        "businessType": "general",
+        "industry": "General",
+        "projectScale": "medium",
+        "timeline": "2-4 weeks",
+        "budget": "medium",
+        "goals": [
+          "increase_conversions"
+        ]
+      },
+      "audience": {
+        "primaryAge": "millennial",
+        "demographics": {
+          "age": "25-35",
+          "income": "medium-high",
+          "tech": "high",
+          "social": "instagram-linkedin"
+        },
+        "psychographics": {
+          "values": [
+            "efficiency",
+            "quality",
+            "value"
+          ],
+          "interests": [
+            "technology",
+            "business",
+            "growth"
+          ],
+          "lifestyle": "busy_professional"
+        },
+        "painPoints": [
+          "time_consuming",
+          "complex_process",
+          "lack_of_transparency"
+        ],
+        "motivations": [
+          "save_time",
+          "increase_profit",
+          "reduce_risk"
+        ],
+        "digitalBehavior": "multi_device_research_heavy"
+      },
+      "psychology": {
+        "primary": "value",
+        "triggers": [
+          "productivity",
+          "roi",
+          "authority",
+          "social_proof"
+        ],
+        "fears": [
+          "complexity",
+          "time_waste",
+          "wrong_choice"
+        ],
+        "desires": [
+          "efficiency",
+          "success",
+          "simplicity"
+        ],
+        "copyTone": "smart_solution_oriented"
+      },
+      "brand": {
+        "primaryTraits": [],
+        "voiceTone": "balanced_trustworthy",
+        "brandArchetype": "hero",
+        "communicationStyle": "informative_helpful",
+        "emotionalCore": "trust_and_success"
+      },
+      "technical": {
+        "security": "medium",
+        "performance": "high",
+        "compliance": [
+          "GDPR"
+        ],
+        "integrations": [
+          "apis",
+          "webhooks",
+          "analytics"
+        ],
+        "monitoring": "advanced"
+      },
+      "competitive": {
+        "directCompetitors": [],
+        "benchmarkSites": [],
+        "differentiationOpportunities": [
+          "user_experience",
+          "transparency",
+          "speed"
+        ],
+        "designTrends": [
+          "glassmorphism",
+          "micro_interactions",
+          "dark_mode"
+        ]
+      },
+      "content": {
+        "contentPillars": [
+          "education",
+          "trust_building",
+          "product_benefits"
+        ],
+        "copyStrategy": "smart_solution_oriented",
+        "ctaStrategy": "See_ROI_Calculator",
+        "contentHierarchy": [
+          "hero_value_prop",
+          "social_proof",
+          "features",
+          "pricing",
+          "cta"
+        ],
+        "seoStrategy": "focused_long_tail_keywords"
+      },
+      "visual": {
+        "colorPsychology": "productive_purple",
+        "typography": "tech_geometric",
+        "layout": "dashboard_focused",
+        "imagery": "workflow_abstract"
+      },
+      "created": "2026-03-12T17:39:07.416Z",
+      "agent": "NEXUS Context Agent"
+    },
+    "keywords": [],
+    "tone": "value",
+    "audience": {
+      "primaryAge": "millennial",
+      "demographics": {
+        "age": "25-35",
+        "income": "medium-high",
+        "tech": "high",
+        "social": "instagram-linkedin"
+      },
+      "psychographics": {
+        "values": [
+          "efficiency",
+          "quality",
+          "value"
+        ],
+        "interests": [
+          "technology",
+          "business",
+          "growth"
+        ],
+        "lifestyle": "busy_professional"
+      },
+      "painPoints": [
+        "time_consuming",
+        "complex_process",
+        "lack_of_transparency"
+      ],
+      "motivations": [
+        "save_time",
+        "increase_profit",
+        "reduce_risk"
+      ],
+      "digitalBehavior": "multi_device_research_heavy"
+    },
+    "competitors": []
+  },
+  "design": {
+    "system": {
+      "metadata": {
+        "projectName": ".",
+        "businessType": "general",
+        "targetAudience": "millennial",
+        "generated": "2026-03-12T17:39:07.450Z",
+        "agent": "NEXUS Design Agent"
+      },
+      "colors": {
+        "primary": {
+          "50": "#8b5cf6",
+          "100": "#8b5cf6",
+          "200": "#8b5cf6",
+          "300": "#8b5cf6",
+          "400": "#8b5cf6",
+          "500": "#8b5cf6",
+          "600": "#8b5cf6",
+          "700": "#8b5cf6",
+          "800": "#8b5cf6",
+          "900": "#8b5cf6"
+        },
+        "secondary": {
+          "50": "#7c3aed",
+          "100": "#7c3aed",
+          "200": "#7c3aed",
+          "300": "#7c3aed",
+          "400": "#7c3aed",
+          "500": "#7c3aed",
+          "600": "#7c3aed",
+          "700": "#7c3aed",
+          "800": "#7c3aed",
+          "900": "#7c3aed"
+        },
+        "accent": {
+          "50": "#a78bfa",
+          "100": "#a78bfa",
+          "200": "#a78bfa",
+          "300": "#a78bfa",
+          "400": "#a78bfa",
+          "500": "#a78bfa",
+          "600": "#a78bfa",
+          "700": "#a78bfa",
+          "800": "#a78bfa",
+          "900": "#a78bfa"
+        },
+        "success": {
+          "50": "#10b981",
+          "100": "#10b981",
+          "200": "#10b981",
+          "300": "#10b981",
+          "400": "#10b981",
+          "500": "#10b981",
+          "600": "#10b981",
+          "700": "#10b981",
+          "800": "#10b981",
+          "900": "#10b981"
+        },
+        "warning": {
+          "50": "#f59e0b",
+          "100": "#f59e0b",
+          "200": "#f59e0b",
+          "300": "#f59e0b",
+          "400": "#f59e0b",
+          "500": "#f59e0b",
+          "600": "#f59e0b",
+          "700": "#f59e0b",
+          "800": "#f59e0b",
+          "900": "#f59e0b"
+        },
+        "error": {
+          "50": "#ef4444",
+          "100": "#ef4444",
+          "200": "#ef4444",
+          "300": "#ef4444",
+          "400": "#ef4444",
+          "500": "#ef4444",
+          "600": "#ef4444",
+          "700": "#ef4444",
+          "800": "#ef4444",
+          "900": "#ef4444"
+        },
+        "info": {
+          "50": "#3b82f6",
+          "100": "#3b82f6",
+          "200": "#3b82f6",
+          "300": "#3b82f6",
+          "400": "#3b82f6",
+          "500": "#3b82f6",
+          "600": "#3b82f6",
+          "700": "#3b82f6",
+          "800": "#3b82f6",
+          "900": "#3b82f6"
+        },
+        "neutral": {
+          "50": "#fafafa",
+          "100": "#f4f4f5",
+          "200": "#e4e4e7",
+          "300": "#d4d4d8",
+          "400": "#a1a1aa",
+          "500": "#71717a",
+          "600": "#52525b",
+          "700": "#3f3f46",
+          "800": "#27272a",
+          "900": "#1a1a1a"
+        },
+        "background": {
+          "primary": "var(--color-neutral-50)",
+          "secondary": "var(--color-neutral-100)",
+          "tertiary": "var(--color-neutral-200)",
+          "inverse": "var(--color-neutral-900)",
+          "accent": "var(--color-primary-50)",
+          "success": "var(--color-success-50)",
+          "warning": "var(--color-warning-50)",
+          "error": "var(--color-error-50)"
+        },
+        "text": {
+          "primary": "var(--color-neutral-900)",
+          "secondary": "var(--color-neutral-600)",
+          "tertiary": "var(--color-neutral-400)",
+          "inverse": "var(--color-neutral-50)",
+          "accent": "var(--color-primary-600)",
+          "success": "var(--color-success-600)",
+          "warning": "var(--color-warning-600)",
+          "error": "var(--color-error-600)"
+        },
+        "border": {
+          "primary": "var(--color-neutral-200)",
+          "secondary": "var(--color-neutral-100)",
+          "focus": "var(--color-primary-500)",
+          "error": "var(--color-error-500)"
+        }
+      },
+      "typography": {
+        "fontFamilies": {
+          "primary": "\"Space Grotesk\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, sans-serif",
+          "secondary": "\"Space Grotesk\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, sans-serif",
+          "monospace": "\"Fira Code\", \"Monaco\", \"Cascadia Code\", \"Roboto Mono\", monospace"
+        },
+        "fontWeights": {
+          "light": 300,
+          "regular": 400,
+          "medium": 500,
+          "semibold": 600,
+          "bold": 700,
+          "extrabold": 800
+        },
+        "fontSize": {
+          "xs": "10px",
+          "sm": "13px",
+          "base": "16px",
+          "lg": "20px",
+          "xl": "25px",
+          "2xl": "31px",
+          "3xl": "39px",
+          "4xl": "49px",
+          "5xl": "61px"
+        },
+        "lineHeight": {
+          "tight": "1.1",
+          "normal": "1.4",
+          "relaxed": "1.6",
+          "loose": "1.8"
+        },
+        "letterSpacing": {
+          "tight": "-0.025em",
+          "normal": "0em",
+          "wide": "0.025em",
+          "wider": "0.05em",
+          "widest": "0.1em"
+        },
+        "textStyles": {
+          "h1": {
+            "fontSize": "var(--font-size-4xl)",
+            "fontWeight": "var(--font-weight-bold)",
+            "lineHeight": "var(--line-height-tight)",
+            "letterSpacing": "var(--letter-spacing-tight)"
+          },
+          "h2": {
+            "fontSize": "var(--font-size-3xl)",
+            "fontWeight": "var(--font-weight-semibold)",
+            "lineHeight": "var(--line-height-tight)"
+          },
+          "h3": {
+            "fontSize": "var(--font-size-2xl)",
+            "fontWeight": "var(--font-weight-semibold)",
+            "lineHeight": "var(--line-height-normal)"
+          },
+          "body": {
+            "fontSize": "var(--font-size-base)",
+            "fontWeight": "var(--font-weight-regular)",
+            "lineHeight": "var(--line-height-relaxed)"
+          },
+          "caption": {
+            "fontSize": "var(--font-size-sm)",
+            "fontWeight": "var(--font-weight-regular)",
+            "lineHeight": "var(--line-height-normal)"
+          }
+        }
+      },
+      "spacing": {
+        "0": "0",
+        "1": "4.8px",
+        "2": "9.6px",
+        "3": "14.399999999999999px",
+        "4": "19.2px",
+        "6": "28.799999999999997px",
+        "8": "38.4px",
+        "12": "57.599999999999994px",
+        "16": "76.8px",
+        "20": "96px",
+        "24": "115.19999999999999px",
+        "32": "153.6px",
+        "40": "192px",
+        "48": "230.39999999999998px",
+        "64": "307.2px"
+      },
+      "elevation": {
+        "none": "none",
+        "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "base": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+        "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+      },
+      "borders": {
+        "radius": {
+          "none": "0",
+          "sm": "2px",
+          "base": "4px",
+          "md": "6px",
+          "lg": "8px",
+          "xl": "12px",
+          "2xl": "16px",
+          "full": "9999px"
+        },
+        "width": {
+          "none": "0",
+          "thin": "1px",
+          "base": "2px",
+          "thick": "4px"
+        }
+      },
+      "animations": {
+        "duration": {
+          "fastest": "100ms",
+          "fast": "200ms",
+          "normal": "300ms",
+          "slow": "500ms",
+          "slowest": "800ms"
+        },
+        "easing": {
+          "linear": "linear",
+          "ease": "ease",
+          "ease-in": "ease-in",
+          "ease-out": "ease-out",
+          "ease-in-out": "ease-in-out",
+          "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+          "smooth": "cubic-bezier(0.4, 0, 0.2, 1)"
+        }
+      },
+      "breakpoints": {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px",
+        "2xl": "1536px"
+      },
+      "components": {
+        "button": {
+          "primary": "balanced, professional styling",
+          "secondary": "outlined, secondary styling"
+        },
+        "card": {
+          "base": "clean borders, appropriate shadows",
+          "interactive": "hover effects, cursor pointer"
+        },
+        "input": {
+          "base": "clean styling, clear focus states",
+          "error": "error color borders and text"
+        },
+        "modal": {
+          "backdrop": "semi-transparent overlay",
+          "container": "centered, appropriate shadows"
+        }
+      }
+    },
+    "palette": {
+      "primary": {
+        "50": "#8b5cf6",
+        "100": "#8b5cf6",
+        "200": "#8b5cf6",
+        "300": "#8b5cf6",
+        "400": "#8b5cf6",
+        "500": "#8b5cf6",
+        "600": "#8b5cf6",
+        "700": "#8b5cf6",
+        "800": "#8b5cf6",
+        "900": "#8b5cf6"
+      },
+      "secondary": {
+        "50": "#7c3aed",
+        "100": "#7c3aed",
+        "200": "#7c3aed",
+        "300": "#7c3aed",
+        "400": "#7c3aed",
+        "500": "#7c3aed",
+        "600": "#7c3aed",
+        "700": "#7c3aed",
+        "800": "#7c3aed",
+        "900": "#7c3aed"
+      },
+      "accent": {
+        "50": "#a78bfa",
+        "100": "#a78bfa",
+        "200": "#a78bfa",
+        "300": "#a78bfa",
+        "400": "#a78bfa",
+        "500": "#a78bfa",
+        "600": "#a78bfa",
+        "700": "#a78bfa",
+        "800": "#a78bfa",
+        "900": "#a78bfa"
+      },
+      "success": {
+        "50": "#10b981",
+        "100": "#10b981",
+        "200": "#10b981",
+        "300": "#10b981",
+        "400": "#10b981",
+        "500": "#10b981",
+        "600": "#10b981",
+        "700": "#10b981",
+        "800": "#10b981",
+        "900": "#10b981"
+      },
+      "warning": {
+        "50": "#f59e0b",
+        "100": "#f59e0b",
+        "200": "#f59e0b",
+        "300": "#f59e0b",
+        "400": "#f59e0b",
+        "500": "#f59e0b",
+        "600": "#f59e0b",
+        "700": "#f59e0b",
+        "800": "#f59e0b",
+        "900": "#f59e0b"
+      },
+      "error": {
+        "50": "#ef4444",
+        "100": "#ef4444",
+        "200": "#ef4444",
+        "300": "#ef4444",
+        "400": "#ef4444",
+        "500": "#ef4444",
+        "600": "#ef4444",
+        "700": "#ef4444",
+        "800": "#ef4444",
+        "900": "#ef4444"
+      },
+      "info": {
+        "50": "#3b82f6",
+        "100": "#3b82f6",
+        "200": "#3b82f6",
+        "300": "#3b82f6",
+        "400": "#3b82f6",
+        "500": "#3b82f6",
+        "600": "#3b82f6",
+        "700": "#3b82f6",
+        "800": "#3b82f6",
+        "900": "#3b82f6"
+      },
+      "neutral": {
+        "50": "#fafafa",
+        "100": "#f4f4f5",
+        "200": "#e4e4e7",
+        "300": "#d4d4d8",
+        "400": "#a1a1aa",
+        "500": "#71717a",
+        "600": "#52525b",
+        "700": "#3f3f46",
+        "800": "#27272a",
+        "900": "#1a1a1a"
+      },
+      "background": {
+        "primary": "var(--color-neutral-50)",
+        "secondary": "var(--color-neutral-100)",
+        "tertiary": "var(--color-neutral-200)",
+        "inverse": "var(--color-neutral-900)",
+        "accent": "var(--color-primary-50)",
+        "success": "var(--color-success-50)",
+        "warning": "var(--color-warning-50)",
+        "error": "var(--color-error-50)"
+      },
+      "text": {
+        "primary": "var(--color-neutral-900)",
+        "secondary": "var(--color-neutral-600)",
+        "tertiary": "var(--color-neutral-400)",
+        "inverse": "var(--color-neutral-50)",
+        "accent": "var(--color-primary-600)",
+        "success": "var(--color-success-600)",
+        "warning": "var(--color-warning-600)",
+        "error": "var(--color-error-600)"
+      },
+      "border": {
+        "primary": "var(--color-neutral-200)",
+        "secondary": "var(--color-neutral-100)",
+        "focus": "var(--color-primary-500)",
+        "error": "var(--color-error-500)"
+      }
+    },
+    "typography": {
+      "fontFamilies": {
+        "primary": "\"Space Grotesk\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, sans-serif",
+        "secondary": "\"Space Grotesk\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, sans-serif",
+        "monospace": "\"Fira Code\", \"Monaco\", \"Cascadia Code\", \"Roboto Mono\", monospace"
+      },
+      "fontWeights": {
+        "light": 300,
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700,
+        "extrabold": 800
+      },
+      "fontSize": {
+        "xs": "10px",
+        "sm": "13px",
+        "base": "16px",
+        "lg": "20px",
+        "xl": "25px",
+        "2xl": "31px",
+        "3xl": "39px",
+        "4xl": "49px",
+        "5xl": "61px"
+      },
+      "lineHeight": {
+        "tight": "1.1",
+        "normal": "1.4",
+        "relaxed": "1.6",
+        "loose": "1.8"
+      },
+      "letterSpacing": {
+        "tight": "-0.025em",
+        "normal": "0em",
+        "wide": "0.025em",
+        "wider": "0.05em",
+        "widest": "0.1em"
+      },
+      "textStyles": {
+        "h1": {
+          "fontSize": "var(--font-size-4xl)",
+          "fontWeight": "var(--font-weight-bold)",
+          "lineHeight": "var(--line-height-tight)",
+          "letterSpacing": "var(--letter-spacing-tight)"
+        },
+        "h2": {
+          "fontSize": "var(--font-size-3xl)",
+          "fontWeight": "var(--font-weight-semibold)",
+          "lineHeight": "var(--line-height-tight)"
+        },
+        "h3": {
+          "fontSize": "var(--font-size-2xl)",
+          "fontWeight": "var(--font-weight-semibold)",
+          "lineHeight": "var(--line-height-normal)"
+        },
+        "body": {
+          "fontSize": "var(--font-size-base)",
+          "fontWeight": "var(--font-weight-regular)",
+          "lineHeight": "var(--line-height-relaxed)"
+        },
+        "caption": {
+          "fontSize": "var(--font-size-sm)",
+          "fontWeight": "var(--font-weight-regular)",
+          "lineHeight": "var(--line-height-normal)"
+        }
+      }
+    },
+    "layout": null,
+    "components": {
+      "button": {
+        "primary": "balanced, professional styling",
+        "secondary": "outlined, secondary styling"
+      },
+      "card": {
+        "base": "clean borders, appropriate shadows",
+        "interactive": "hover effects, cursor pointer"
+      },
+      "input": {
+        "base": "clean styling, clear focus states",
+        "error": "error color borders and text"
+      },
+      "modal": {
+        "backdrop": "semi-transparent overlay",
+        "container": "centered, appropriate shadows"
+      }
+    }
+  },
+  "content": {
+    "hero": null,
+    "sections": [],
+    "cta": {
+      "primary": "Começar Com Segurança",
+      "secondary": "Acessar Método Comprovado",
+      "variants": [
+        "Ver Resultados Reais",
+        "Conhecer a Metodologia",
+        "Falar Com Especialista"
+      ],
+      "psychological_focus": "value",
+      "urgency_enhanced": [
+        "Começar Com Segurança",
+        "Acessar Método Comprovado",
+        "Ver Resultados Reais",
+        "Conhecer a Metodologia",
+        "Falar Com Especialista"
+      ],
+      "trust_enhanced": [
+        "Começar Com Segurança",
+        "Acessar Método Comprovado",
+        "Ver Resultados Reais",
+        "Conhecer a Metodologia",
+        "Falar Com Especialista"
+      ]
+    },
+    "seo": null,
+    "copy": {
+      "headlines": {
+        "primary": "Transforme Sua Carreira em Trading Profissional",
+        "variants": [
+          "Do Zero ao Trader Financiado em 90 Dias",
+          "Método Comprovado: 1.000+ Traders Aprovados",
+          "Trading Profissional com Resultados Reais"
+        ],
+        "psychological_focus": "value",
+        "audience_optimized": [
+          "Transforme Sua Carreira em Trading Profissionalfissional",
+          "Do Zero ao Trader Financiado em 90 Dias",
+          "Método Comprovado: 1.000+ Traders Aprovados",
+          "Trading Profissionalfissional com Resultados Reais",
+          "Seja o Próximo Trader de Sucesso"
+        ],
+        "conversion_focused": [
+          "Transforme Sua Carreira em Trading Profissional",
+          "Do Zero ao Trader Financiado em 90 Dias",
+          "Método Comprovado: 1.000+ Traders Aprovados",
+          "Trading Profissional com Resultados Reais",
+          "Seja o Próximo Trader de Sucesso"
+        ]
+      },
+      "ctas": {
+        "primary": "Começar Com Segurança",
+        "secondary": "Acessar Método Comprovado",
+        "variants": [
+          "Ver Resultados Reais",
+          "Conhecer a Metodologia",
+          "Falar Com Especialista"
+        ],
+        "psychological_focus": "value",
+        "urgency_enhanced": [
+          "Começar Com Segurança",
+          "Acessar Método Comprovado",
+          "Ver Resultados Reais",
+          "Conhecer a Metodologia",
+          "Falar Com Especialista"
+        ],
+        "trust_enhanced": [
+          "Começar Com Segurança",
+          "Acessar Método Comprovado",
+          "Ver Resultados Reais",
+          "Conhecer a Metodologia",
+          "Falar Com Especialista"
+        ]
+      },
+      "sectionContent": {
+        "hero": {
+          "subheadline": "Método SMC + PO3 comprovado. Do zero ao financiado em 90 dias. 1.000+ traders aprovados em prop firms internacionais.",
+          "benefits": [
+            "Método SMC (Smart Money Concepts) completo",
+            "Suporte 24/7 com traders experientes",
+            "Aprovação garantida em prop firms",
+            "Comunidade exclusiva de 1.000+ traders"
+          ],
+          "social_proof": "⭐⭐⭐⭐⭐ 4.9/5 baseado em 500+ avaliações",
+          "trust_elements": [
+            "1.000+ alunos formados",
+            "95% taxa de aprovação",
+            "189 traders ativos",
+            "Método comprovado há 5 anos"
+          ],
+          "psychology_optimized": "value"
+        },
+        "about": {
+          "mission": "Nossa missão é transformar 25-35 anos em profissionais de general através de metodologia comprovada.",
+          "vision": "Ser referência em formação profissional com resultados mensuráveis.",
+          "values": [
+            "Excelência",
+            "Transparência",
+            "Resultados",
+            "Comunidade"
+          ]
+        },
+        "features": [
+          {
+            "title": "Método SMC Completo",
+            "description": "Smart Money Concepts aplicados na prática"
+          },
+          {
+            "title": "Suporte 24/7",
+            "description": "Comunidade ativa de traders experientes"
+          },
+          {
+            "title": "Aprovação Garantida",
+            "description": "Metodologia testada em prop firms"
+          }
+        ],
+        "benefits": {
+          "primary_benefit": "Resultados comprovados em menos tempo",
+          "secondary_benefits": [
+            "Methodology cientificamente validada",
+            "Comunidade de suporte ativa",
+            "Acompanhamento personalizado",
+            "Garantia de satisfação"
+          ]
+        },
+        "testimonials": [
+          {
+            "name": "João Silva",
+            "role": "Trader",
+            "text": "Em 3 meses consegui aprovação na FTMO. Método realmente funciona!"
+          },
+          {
+            "name": "Maria Santos",
+            "role": "Iniciante",
+            "text": "Nunca pensei que conseguiria viver de trading. Obrigada ETF!"
+          }
+        ],
+        "pricing": {
+          "value_proposition": "Investimento que se paga em resultados",
+          "guarantee": "30 dias de garantia total",
+          "payment_options": "12x sem juros no cartão",
+          "bonus_items": [
+            "Bônus exclusivos",
+            "Acesso vitalício",
+            "Comunidade VIP"
+          ]
+        },
+        "faq": [
+          {
+            "q": "Quanto tempo para ser aprovado?",
+            "a": "Em média 90 dias seguindo nossa metodologia."
+          },
+          {
+            "q": "Preciso de capital inicial?",
+            "a": "Não, trabalhamos com prop firms que fornecem capital."
+          },
+          {
+            "q": "Há garantia de aprovação?",
+            "a": "Sim, seguindo o método corretamente, aprovação é garantida."
+          }
+        ],
+        "footer": {
+          "company_description": "Transformando vidas através de general profissional desde 2019.",
+          "contact_info": {
+            "email": "contato@empresa.com",
+            "phone": "(11) 99999-9999",
+            "address": "São Paulo, SP"
+          },
+          "social_links": [
+            "Instagram",
+            "YouTube",
+            "LinkedIn"
+          ],
+          "legal_links": [
+            "Termos de Uso",
+            "Política de Privacidade",
+            "LGPD"
+          ]
+        }
+      },
+      "metaContent": {
+        "title": "Escola de Trading Profissional | Método SMC Completo | ETF Trading School",
+        "description": "Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida.",
+        "keywords": "trading, forex, SMC, prop firm, curso trading, escola trading, smart money concepts",
+        "og_title": "Escola de Trading Profissional | Método SMC Completo | ETF Trading School",
+        "og_description": "Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida.",
+        "twitter_title": "Escola de Trading Profissional | Método SMC Completo | ETF Trading School",
+        "twitter_description": "Torne-se um trader profissional com nosso método SMC comprovado. 1.000+ alunos aprovados em prop firms. Suporte completo e aprovação garantida."
+      },
+      "abVariants": {
+        "headlines": {
+          "variant_a": "Transforme Sua Carreira em Trading Profissional",
+          "variant_b": "Do Zero ao Trader Financiado em 90 Dias",
+          "variant_c": "Método Comprovado: 1.000+ Traders Aprovados",
+          "test_focus": "psychological_trigger"
+        },
+        "ctas": {
+          "variant_a": "Começar Com Segurança",
+          "variant_b": "Acessar Método Comprovado",
+          "variant_c": "Ver Resultados Reais",
+          "test_focus": "conversion_optimization"
+        },
+        "value_propositions": [
+          "Do zero ao trader profissional em 90 dias",
+          "Método comprovado por 1.000+ aprovações",
+          "Trading profissional com suporte completo"
+        ],
+        "social_proof": [
+          "⭐⭐⭐⭐⭐ 4.9/5 baseado em 500+ avaliações",
+          "🏆 Mais de 1.000 alunos formados com sucesso",
+          "💯 95% taxa de aprovação comprovada"
+        ]
+      },
+      "microcopy": {
+        "form_labels": {
+          "name": "Nome",
+          "email": "Seu melhor email",
+          "phone": "Telefone"
+        },
+        "error_messages": {
+          "generic": "Alguns campos precisam ser ajustados"
+        },
+        "success_messages": {
+          "generic": "Perfeito! Em breve você receberá acesso ao método completo."
+        },
+        "navigation": [
+          "Início",
+          "Método",
+          "Resultados",
+          "Preços",
+          "Contato"
+        ],
+        "buttons": {
+          "submit": "Aproveitar Benefício",
+          "cancel": "Revisar"
+        },
+        "loading_states": {
+          "generic": "Preparando seus benefícios..."
+        },
+        "empty_states": {
+          "generic": "Seus resultados aparecerão aqui em breve"
+        },
+        "tooltips": {
+          "help": "Clique aqui para ajuda especializada",
+          "info": "Mais informações sobre este recurso",
+          "contact": "Entre em contato conosco"
+        }
+      },
+      "generated": "2026-03-12T17:39:07.486Z",
+      "context": {
+        "businessType": "general",
+        "psychology": "value",
+        "audience": "millennial"
+      },
+      "files": []
+    }
+  },
+  "image": {
+    "prompts": [],
+    "generated": [],
+    "placeholders": []
+  },
+  "video": {
+    "prompts": [],
+    "scripts": [],
+    "animations": []
+  },
+  "code": {
+    "html": "/root/.openclaw/workspace/nexus-project/projects/teste-conteudo/output/index.html",
+    "css": null,
+    "js": null,
+    "outputPath": "/root/.openclaw/workspace/nexus-project/projects/teste-conteudo/output",
+    "components": [],
+    "libraries": []
+  },
+  "quality": {
+    "score": 0,
+    "lighthouse": null,
+    "accessibility": null,
+    "issues": [
+      "**Business Type:** general",
+      "**Target Audience:** millennial",
+      "**Site Size:** 94KB",
+      "**Files:** 1 arquivos",
+      "**Audit Date:** undefined",
+      "**Total Size:** 94KB",
+      "**CSS Size:** 0KB  ",
+      "**JS Size:** 0KB",
+      "**Images:** 0KB",
+      "**Load Time:** 18 ms",
+      "💡 Verificar contraste de cores para WCAG AA compliance",
+      "**Title:** ✅ \"Escola de Trading Profissional | Método SMC Completo | ETF Trading School\"",
+      "**Description:** ✅ \"Torne-se um trader profissional com nosso método S...\"",
+      "**Keywords:** ⚠️ Ausente",
+      "⚠️ index.html: Título muito longo (> 60 chars)",
+      "💡 Reduzir título para 50-60 caracteres",
+      "💡 Considerar adicionar meta keywords relevantes",
+      "💡 Considerar adicionar structured data (Schema.org)",
+      "💡 Adicionar link canonical para evitar conteúdo duplicado",
+      "**HTML Lines:** 1910"
+    ],
+    "passed": false
+  },
+  "deploy": {
+    "url": null,
+    "platform": null,
+    "deployedAt": null
+  },
+  "references": {
+    "sites": [],
+    "components": [],
+    "niche": null
+  },
+  "errors": [],
+  "checkpoints": []
+}

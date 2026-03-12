@@ -1,0 +1,173 @@
+{
+  "project_id": "summit-prop",
+  "version": 1,
+  "created_at": "2026-03-12T14:38:03.685Z",
+  "agent": "NEXUS Briefing Agent",
+  "company": {
+    "name": "Summit Prop",
+    "sector": "trading",
+    "sector_label": "Prop Trading / Mesa Proprietária",
+    "description": "Mesa proprietária brasileira que oferece contas financiadas para traders de forex e índices. Foco em regras flexíveis, payout rápido e suporte totalmente em português.",
+    "differentials": [
+      "Payout em 24h",
+      "Regras mais flexíveis do mercado",
+      "Suporte 100% em português",
+      "Conta demo ilimitada"
+    ],
+    "current_presence": {
+      "website": "https://summitprop.com.br",
+      "social": {
+        "instagram": "@summitprop",
+        "telegram": "t.me/summitprop"
+      },
+      "detected_tech": [
+        "WordPress",
+        "WooCommerce"
+      ]
+    }
+  },
+  "project": {
+    "objective": "lead-generation",
+    "objective_detail": "Captar leads/clientes",
+    "type": "landing-page",
+    "urgency": "high",
+    "deadline": "2026-03-15"
+  },
+  "audience": {
+    "primary": "Traders intermediários e avançados, 25-40 anos, Brasil, buscando financiamento para operar forex e índices",
+    "secondary": "",
+    "demographics": {
+      "age": "25-40",
+      "gender": "masculino",
+      "income": "média-alta",
+      "tech": "alto"
+    },
+    "pain_points": [
+      "Capital insuficiente para operar",
+      "Props com regras muito rígidas",
+      "Suporte apenas em inglês"
+    ],
+    "desires": [
+      "Conta financiada sem risco pessoal",
+      "Payout rápido",
+      "Suporte em português"
+    ],
+    "behavior": "multi_device"
+  },
+  "brand": {
+    "tone": "premium",
+    "tone_label": "Premium / Sofisticado — Linguagem elevada, exclusividade",
+    "colors": {
+      "primary": "#1a365d",
+      "secondary": "#c9a84c",
+      "accent": "#22d3ee",
+      "keep_current": true
+    },
+    "fonts": {
+      "preference": "modern-sans",
+      "detected": [
+        "Montserrat",
+        "Inter"
+      ]
+    },
+    "style": "dark-premium"
+  },
+  "content": {
+    "sections": [
+      {
+        "id": "hero",
+        "title": "Hero",
+        "required": true
+      },
+      {
+        "id": "how-it-works",
+        "title": "Como Funciona",
+        "required": true
+      },
+      {
+        "id": "plans",
+        "title": "Planos de Conta",
+        "required": true
+      },
+      {
+        "id": "payouts",
+        "title": "Payouts / Resultados",
+        "required": true
+      },
+      {
+        "id": "rules",
+        "title": "Regras e Condições",
+        "required": true
+      },
+      {
+        "id": "testimonials",
+        "title": "Depoimentos de Traders",
+        "required": true
+      },
+      {
+        "id": "dashboard",
+        "title": "Preview da Plataforma",
+        "required": true
+      },
+      {
+        "id": "partners",
+        "title": "Parceiros / Corretoras",
+        "required": false
+      },
+      {
+        "id": "faq",
+        "title": "FAQ",
+        "required": true
+      },
+      {
+        "id": "cta",
+        "title": "CTA Final",
+        "required": true
+      }
+    ],
+    "references": [
+      {
+        "url": "https://ftmo.com",
+        "what_they_like": "Referência visual"
+      },
+      {
+        "url": "https://stripe.com",
+        "what_they_like": "Referência visual"
+      },
+      {
+        "url": "https://topstep.com",
+        "what_they_like": "Referência visual"
+      }
+    ]
+  },
+  "technical": {
+    "type": "static-html",
+    "hosting": "github-pages",
+    "integrations": [
+      "contact-form",
+      "whatsapp-widget"
+    ],
+    "special_features": [
+      "scroll-animations",
+      "3d-background"
+    ]
+  },
+  "materials_provided": {
+    "logo": true,
+    "photos": true,
+    "copy": false,
+    "brand_guide": false,
+    "video": false
+  },
+  "sector_specifics": {
+    "trading_audience_level": "Intermediário",
+    "trading_instruments": [
+      "Forex",
+      "Índices"
+    ],
+    "trading_platform": "MetaTrader 5",
+    "trading_payout": "Ciclo de 14 dias, payout em até 24h após solicitação"
+  },
+  "completeness_score": 100,
+  "ready_for_pipeline": true
+}

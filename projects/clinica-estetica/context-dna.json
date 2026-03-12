@@ -1,0 +1,126 @@
+{
+  "project": {
+    "name": "clinica-estetica",
+    "businessType": "healthcare",
+    "industry": "estética facial e corporal",
+    "projectScale": "medium",
+    "goals": [
+      "captar leads",
+      "agendar consultas",
+      "aumentar reconhecimento da marca"
+    ]
+  },
+  "brand": {
+    "name": "clinica-estetica",
+    "tagline": "Transformando sua beleza com cuidado e excelência",
+    "primaryTraits": [
+      "profissionalismo",
+      "confiança",
+      "inovação"
+    ],
+    "voiceTone": "acolhedor_profissional",
+    "brandArchetype": "caregiver",
+    "communicationStyle": "informativo e acolhedor",
+    "emotionalCore": "autoestima_e_confiança"
+  },
+  "audience": {
+    "primaryAge": "30-50",
+    "gender": "predominante feminino",
+    "income": "média-alta",
+    "psychographics": [
+      "preocupação com aparência",
+      "busca por bem-estar",
+      "valorização da saúde"
+    ],
+    "painPoints": [
+      "insatisfação com aparência",
+      "receio de procedimentos invasivos",
+      "falta de confiança em clínicas"
+    ],
+    "motivations": [
+      "melhorar autoestima",
+      "resultados visíveis",
+      "segurança nos procedimentos"
+    ],
+    "objections": [
+      "medo de dor",
+      "preocupação com custos",
+      "dúvidas sobre resultados"
+    ]
+  },
+  "psychology": {
+    "primary": "trust",
+    "secondary": "transformation",
+    "conversionTriggers": [
+      "depoimentos de pacientes",
+      "antes e depois",
+      "garantia de segurança"
+    ],
+    "emotionalJourney": "Da dúvida à confiança, transformando sua aparência e autoestima"
+  },
+  "visual": {
+    "mood": "clean_elegante_acolhedor",
+    "colorStrategy": "tons de rosa para feminilidade e branco para limpeza",
+    "suggestedPalette": {
+      "primary": "#E75480",
+      "secondary": "#FFFFFF",
+      "accent": "#FFD1DC",
+      "background": "#F5F5F5"
+    },
+    "typography": "sans-serif moderna",
+    "imageStyle": "fotos reais de pacientes e procedimentos"
+  },
+  "content": {
+    "keyMessages": [
+      "Resultados visíveis e seguros",
+      "Cuidado personalizado",
+      "Equipe especializada"
+    ],
+    "uniqueSellingPoints": [
+      "Tecnologia de ponta",
+      "Resultados naturais",
+      "Atendimento personalizado"
+    ],
+    "socialProof": "depoimentos de pacientes e antes e depois",
+    "ctaStrategy": "agendar consulta gratuita"
+  },
+  "seo": {
+    "primaryKeyword": "clínica de estética",
+    "secondaryKeywords": [
+      "procedimentos estéticos",
+      "tratamentos faciais",
+      "clínica de beleza",
+      "estética corporal"
+    ],
+    "searchIntent": "informacional e transacional",
+    "localSEO": true
+  },
+  "technical": {
+    "layoutStyle": "hero_centric",
+    "prioritySections": [
+      "hero",
+      "serviços",
+      "depoimentos",
+      "antes e depois",
+      "cta"
+    ],
+    "interactionLevel": "medium",
+    "mobileFirst": true
+  },
+  "competitors": {
+    "directCompetitors": [
+      "Clínica Viva Bem",
+      "Estética e Saúde"
+    ],
+    "differentiators": [
+      "tecnologia de ponta",
+      "resultados naturais",
+      "atendimento personalizado"
+    ],
+    "marketPosition": "Clínica de estética líder em tecnologia e resultados naturais"
+  },
+  "filePath": "/root/.openclaw/workspace/nexus-project/projects/clinica-estetica/context-dna.json",
+  "_generatedBy": "nexus-context-agent-v2",
+  "_generatedAt": "2026-03-12T19:40:58.394Z",
+  "_usedLLM": true
+}

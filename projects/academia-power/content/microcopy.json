@@ -1,0 +1,19 @@
+{
+  "formLabels": {
+    "name": "Seu nome",
+    "email": "Seu melhor e-mail",
+    "phone": "WhatsApp",
+    "submit": "Agendar aula"
+  },
+  "navigation": [
+    "Início",
+    "Sobre",
+    "Serviços",
+    "Depoimentos",
+    "Preços",
+    "Contato"
+  ],
+  "loading": "Processando seu agendamento...",
+  "success": "Sua aula foi agendada com sucesso! Aguarde nosso contato.",
+  "error": "Ocorreu um erro. Por favor, tente novamente."
+}

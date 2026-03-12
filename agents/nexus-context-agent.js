@@ -296,6 +296,7 @@ class NexusContextAgent {
     }
 
     const filePath = path.join(outputDir, 'context-dna.json');
+    contextDNA.filePath = filePath;
     
     // Salva o arquivo
     fs.writeFileSync(filePath, JSON.stringify(contextDNA, null, 2));

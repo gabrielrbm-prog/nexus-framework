@@ -1,0 +1,179 @@
+{
+  "project": "fintech",
+  "sector": "fintech",
+  "total_questions": 12,
+  "questions": [
+    {
+      "id": "objective",
+      "category": "Objetivo",
+      "question": "Qual o principal objetivo desse site?",
+      "options": [
+        "Captar leads/clientes",
+        "Vender produto/serviço diretamente",
+        "Institucional / credibilidade",
+        "Landing page para campanha",
+        "Portfolio / Showcase",
+        "Outro"
+      ],
+      "required": true,
+      "skip": false
+    },
+    {
+      "id": "differentials",
+      "category": "Diferencial",
+      "question": "O que torna a empresa única? Liste os principais diferenciais.",
+      "type": "open",
+      "required": true,
+      "skip": false
+    },
+    {
+      "id": "references",
+      "category": "Referências",
+      "question": "Tem sites que admira e gostaria de usar como referência? (pode enviar links)",
+      "type": "open",
+      "required": false,
+      "skip": false,
+      "hint": "Pode ser concorrentes, sites de outro setor, ou qualquer site que goste do visual."
+    },
+    {
+      "id": "sections",
+      "category": "Conteúdo",
+      "question": "Quais seções o site deve ter?",
+      "options": [
+        "Hero *",
+        "Funcionalidades *",
+        "Segurança *",
+        "Como Funciona *",
+        "Planos / Preços",
+        "Depoimentos *",
+        "Parceiros",
+        "FAQ *",
+        "CTA Final *"
+      ],
+      "multiSelect": true,
+      "required": true,
+      "skip": false,
+      "default": [
+        "Hero",
+        "Funcionalidades",
+        "Segurança",
+        "Como Funciona",
+        "Depoimentos",
+        "FAQ",
+        "CTA Final"
+      ],
+      "hint": "As marcadas com * são recomendadas para o seu nicho."
+    },
+    {
+      "id": "tone",
+      "category": "Marca",
+      "question": "Como a marca deve se comunicar?",
+      "options": [
+        "Premium / Sofisticado — Linguagem elevada, exclusividade",
+        "Casual / Descontraído — Próximo, amigável, leve",
+        "Formal / Corporativo — Sério, profissional, institucional",
+        "Agressivo / Vendedor — Urgência, escassez, direto",
+        "Tech / Inovador — Moderno, futurista, disruptivo",
+        "Acolhedor / Humano — Empático, cuidadoso, próximo",
+        "Ousado / Provocador — Desafia o status quo, diferente"
+      ],
+      "required": true,
+      "skip": false,
+      "default": "Tech / Inovador"
+    },
+    {
+      "id": "colors",
+      "category": "Marca",
+      "question": "Tem preferência de cores para o site?",
+      "type": "open",
+      "required": false,
+      "skip": false,
+      "hint": "Se não tiver preferência, vamos criar uma paleta baseada no seu nicho."
+    },
+    {
+      "id": "urgency",
+      "category": "Prazo",
+      "question": "Qual a urgência desse projeto?",
+      "options": [
+        "Urgente — preciso para ontem",
+        "Rápido — essa semana",
+        "Normal — 1-2 semanas",
+        "Tranquilo — sem pressa"
+      ],
+      "required": true,
+      "skip": false
+    },
+    {
+      "id": "materials",
+      "category": "Materiais",
+      "question": "Quais materiais você já tem prontos?",
+      "options": [
+        "Logo em alta resolução",
+        "Fotos profissionais",
+        "Textos/copy pronto",
+        "Manual da marca / Brand guide",
+        "Vídeo institucional",
+        "Nenhum — preciso de tudo"
+      ],
+      "multiSelect": true,
+      "required": true,
+      "skip": false
+    },
+    {
+      "id": "extras",
+      "category": "Funcionalidades",
+      "question": "Precisa de alguma funcionalidade especial?",
+      "options": [
+        "Formulário de contato/lead",
+        "Chat / WhatsApp widget",
+        "Integração com CRM",
+        "Blog",
+        "Área de membros",
+        "Animações avançadas",
+        "Background 3D",
+        "Multi-idioma",
+        "Nenhuma extra"
+      ],
+      "multiSelect": true,
+      "required": false,
+      "skip": false
+    },
+    {
+      "id": "fintech_regulation",
+      "question": "A empresa possui regulamentação/licença financeira?",
+      "options": [
+        "Sim, Bacen",
+        "Sim, CVM",
+        "Sim, outra",
+        "Em processo",
+        "Não aplicável"
+      ],
+      "type": "single",
+      "category": "Específico do Nicho",
+      "skip": false
+    },
+    {
+      "id": "fintech_security",
+      "question": "Quais certificações de segurança possuem?",
+      "options": [
+        "PCI DSS",
+        "ISO 27001",
+        "SOC 2",
+        "Nenhuma específica",
+        "Outra"
+      ],
+      "multiSelect": true,
+      "category": "Específico do Nicho",
+      "skip": false
+    },
+    {
+      "id": "fintech_onboarding",
+      "question": "Como funciona o onboarding do cliente?",
+      "type": "open",
+      "category": "Específico do Nicho",
+      "skip": false
+    }
+  ],
+  "generated_at": "2026-03-12T14:03:33.037Z",
+  "agent": "NEXUS Briefing Agent"
+}

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Brief — Summit Prop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & BASE ============ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0b0f1a;
+  color: #e2e8f0;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+a { color: #c9a84c; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============ LAYOUT ============ */
+.report {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+}
+
+/* ============ HEADER ============ */
+.header {
+  text-align: center;
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 3rem;
+}
+.header .logo-placeholder {
+  width: 80px; height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #1a365d, #c9a84c);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 2rem; font-weight: 800; color: #fff;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.header h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, #c9a84c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+.header .subtitle {
+  font-size: 1rem;
+  color: #94a3b8;
+  font-weight: 400;
+}
+.header .meta {
+  margin-top: 1.2rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+.header .meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ============ SECTIONS ============ */
+.section {
+  margin-bottom: 3rem;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.section-number {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #c9a84c22, #c9a84c44);
+  border: 1px solid #c9a84c44;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700;
+  color: #c9a84c;
+  flex-shrink: 0;
+}
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+/* ============ CARDS ============ */
+.card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.card-mini {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+.card-mini .label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+.card-mini .value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+/* ============ TAGS & BADGES ============ */
+.tag {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin: 0.2rem;
+  background: #c9a84c18;
+  color: #c9a84c;
+  border: 1px solid #c9a84c33;
+}
+.tag.accent {
+  background: #22d3ee18;
+  color: #22d3ee;
+  border-color: #22d3ee33;
+}
+.tag.warn {
+  background: #f59e0b18;
+  color: #f59e0b;
+  border-color: #f59e0b33;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.badge.success {
+  background: #10b98122;
+  color: #10b981;
+  border: 1px solid #10b98144;
+}
+.badge.warning {
+  background: #f59e0b22;
+  color: #f59e0b;
+  border: 1px solid #f59e0b44;
+}
+
+/* ============ COLOR SWATCHES ============ */
+.color-palette {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+.swatch {
+  text-align: center;
+}
+.swatch-circle {
+  width: 64px; height: 64px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.1);
+  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.swatch-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.swatch-hex {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  font-weight: 600;
+  font-family: 'SF Mono', Consolas, monospace;
+}
+
+/* ============ PERSONA CARD ============ */
+.persona-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.persona-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c9a84c, #22d3ee);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; color: #fff;
+}
+.persona-info h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.3rem;
+}
+.persona-info .desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-bottom: 1rem;
+}
+.persona-lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.persona-list h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+.persona-list ul {
+  list-style: none;
+  padding: 0;
+}
+.persona-list li {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  padding: 0.25rem 0;
+  padding-left: 1rem;
+  position: relative;
+}
+.persona-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.persona-list.pains li::before { background: #ef4444; }
+.persona-list.desires li::before { background: #10b981; }
+
+/* ============ SECTIONS CHECKLIST ============ */
+.checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.6rem;
+}
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.9rem;
+}
+.checklist-item.required {
+  border-color: #c9a84c33;
+  background: #c9a84c08;
+}
+.check-icon {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; flex-shrink: 0;
+}
+.check-icon.on {
+  background: #c9a84c33;
+  color: #c9a84c;
+}
+.check-icon.off {
+  background: rgba(255,255,255,0.05);
+  color: #475569;
+}
+
+/* ============ REFERENCES ============ */
+.ref-list {
+  display: grid;
+  gap: 0.8rem;
+}
+.ref-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.ref-thumb {
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; color: #64748b;
+  flex-shrink: 0;
+}
+.ref-info .url {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c9a84c;
+}
+.ref-info .note {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* ============ PROGRESS BAR ============ */
+.progress-container {
+  margin-top: 1rem;
+}
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.5s ease;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  color: #94a3b8;
+}
+
+/* ============ TIMELINE ============ */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255,255,255,0.08);
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 5px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #c9a84c;
+  border: 3px solid #0b0f1a;
+  z-index: 1;
+}
+.timeline-item .tl-date {
+  font-size: 0.75rem;
+  color: #c9a84c;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.timeline-item .tl-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+.timeline-item .tl-desc {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+/* ============ FOOTER ============ */
+.footer {
+  text-align: center;
+  padding: 3rem 0 2rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 3rem;
+}
+.footer .brand {
+  font-size: 0.85rem;
+  color: #475569;
+  font-weight: 500;
+}
+.footer .brand strong {
+  background: linear-gradient(135deg, #c9a84c, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.footer .gen-date {
+  font-size: 0.75rem;
+  color: #334155;
+  margin-top: 0.3rem;
+}
+
+/* ============ SECTOR SPECIFICS ============ */
+.specifics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+.specific-item {
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.specific-item .q {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.3rem;
+}
+.specific-item .a {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* ============ PRINT ============ */
+@media print {
+  body {
+    background: #fff;
+    color: #1e293b;
+    font-size: 11pt;
+  }
+  .report { padding: 0; max-width: 100%; }
+  .header h1 {
+    background: none;
+    -webkit-text-fill-color: #0f172a;
+    color: #0f172a;
+  }
+  .header .subtitle, .header .meta span { color: #475569; }
+  .section-number {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-color: #e2e8f0;
+  }
+  .section-title { color: #0f172a; }
+  .card, .card-mini, .persona-card, .checklist-item, .ref-item, .specific-item {
+    background: #fafafa;
+    border-color: #e2e8f0;
+    color: #1e293b;
+  }
+  .card-mini .label { color: #64748b; }
+  .card-mini .value { color: #0f172a; }
+  .persona-info h3 { color: #0f172a; }
+  .persona-info .desc { color: #475569; }
+  .persona-list li { color: #334155; }
+  .persona-list h4 { color: #64748b; }
+  .swatch-label { color: #475569; }
+  .swatch-hex { color: #1e293b; }
+  .swatch-circle { border-color: #e2e8f0; }
+  .tag { border-color: #d1d5db; background: #f3f4f6; color: #374151; }
+  .timeline::before { background: #d1d5db; }
+  .timeline-item .tl-date { color: #1e293b; }
+  .timeline-item .tl-title { color: #0f172a; }
+  .timeline-item .tl-desc { color: #475569; }
+  .timeline-item::before { border-color: #fff; }
+  .progress-bar { background: #e5e7eb; }
+  .progress-label { color: #475569; }
+  .footer .brand { color: #475569; }
+  .footer .brand strong { -webkit-text-fill-color: #1e293b; color: #1e293b; background: none; }
+  .footer .gen-date { color: #94a3b8; }
+  .check-icon.on { background: #dbeafe; color: #1d4ed8; }
+  .check-icon.off { background: #f3f4f6; color: #9ca3af; }
+  .checklist-item.required { background: #eff6ff; border-color: #bfdbfe; }
+  .ref-info .url { color: #1d4ed8; }
+  .ref-info .note { color: #64748b; }
+  .specific-item .q { color: #64748b; }
+  .specific-item .a { color: #0f172a; }
+}
+
+@page {
+  size: A4;
+  margin: 1.5cm;
+}
+</style>
+</head>
+<body>
+<div class="report">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-placeholder">S</div>
+    <h1>Creative Brief</h1>
+    <div class="subtitle">Summit Prop — Prop Trading / Mesa Proprietária</div>
+    <div class="meta">
+      <span>Versao 1</span>
+      <span>12 de março de 2026</span>
+      <span>Score: 100%</span>
+    </div>
+  </div>
+
+  <!-- 01. RESUMO DO PROJETO -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <div class="section-title">Resumo do Projeto</div>
+    </div>
+  <div class="card-grid">
+    <div class="card-mini">
+      <div class="label">Empresa</div>
+      <div class="value">Summit Prop</div>
+    </div>
+    <div class="card-mini">
+      <div class="label">Setor</div>
+      <div class="value">Prop Trading / Mesa Proprietária</div>
+    </div>
+    <div class="card-mini">
+      <div class="label">Objetivo</div>
+      <div class="value">Captacao de Leads</div>
+    </div>
+    <div class="card-mini">
+      <div class="label">Tipo</div>
+      <div class="value">landing-page</div>
+    </div>
+    <div class="card-mini">
+      <div class="label">Urgencia</div>
+      <div class="value">Alta — Essa Semana</div>
+    </div>
+    <div class="card-mini">
+      <div class="label">Prazo Estimado</div>
+      <div class="value">2026-03-15</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:1rem"><p style="color:#94a3b8;font-size:0.9rem">Mesa proprietária brasileira que oferece contas financiadas para traders de forex e índices. Foco em regras flexíveis, payout rápido e suporte totalmente em português.</p></div>
+  </div>
+
+  <!-- 02. DIFERENCIAIS -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <div class="section-title">Diferenciais</div>
+    </div>
+  <div class="card">
+    <span class="tag">Payout em 24h</span>
+    <span class="tag">Regras mais flexíveis do mercado</span>
+    <span class="tag">Suporte 100% em português</span>
+    <span class="tag">Conta demo ilimitada</span>
+    
+  </div>
+  </div>
+
+  <!-- 03. PÚBLICO-ALVO -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <div class="section-title">Publico-Alvo</div>
+    </div>
+  <div class="persona-card">
+    <div class="persona-avatar">P</div>
+    <div class="persona-info">
+      <h3>Persona Principal</h3>
+      <div class="desc">Traders intermediários e avançados, 25-40 anos, Brasil, buscando financiamento para operar forex e índices</div>
+      
+      <div class="persona-lists">
+        <div class="persona-list pains">
+          <h4>Dores</h4>
+          <ul>
+            <li>Capital insuficiente para operar</li>
+            <li>Props com regras muito rígidas</li>
+            <li>Suporte apenas em inglês</li>
+            
+          </ul>
+        </div>
+        <div class="persona-list desires">
+          <h4>Desejos</h4>
+          <ul>
+            <li>Conta financiada sem risco pessoal</li>
+            <li>Payout rápido</li>
+            <li>Suporte em português</li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card-grid" style="margin-top:1rem">
+    <div class="card-mini"><div class="label">Idade</div><div class="value">25-40</div></div>
+    <div class="card-mini"><div class="label">Genero</div><div class="value">masculino</div></div>
+    <div class="card-mini"><div class="label">Renda</div><div class="value">média-alta</div></div>
+    <div class="card-mini"><div class="label">Localizacao</div><div class="value">Brasil</div></div>
+  </div>
+  </div>
+
+  <!-- 04. MARCA & IDENTIDADE -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">04</div>
+      <div class="section-title">Marca e Identidade Visual</div>
+    </div>
+  <div class="card">
+    <div class="card-grid" style="margin-bottom:1.5rem">
+      <div class="card-mini" style="border:none;padding:0">
+        <div class="label">Tom de Comunicacao</div>
+        <div class="value">Premium / Sofisticado — Linguagem elevada, exclusividade</div>
+      </div>
+      <div class="card-mini" style="border:none;padding:0">
+        <div class="label">Estilo Visual</div>
+        <div class="value">dark-premium</div>
+      </div>
+      <div class="card-mini" style="border:none;padding:0">
+        <div class="label">Tipografia</div>
+        <div class="value">modern-sans</div>
+      </div>
+    </div>
+    <div class="label" style="margin-bottom:0.8rem;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;font-weight:600">Paleta de Cores</div>
+    <div class="color-palette">
+      
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#1a365d"></div>
+        <div class="swatch-label">Primaria</div>
+        <div class="swatch-hex">#1a365d</div>
+      </div>
+      
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#c9a84c"></div>
+        <div class="swatch-label">Secundaria</div>
+        <div class="swatch-hex">#c9a84c</div>
+      </div>
+      
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#22d3ee"></div>
+        <div class="swatch-label">Destaque</div>
+        <div class="swatch-hex">#22d3ee</div>
+      </div>
+    </div>
+    <p style="margin-top:1rem;font-size:0.8rem;color:#64748b">Cores atuais mantidas conforme solicitado</p>
+  </div>
+  </div>
+
+  <!-- 05. SEÇÕES DO SITE -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">05</div>
+      <div class="section-title">Secoes do Site</div>
+    </div>
+  <div class="checklist">
+    
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>Hero</span>
+    </div>
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>Como Funciona</span>
+    </div>
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>Planos de Conta</span>
+    </div>
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>Payouts / Resultados</span>
+    </div>
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>Regras e Condições</span>
+    </div>
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>Depoimentos de Traders</span>
+    </div>
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>Preview da Plataforma</span>
+    </div>
+    <div class="checklist-item">
+      <div class="check-icon off">&#8212;</div>
+      <span>Parceiros / Corretoras</span>
+    </div>
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>FAQ</span>
+    </div>
+    <div class="checklist-item required">
+      <div class="check-icon on">&#10003;</div>
+      <span>CTA Final</span>
+    </div>
+  </div>
+  </div>
+
+  <!-- 06. REFERÊNCIAS -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">06</div>
+      <div class="section-title">Referencias Visuais</div>
+    </div>
+  
+  <div class="ref-list">
+    
+    <div class="ref-item">
+      <div class="ref-thumb">WWW</div>
+      <div class="ref-info">
+        <div class="url">https://ftmo.com</div>
+        <div class="note">Referência visual</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-thumb">WWW</div>
+      <div class="ref-info">
+        <div class="url">https://stripe.com</div>
+        <div class="note">Referência visual</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-thumb">WWW</div>
+      <div class="ref-info">
+        <div class="url">https://topstep.com</div>
+        <div class="note">Referência visual</div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- 07. REQUISITOS TÉCNICOS -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">07</div>
+      <div class="section-title">Requisitos Tecnicos</div>
+    </div>
+  <div class="card-grid">
+    <div class="card-mini">
+      <div class="label">Tipo</div>
+      <div class="value">static-html</div>
+    </div>
+    <div class="card-mini">
+      <div class="label">Hospedagem</div>
+      <div class="value">github-pages</div>
+    </div>
+  </div>
+  
+  <div class="card" style="margin-top:1rem">
+    <div class="label" style="margin-bottom:0.5rem;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;font-weight:600">Integracoes</div>
+    <span class="tag accent">contact-form</span> <span class="tag accent">whatsapp-widget</span>
+  </div>
+  
+  <div class="card" style="margin-top:1rem">
+    <div class="label" style="margin-bottom:0.5rem;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;font-weight:600">Funcionalidades Especiais</div>
+    <span class="tag">scroll-animations</span> <span class="tag">3d-background</span>
+  </div>
+  </div>
+
+  <!-- 08. MATERIAIS -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">08</div>
+      <div class="section-title">Materiais Fornecidos</div>
+    </div>
+  <div class="card-grid">
+    
+    <div class="card-mini">
+      <div class="label">Logo</div>
+      <div class="value" style="color:#10b981">Disponivel</div>
+    </div>
+    
+    <div class="card-mini">
+      <div class="label">Fotos</div>
+      <div class="value" style="color:#10b981">Disponivel</div>
+    </div>
+    
+    <div class="card-mini">
+      <div class="label">Textos / Copy</div>
+      <div class="value" style="color:#ef4444">Nao disponivel</div>
+    </div>
+    
+    <div class="card-mini">
+      <div class="label">Brand Guide</div>
+      <div class="value" style="color:#ef4444">Nao disponivel</div>
+    </div>
+    
+    <div class="card-mini">
+      <div class="label">Video</div>
+      <div class="value" style="color:#ef4444">Nao disponivel</div>
+    </div>
+  </div>
+  </div>
+
+  <!-- 09. ESPECÍFICOS DO NICHO -->
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">09</div>
+      <div class="section-title">Detalhes Especificos do Nicho</div>
+    </div>
+  <div class="specifics-grid">
+    
+    <div class="specific-item">
+      <div class="q">Trading Audience Level</div>
+      <div class="a">Intermediário</div>
+    </div>
+    <div class="specific-item">
+      <div class="q">Trading Instruments</div>
+      <div class="a">Forex, Índices</div>
+    </div>
+    <div class="specific-item">
+      <div class="q">Trading Platform</div>
+      <div class="a">MetaTrader 5</div>
+    </div>
+    <div class="specific-item">
+      <div class="q">Trading Payout</div>
+      <div class="a">Ciclo de 14 dias, payout em até 24h após solicitação</div>
+    </div>
+  </div>
+  </div>
+
+  <!-- 10. COMPLETUDE & STATUS -->
+  
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <div class="section-title">Status do Brief</div>
+    </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div>
+        <div style="font-size:1.1rem;font-weight:700;color:#f1f5f9">Completude do Brief</div>
+        <div style="font-size:0.85rem;color:#94a3b8">Quanto mais completo, melhor o resultado final</div>
+      </div>
+      <div class="badge success">
+        Pronto para Pipeline
+      </div>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#10b981,#22d3ee)"></div>
+      </div>
+      <div class="progress-label">
+        <span>0%</span>
+        <span style="font-weight:700;color:#10b981">100%</span>
+        <span>100%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="card" style="margin-top:1rem">
+    <div class="label" style="margin-bottom:1.2rem;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;font-weight:600">Proximos Passos</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="tl-date">Agora</div>
+        <div class="tl-title">Brief Criativo Gerado</div>
+        <div class="tl-desc">Documento de briefing completo e validado</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-date">Proximo</div>
+        <div class="tl-title">Design System</div>
+        <div class="tl-desc">Criacao da identidade visual e componentes</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-date">Em seguida</div>
+        <div class="tl-title">Desenvolvimento</div>
+        <div class="tl-desc">Codificacao do site com base no brief</div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-date">2026-03-15</div>
+        <div class="tl-title">Entrega Final</div>
+        <div class="tl-desc">Site publicado e funcionando</div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="brand">Gerado por <strong>NEXUS Framework</strong></div>
+    <div class="gen-date">12 de março de 2026 &mdash; v1</div>
+  </div>
+
+</div>
+</body>
+</html>

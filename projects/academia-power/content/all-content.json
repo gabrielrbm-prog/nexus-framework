@@ -1,0 +1,242 @@
+{
+  "headlines": {
+    "primary": "Transforme seu corpo em 12 semanas",
+    "variants": [
+      "Resultados rápidos e garantidos",
+      "Pare de adiar sua transformação",
+      "Sua melhor versão começa aqui"
+    ],
+    "psychological_focus": "transformation"
+  },
+  "ctas": {
+    "primary": "Agende aula experimental",
+    "variants": [
+      "Comece sua transformação",
+      "Reserve sua aula grátis",
+      "Experimente sem compromisso"
+    ]
+  },
+  "sectionContent": {
+    "hero": {
+      "headline": "Transforme seu corpo em 12 semanas",
+      "subheadline": "Na Academia Power, você conquista o corpo que sempre sonhou com treinos personalizados e professores especializados.",
+      "social_proof": "+1.500 alunos transformados",
+      "trust_badges": [
+        "Avaliação 4.9/5",
+        "Certificados internacionais",
+        "Ambiente seguro"
+      ]
+    },
+    "about": {
+      "title": "Sobre a Academia Power",
+      "description": "Somos uma academia focada em resultados, oferecendo treinos personalizados e um ambiente acolhedor para você alcançar seus objetivos.",
+      "highlights": [
+        "Treinos personalizados",
+        "Professores especializados",
+        "Ambiente moderno"
+      ]
+    },
+    "features": {
+      "title": "O que oferecemos",
+      "items": [
+        {
+          "title": "Treinos personalizados",
+          "description": "Planos de treino adaptados ao seu objetivo e nível.",
+          "icon": "💪"
+        },
+        {
+          "title": "Professores especializados",
+          "description": "Equipe de profissionais certificados e experientes.",
+          "icon": "👨‍🏫"
+        },
+        {
+          "title": "Ambiente moderno",
+          "description": "Equipamentos de última geração e espaços confortáveis.",
+          "icon": "🏋️‍♂️"
+        },
+        {
+          "title": "Aulas experimentais",
+          "description": "Experimente nossa metodologia sem compromisso.",
+          "icon": "🎯"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Benefícios para você",
+      "items": [
+        {
+          "title": "Resultados rápidos",
+          "description": "Alcance seus objetivos em menos tempo com nossos treinos eficientes."
+        },
+        {
+          "title": "Aumento da autoestima",
+          "description": "Sinta-se mais confiante com seu corpo transformado."
+        },
+        {
+          "title": "Melhora na saúde",
+          "description": "Ganhe mais energia e disposição no seu dia a dia."
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "Depoimentos de alunos",
+      "items": [
+        {
+          "name": "Carlos Silva",
+          "role": "Empresário",
+          "text": "Em 3 meses na Academia Power, perdi 10kg e ganhei muita disposição. Recomendo!",
+          "rating": 5
+        },
+        {
+          "name": "Ana Paula",
+          "role": "Professora",
+          "text": "Os treinos personalizados mudaram minha vida. Hoje me sinto mais confiante e saudável.",
+          "rating": 5
+        },
+        {
+          "name": "Roberto Santos",
+          "role": "Engenheiro",
+          "text": "A equipe é incrível e os resultados são visíveis em poucas semanas.",
+          "rating": 5
+        }
+      ]
+    },
+    "pricing": {
+      "title": "Nossos planos",
+      "subtitle": "Investimento que transforma",
+      "plans": [
+        {
+          "name": "Básico",
+          "price": "R$ 129/mês",
+          "features": [
+            "Acesso à musculação",
+            "Treino inicial",
+            "Avaliação física"
+          ],
+          "cta": "Assinar agora",
+          "highlighted": false
+        },
+        {
+          "name": "Premium",
+          "price": "R$ 199/mês",
+          "features": [
+            "Treinos personalizados",
+            "Acesso ilimitado",
+            "Avaliação mensal"
+          ],
+          "cta": "Assinar agora",
+          "highlighted": true
+        },
+        {
+          "name": "VIP",
+          "price": "R$ 299/mês",
+          "features": [
+            "Treinos exclusivos",
+            "Acompanhamento individual",
+            "Nutricionista"
+          ],
+          "cta": "Assinar agora",
+          "highlighted": false
+        }
+      ]
+    },
+    "faq": {
+      "title": "Perguntas Frequentes",
+      "items": [
+        {
+          "question": "Preciso ter experiência para treinar na Academia Power?",
+          "answer": "Não, nossos treinos são adaptados para todos os níveis, desde iniciantes até avançados."
+        },
+        {
+          "question": "Qual o horário de funcionamento?",
+          "answer": "Funcionamos de segunda a sexta, das 6h às 22h, e sábados das 8h às 14h."
+        },
+        {
+          "question": "Posso cancelar meu plano a qualquer momento?",
+          "answer": "Sim, nosso cancelamento é simples e sem burocracia."
+        },
+        {
+          "question": "Há acompanhamento nutricional?",
+          "answer": "Sim, oferecemos acompanhamento nutricional em nossos planos VIP."
+        }
+      ]
+    },
+    "footer": {
+      "tagline": "Transforme seu corpo, potencialize sua vida",
+      "contact": {
+        "phone": "(11) 9999-9999",
+        "email": "contato@academiapower.com.br",
+        "address": "Av. Paulista, 1000 - São Paulo, SP"
+      },
+      "links": [
+        "Início",
+        "Sobre",
+        "Serviços",
+        "Contato"
+      ]
+    }
+  },
+  "metaContent": {
+    "seo": {
+      "title": "Academia Power | Transforme seu corpo em 12 semanas",
+      "description": "Na Academia Power, você conquista o corpo que sempre sonhou com treinos personalizados e professores especializados. Agende sua aula experimental!",
+      "keywords": "academia de musculação, treinamento funcional, planos de assinatura, aula experimental",
+      "ogTitle": "Transforme seu corpo na Academia Power",
+      "ogDescription": "Conquiste seus objetivos com treinos personalizados e resultados garantidos. Agende sua aula experimental!"
+    }
+  },
+  "abVariants": {
+    "headlines": [
+      "Transforme seu corpo em 3 meses",
+      "Sua melhor versão começa aqui"
+    ],
+    "ctas": [
+      "Reserve sua aula grátis",
+      "Comece sua transformação"
+    ],
+    "valueProps": [
+      "Resultados rápidos e garantidos",
+      "Treinos personalizados e eficientes"
+    ]
+  },
+  "microcopy": {
+    "formLabels": {
+      "name": "Seu nome",
+      "email": "Seu melhor e-mail",
+      "phone": "WhatsApp",
+      "submit": "Agendar aula"
+    },
+    "navigation": [
+      "Início",
+      "Sobre",
+      "Serviços",
+      "Depoimentos",
+      "Preços",
+      "Contato"
+    ],
+    "loading": "Processando seu agendamento...",
+    "success": "Sua aula foi agendada com sucesso! Aguarde nosso contato.",
+    "error": "Ocorreu um erro. Por favor, tente novamente."
+  },
+  "stats": [
+    {
+      "value": "1.500+",
+      "label": "alunos transformados"
+    },
+    {
+      "value": "98%",
+      "label": "satisfação dos alunos"
+    },
+    {
+      "value": "12",
+      "label": "professores especializados"
+    },
+    {
+      "value": "4.9",
+      "label": "avaliação média"
+    }
+  ],
+  "_generatedBy": "nexus-content-agent-v2",
+  "_generatedAt": "2026-03-12T19:45:53.344Z",
+  "_usedLLM": true
+}

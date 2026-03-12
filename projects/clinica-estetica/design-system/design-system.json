@@ -1,0 +1,99 @@
+{
+  "_generatedBy": "nexus-design-agent-v2",
+  "_generatedAt": "2026-03-12T19:41:12.823Z",
+  "_usedLLM": true,
+  "_rationale": "A combinação de cores suaves e elegantes transmite confiança e autoestima, essenciais para uma clínica de estética. As tipografias escolhidas garantem legibilidade e sofisticação, alinhadas ao mood clean_elegante_acolhedor.",
+  "colors": {
+    "primary": {
+      "50": "#fcf2f5",
+      "100": "#fbe9ef",
+      "200": "#f7c5d4",
+      "300": "#f098b3",
+      "400": "#ea6c92",
+      "500": "#E75480",
+      "600": "#e82c64",
+      "700": "#d9124d",
+      "800": "#b30f40",
+      "900": "#910831",
+      "base": "#E75480"
+    },
+    "secondary": {
+      "50": "#f8f7f7",
+      "100": "#f4f1f1",
+      "200": "#e6e6e6",
+      "300": "#cccccc",
+      "400": "#b3b3b3",
+      "500": "#FFFFFF",
+      "600": "#eceaea",
+      "700": "#dad2d2",
+      "800": "#c8bcbc",
+      "900": "#baa1a1",
+      "base": "#FFFFFF"
+    },
+    "accent": {
+      "50": "#fef0f4",
+      "100": "#fee6ec",
+      "200": "#ffccd8",
+      "300": "#ff99b1",
+      "400": "#ff668a",
+      "500": "#FFD1DC",
+      "600": "#ffa8bd",
+      "700": "#ff809d",
+      "800": "#ff577e",
+      "900": "#ff2e5f",
+      "base": "#FFD1DC"
+    },
+    "background": "#F5F5F5",
+    "surface": "#FFFFFF",
+    "text": "#333333",
+    "textDim": "#666666",
+    "success": "#4CAF50",
+    "warning": "#FFC107",
+    "error": "#F44336",
+    "darkMode": false
+  },
+  "typography": {
+    "fontFamily": "Poppins",
+    "headingFamily": "Playfair Display",
+    "baseFontSize": "16px",
+    "headingWeight": "700",
+    "bodyWeight": "400",
+    "lineHeight": "1.6",
+    "sizes": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem",
+      "6xl": "3.75rem",
+      "7xl": "4.5rem"
+    }
+  },
+  "spacing": {
+    "section": "8rem",
+    "card": "2rem",
+    "borderRadius": {
+      "sm": "4px",
+      "md": "12px",
+      "lg": "16px",
+      "xl": "20px",
+      "full": "9999px"
+    }
+  },
+  "effects": {
+    "glassmorphism": false,
+    "gradients": false,
+    "shadows": "subtle",
+    "animations": "minimal",
+    "glassBg": "#FFFFFF",
+    "glassBlur": "none",
+    "primaryGlow": "0 0 40px #E7548026",
+    "gradient": "linear-gradient(135deg, #E75480, #FFFFFF, #FFD1DC)"
+  },
+  "businessType": "healthcare",
+  "brandName": "clinica-estetica"
+}

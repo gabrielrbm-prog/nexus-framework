@@ -1,0 +1,126 @@
+{
+  "project": {
+    "name": "academia-power",
+    "businessType": "fitness",
+    "industry": "academia de musculação e treinamento funcional",
+    "projectScale": "medium",
+    "goals": [
+      "captar novos alunos",
+      "aumentar a retenção de alunos",
+      "promover planos de assinatura"
+    ]
+  },
+  "brand": {
+    "name": "Academia Power",
+    "tagline": "Transforme seu corpo, potencialize sua vida",
+    "primaryTraits": [
+      "inovadora",
+      "acolhedora",
+      "motivadora"
+    ],
+    "voiceTone": "motivacional_confiável",
+    "brandArchetype": "hero",
+    "communicationStyle": "direta e motivacional",
+    "emotionalCore": "transformação_pessoal"
+  },
+  "audience": {
+    "primaryAge": "25-45",
+    "gender": "todos",
+    "income": "média",
+    "psychographics": [
+      "busca por saúde",
+      "interesse em bem-estar",
+      "desejo de melhorar a autoestima"
+    ],
+    "painPoints": [
+      "falta de tempo para treinar",
+      "dificuldade em manter a motivação",
+      "insatisfação com o próprio corpo"
+    ],
+    "motivations": [
+      "melhorar a saúde",
+      "ganhar condicionamento físico",
+      "aumentar a autoestima"
+    ],
+    "objections": [
+      "preço alto",
+      "medo de não conseguir resultados",
+      "falta de tempo"
+    ]
+  },
+  "psychology": {
+    "primary": "transformation",
+    "secondary": "social_proof",
+    "conversionTriggers": [
+      "testemunhos de alunos",
+      "antes e depois",
+      "garantia de resultados"
+    ],
+    "emotionalJourney": "Do desconforto com o próprio corpo à confiança e satisfação"
+  },
+  "visual": {
+    "mood": "moderno_energético_motivador",
+    "colorStrategy": "tons de vermelho para energia e preto para sofisticação",
+    "suggestedPalette": {
+      "primary": "#FF0000",
+      "secondary": "#000000",
+      "accent": "#FFFFFF",
+      "background": "#F5F5F5"
+    },
+    "typography": "sans-serif moderna",
+    "imageStyle": "fotos reais de alunos treinando"
+  },
+  "content": {
+    "keyMessages": [
+      "Transforme seu corpo com nossos treinos personalizados",
+      "Resultados garantidos com planos flexíveis",
+      "Ambiente acolhedor e motivador"
+    ],
+    "uniqueSellingPoints": [
+      "Treinos personalizados",
+      "Ambiente moderno e equipado",
+      "Professores especializados"
+    ],
+    "socialProof": "depoimentos de alunos",
+    "ctaStrategy": "agende uma aula experimental gratuita"
+  },
+  "seo": {
+    "primaryKeyword": "academia de musculação",
+    "secondaryKeywords": [
+      "treinamento funcional",
+      "planos de assinatura",
+      "aula experimental"
+    ],
+    "searchIntent": "informacional e transacional",
+    "localSEO": true
+  },
+  "technical": {
+    "layoutStyle": "hero_centric",
+    "prioritySections": [
+      "hero",
+      "benefícios",
+      "depoimentos",
+      "planos",
+      "cta"
+    ],
+    "interactionLevel": "medium",
+    "mobileFirst": true
+  },
+  "competitors": {
+    "directCompetitors": [
+      "Smart Fit",
+      "Bluefit",
+      "Bio Ritmo"
+    ],
+    "differentiators": [
+      "treinos personalizados",
+      "ambiente acolhedor",
+      "professores especializados"
+    ],
+    "marketPosition": "A academia que transforma vidas com treinos personalizados e ambiente motivador"
+  },
+  "filePath": "/root/.openclaw/workspace/nexus-project/projects/academia-power/context-dna.json",
+  "_generatedBy": "nexus-context-agent-v2",
+  "_generatedAt": "2026-03-12T19:44:53.229Z",
+  "_usedLLM": true
+}

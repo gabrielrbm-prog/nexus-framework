@@ -1,0 +1,1193 @@
+{
+  "meta": {
+    "project": "clinica-estetica",
+    "created": "2026-03-12T19:40:17.971Z",
+    "lastAccess": "2026-03-12T19:43:52.223Z",
+    "lastModified": "2026-03-12T19:43:53.150Z",
+    "version": "2.0",
+    "nexusVersion": "2.0.0"
+  },
+  "pipeline": {
+    "currentStage": "deploy",
+    "stages": {
+      "discovery": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:40:17.972Z",
+        "completedAt": "2026-03-12T19:40:18.899Z",
+        "agent": "nexus-discovery-agent"
+      },
+      "briefing": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:40:18.899Z",
+        "completedAt": "2026-03-12T19:40:18.936Z",
+        "agent": "nexus-briefing-agent"
+      },
+      "report": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T19:40:18.937Z",
+        "agent": "nexus-briefing-report"
+      },
+      "context": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:40:18.937Z",
+        "completedAt": "2026-03-12T19:40:58.412Z",
+        "agent": "nexus-context-agent"
+      },
+      "design": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:40:58.413Z",
+        "completedAt": "2026-03-12T19:41:12.841Z",
+        "agent": "nexus-design-agent"
+      },
+      "content": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:41:12.841Z",
+        "completedAt": "2026-03-12T19:42:16.672Z",
+        "agent": "nexus-content-agent"
+      },
+      "image": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T19:42:16.672Z",
+        "agent": "nexus-image-agent"
+      },
+      "video": {
+        "status": "skipped",
+        "startedAt": null,
+        "completedAt": "2026-03-12T19:42:16.673Z",
+        "agent": "nexus-video-agent"
+      },
+      "code": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:42:16.673Z",
+        "completedAt": "2026-03-12T19:43:52.221Z",
+        "agent": "nexus-code-agent"
+      },
+      "quality": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:42:16.750Z",
+        "completedAt": "2026-03-12T19:43:52.250Z",
+        "agent": "nexus-quality-agent"
+      },
+      "deploy": {
+        "status": "complete",
+        "startedAt": "2026-03-12T19:42:16.780Z",
+        "completedAt": "2026-03-12T19:43:53.151Z",
+        "agent": "nexus-deploy"
+      }
+    },
+    "history": [
+      {
+        "stage": "discovery",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:40:17.972Z"
+      },
+      {
+        "stage": "discovery",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:40:18.899Z"
+      },
+      {
+        "stage": "briefing",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:40:18.899Z"
+      },
+      {
+        "stage": "briefing",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:40:18.936Z"
+      },
+      {
+        "stage": "report",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T19:40:18.937Z"
+      },
+      {
+        "stage": "context",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:40:18.937Z"
+      },
+      {
+        "stage": "context",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:40:58.412Z"
+      },
+      {
+        "stage": "design",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:40:58.413Z"
+      },
+      {
+        "stage": "design",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:41:12.841Z"
+      },
+      {
+        "stage": "content",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:41:12.841Z"
+      },
+      {
+        "stage": "content",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:42:16.672Z"
+      },
+      {
+        "stage": "image",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T19:42:16.672Z"
+      },
+      {
+        "stage": "video",
+        "from": "pending",
+        "to": "skipped",
+        "at": "2026-03-12T19:42:16.673Z"
+      },
+      {
+        "stage": "code",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:42:16.673Z"
+      },
+      {
+        "stage": "code",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:42:16.750Z"
+      },
+      {
+        "stage": "quality",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:42:16.750Z"
+      },
+      {
+        "stage": "quality",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:42:16.780Z"
+      },
+      {
+        "stage": "deploy",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:42:16.780Z"
+      },
+      {
+        "stage": "deploy",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:42:17.666Z"
+      },
+      {
+        "stage": "code",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:43:52.141Z"
+      },
+      {
+        "stage": "code",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:43:52.221Z"
+      },
+      {
+        "stage": "quality",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:43:52.222Z"
+      },
+      {
+        "stage": "quality",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:43:52.250Z"
+      },
+      {
+        "stage": "deploy",
+        "from": "pending",
+        "to": "running",
+        "at": "2026-03-12T19:43:52.251Z"
+      },
+      {
+        "stage": "deploy",
+        "from": "running",
+        "to": "complete",
+        "at": "2026-03-12T19:43:53.151Z"
+      }
+    ]
+  },
+  "discovery": {
+    "company": null,
+    "website": null,
+    "social": null,
+    "colors": [],
+    "fonts": [],
+    "techStack": [],
+    "sector": null,
+    "completeness": 0
+  },
+  "briefing": {
+    "questions": [],
+    "answers": {},
+    "brief": {
+      "project_id": "summit-prop",
+      "version": 1,
+      "created_at": "2026-03-12T19:40:18.920Z",
+      "agent": "NEXUS Briefing Agent",
+      "company": {
+        "name": "Summit Prop",
+        "sector": "trading",
+        "sector_label": "Prop Trading / Mesa Proprietária",
+        "description": "Mesa proprietária brasileira que oferece contas financiadas para traders de forex e índices. Foco em regras flexíveis, payout rápido e suporte totalmente em português.",
+        "differentials": [
+          "Payout em 24h",
+          "Regras mais flexíveis do mercado",
+          "Suporte 100% em português",
+          "Conta demo ilimitada"
+        ],
+        "current_presence": {
+          "website": "https://summitprop.com.br",
+          "social": {
+            "instagram": "@summitprop",
+            "telegram": "t.me/summitprop"
+          },
+          "detected_tech": [
+            "WordPress",
+            "WooCommerce"
+          ]
+        }
+      },
+      "project": {
+        "objective": "lead-generation",
+        "objective_detail": "Captar leads/clientes",
+        "type": "landing-page",
+        "urgency": "high",
+        "deadline": "2026-03-15"
+      },
+      "audience": {
+        "primary": "Traders intermediários e avançados, 25-40 anos, Brasil, buscando financiamento para operar forex e índices",
+        "secondary": "",
+        "demographics": {
+          "age": "25-40",
+          "gender": "masculino",
+          "income": "média-alta",
+          "tech": "alto"
+        },
+        "pain_points": [
+          "Capital insuficiente para operar",
+          "Props com regras muito rígidas",
+          "Suporte apenas em inglês"
+        ],
+        "desires": [
+          "Conta financiada sem risco pessoal",
+          "Payout rápido",
+          "Suporte em português"
+        ],
+        "behavior": "multi_device"
+      },
+      "brand": {
+        "tone": "premium",
+        "tone_label": "Premium / Sofisticado — Linguagem elevada, exclusividade",
+        "colors": {
+          "primary": "#1a365d",
+          "secondary": "#c9a84c",
+          "accent": "#22d3ee",
+          "keep_current": true
+        },
+        "fonts": {
+          "preference": "modern-sans",
+          "detected": [
+            "Montserrat",
+            "Inter"
+          ]
+        },
+        "style": "dark-premium"
+      },
+      "content": {
+        "sections": [
+          {
+            "id": "hero",
+            "title": "Hero",
+            "required": true
+          },
+          {
+            "id": "how-it-works",
+            "title": "Como Funciona",
+            "required": true
+          },
+          {
+            "id": "plans",
+            "title": "Planos de Conta",
+            "required": true
+          },
+          {
+            "id": "payouts",
+            "title": "Payouts / Resultados",
+            "required": true
+          },
+          {
+            "id": "rules",
+            "title": "Regras e Condições",
+            "required": true
+          },
+          {
+            "id": "testimonials",
+            "title": "Depoimentos de Traders",
+            "required": true
+          },
+          {
+            "id": "dashboard",
+            "title": "Preview da Plataforma",
+            "required": true
+          },
+          {
+            "id": "partners",
+            "title": "Parceiros / Corretoras",
+            "required": false
+          },
+          {
+            "id": "faq",
+            "title": "FAQ",
+            "required": true
+          },
+          {
+            "id": "cta",
+            "title": "CTA Final",
+            "required": true
+          }
+        ],
+        "references": [
+          {
+            "url": "https://ftmo.com",
+            "what_they_like": "Referência visual"
+          },
+          {
+            "url": "https://stripe.com",
+            "what_they_like": "Referência visual"
+          },
+          {
+            "url": "https://topstep.com",
+            "what_they_like": "Referência visual"
+          }
+        ]
+      },
+      "technical": {
+        "type": "static-html",
+        "hosting": "github-pages",
+        "integrations": [
+          "contact-form",
+          "whatsapp-widget"
+        ],
+        "special_features": [
+          "scroll-animations",
+          "3d-background"
+        ]
+      },
+      "materials_provided": {
+        "logo": true,
+        "photos": true,
+        "copy": false,
+        "brand_guide": false,
+        "video": false
+      },
+      "sector_specifics": {
+        "trading_audience_level": "Intermediário",
+        "trading_instruments": [
+          "Forex",
+          "Índices"
+        ],
+        "trading_platform": "MetaTrader 5",
+        "trading_payout": "Ciclo de 14 dias, payout em até 24h após solicitação"
+      },
+      "completeness_score": 100,
+      "ready_for_pipeline": true
+    },
+    "completeness": 0
+  },
+  "report": {
+    "htmlPath": null,
+    "pdfPath": null,
+    "generatedAt": null
+  },
+  "context": {
+    "dna": {
+      "project": {
+        "name": "clinica-estetica",
+        "businessType": "healthcare",
+        "industry": "estética facial e corporal",
+        "projectScale": "medium",
+        "goals": [
+          "captar leads",
+          "agendar consultas",
+          "aumentar reconhecimento da marca"
+        ]
+      },
+      "brand": {
+        "name": "clinica-estetica",
+        "tagline": "Transformando sua beleza com cuidado e excelência",
+        "primaryTraits": [
+          "profissionalismo",
+          "confiança",
+          "inovação"
+        ],
+        "voiceTone": "acolhedor_profissional",
+        "brandArchetype": "caregiver",
+        "communicationStyle": "informativo e acolhedor",
+        "emotionalCore": "autoestima_e_confiança"
+      },
+      "audience": {
+        "primaryAge": "30-50",
+        "gender": "predominante feminino",
+        "income": "média-alta",
+        "psychographics": [
+          "preocupação com aparência",
+          "busca por bem-estar",
+          "valorização da saúde"
+        ],
+        "painPoints": [
+          "insatisfação com aparência",
+          "receio de procedimentos invasivos",
+          "falta de confiança em clínicas"
+        ],
+        "motivations": [
+          "melhorar autoestima",
+          "resultados visíveis",
+          "segurança nos procedimentos"
+        ],
+        "objections": [
+          "medo de dor",
+          "preocupação com custos",
+          "dúvidas sobre resultados"
+        ]
+      },
+      "psychology": {
+        "primary": "trust",
+        "secondary": "transformation",
+        "conversionTriggers": [
+          "depoimentos de pacientes",
+          "antes e depois",
+          "garantia de segurança"
+        ],
+        "emotionalJourney": "Da dúvida à confiança, transformando sua aparência e autoestima"
+      },
+      "visual": {
+        "mood": "clean_elegante_acolhedor",
+        "colorStrategy": "tons de rosa para feminilidade e branco para limpeza",
+        "suggestedPalette": {
+          "primary": "#E75480",
+          "secondary": "#FFFFFF",
+          "accent": "#FFD1DC",
+          "background": "#F5F5F5"
+        },
+        "typography": "sans-serif moderna",
+        "imageStyle": "fotos reais de pacientes e procedimentos"
+      },
+      "content": {
+        "keyMessages": [
+          "Resultados visíveis e seguros",
+          "Cuidado personalizado",
+          "Equipe especializada"
+        ],
+        "uniqueSellingPoints": [
+          "Tecnologia de ponta",
+          "Resultados naturais",
+          "Atendimento personalizado"
+        ],
+        "socialProof": "depoimentos de pacientes e antes e depois",
+        "ctaStrategy": "agendar consulta gratuita"
+      },
+      "seo": {
+        "primaryKeyword": "clínica de estética",
+        "secondaryKeywords": [
+          "procedimentos estéticos",
+          "tratamentos faciais",
+          "clínica de beleza",
+          "estética corporal"
+        ],
+        "searchIntent": "informacional e transacional",
+        "localSEO": true
+      },
+      "technical": {
+        "layoutStyle": "hero_centric",
+        "prioritySections": [
+          "hero",
+          "serviços",
+          "depoimentos",
+          "antes e depois",
+          "cta"
+        ],
+        "interactionLevel": "medium",
+        "mobileFirst": true
+      },
+      "competitors": {
+        "directCompetitors": [
+          "Clínica Viva Bem",
+          "Estética e Saúde"
+        ],
+        "differentiators": [
+          "tecnologia de ponta",
+          "resultados naturais",
+          "atendimento personalizado"
+        ],
+        "marketPosition": "Clínica de estética líder em tecnologia e resultados naturais"
+      },
+      "filePath": "/root/.openclaw/workspace/nexus-project/projects/clinica-estetica/context-dna.json",
+      "_generatedBy": "nexus-context-agent-v2",
+      "_generatedAt": "2026-03-12T19:40:58.394Z",
+      "_usedLLM": true
+    },
+    "keywords": [],
+    "tone": "trust",
+    "audience": {
+      "primaryAge": "30-50",
+      "gender": "predominante feminino",
+      "income": "média-alta",
+      "psychographics": [
+        "preocupação com aparência",
+        "busca por bem-estar",
+        "valorização da saúde"
+      ],
+      "painPoints": [
+        "insatisfação com aparência",
+        "receio de procedimentos invasivos",
+        "falta de confiança em clínicas"
+      ],
+      "motivations": [
+        "melhorar autoestima",
+        "resultados visíveis",
+        "segurança nos procedimentos"
+      ],
+      "objections": [
+        "medo de dor",
+        "preocupação com custos",
+        "dúvidas sobre resultados"
+      ]
+    },
+    "competitors": []
+  },
+  "design": {
+    "system": {
+      "_generatedBy": "nexus-design-agent-v2",
+      "_generatedAt": "2026-03-12T19:41:12.823Z",
+      "_usedLLM": true,
+      "_rationale": "A combinação de cores suaves e elegantes transmite confiança e autoestima, essenciais para uma clínica de estética. As tipografias escolhidas garantem legibilidade e sofisticação, alinhadas ao mood clean_elegante_acolhedor.",
+      "colors": {
+        "primary": {
+          "50": "#fcf2f5",
+          "100": "#fbe9ef",
+          "200": "#f7c5d4",
+          "300": "#f098b3",
+          "400": "#ea6c92",
+          "500": "#E75480",
+          "600": "#e82c64",
+          "700": "#d9124d",
+          "800": "#b30f40",
+          "900": "#910831",
+          "base": "#E75480"
+        },
+        "secondary": {
+          "50": "#f8f7f7",
+          "100": "#f4f1f1",
+          "200": "#e6e6e6",
+          "300": "#cccccc",
+          "400": "#b3b3b3",
+          "500": "#FFFFFF",
+          "600": "#eceaea",
+          "700": "#dad2d2",
+          "800": "#c8bcbc",
+          "900": "#baa1a1",
+          "base": "#FFFFFF"
+        },
+        "accent": {
+          "50": "#fef0f4",
+          "100": "#fee6ec",
+          "200": "#ffccd8",
+          "300": "#ff99b1",
+          "400": "#ff668a",
+          "500": "#FFD1DC",
+          "600": "#ffa8bd",
+          "700": "#ff809d",
+          "800": "#ff577e",
+          "900": "#ff2e5f",
+          "base": "#FFD1DC"
+        },
+        "background": "#F5F5F5",
+        "surface": "#FFFFFF",
+        "text": "#333333",
+        "textDim": "#666666",
+        "success": "#4CAF50",
+        "warning": "#FFC107",
+        "error": "#F44336",
+        "darkMode": false
+      },
+      "typography": {
+        "fontFamily": "Poppins",
+        "headingFamily": "Playfair Display",
+        "baseFontSize": "16px",
+        "headingWeight": "700",
+        "bodyWeight": "400",
+        "lineHeight": "1.6",
+        "sizes": {
+          "xs": "0.75rem",
+          "sm": "0.875rem",
+          "base": "1rem",
+          "lg": "1.125rem",
+          "xl": "1.25rem",
+          "2xl": "1.5rem",
+          "3xl": "1.875rem",
+          "4xl": "2.25rem",
+          "5xl": "3rem",
+          "6xl": "3.75rem",
+          "7xl": "4.5rem"
+        }
+      },
+      "spacing": {
+        "section": "8rem",
+        "card": "2rem",
+        "borderRadius": {
+          "sm": "4px",
+          "md": "12px",
+          "lg": "16px",
+          "xl": "20px",
+          "full": "9999px"
+        }
+      },
+      "effects": {
+        "glassmorphism": false,
+        "gradients": false,
+        "shadows": "subtle",
+        "animations": "minimal",
+        "glassBg": "#FFFFFF",
+        "glassBlur": "none",
+        "primaryGlow": "0 0 40px #E7548026",
+        "gradient": "linear-gradient(135deg, #E75480, #FFFFFF, #FFD1DC)"
+      },
+      "businessType": "healthcare",
+      "brandName": "clinica-estetica"
+    },
+    "palette": {
+      "primary": {
+        "50": "#fcf2f5",
+        "100": "#fbe9ef",
+        "200": "#f7c5d4",
+        "300": "#f098b3",
+        "400": "#ea6c92",
+        "500": "#E75480",
+        "600": "#e82c64",
+        "700": "#d9124d",
+        "800": "#b30f40",
+        "900": "#910831",
+        "base": "#E75480"
+      },
+      "secondary": {
+        "50": "#f8f7f7",
+        "100": "#f4f1f1",
+        "200": "#e6e6e6",
+        "300": "#cccccc",
+        "400": "#b3b3b3",
+        "500": "#FFFFFF",
+        "600": "#eceaea",
+        "700": "#dad2d2",
+        "800": "#c8bcbc",
+        "900": "#baa1a1",
+        "base": "#FFFFFF"
+      },
+      "accent": {
+        "50": "#fef0f4",
+        "100": "#fee6ec",
+        "200": "#ffccd8",
+        "300": "#ff99b1",
+        "400": "#ff668a",
+        "500": "#FFD1DC",
+        "600": "#ffa8bd",
+        "700": "#ff809d",
+        "800": "#ff577e",
+        "900": "#ff2e5f",
+        "base": "#FFD1DC"
+      },
+      "background": "#F5F5F5",
+      "surface": "#FFFFFF",
+      "text": "#333333",
+      "textDim": "#666666",
+      "success": "#4CAF50",
+      "warning": "#FFC107",
+      "error": "#F44336",
+      "darkMode": false
+    },
+    "typography": {
+      "fontFamily": "Poppins",
+      "headingFamily": "Playfair Display",
+      "baseFontSize": "16px",
+      "headingWeight": "700",
+      "bodyWeight": "400",
+      "lineHeight": "1.6",
+      "sizes": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "1rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "1.875rem",
+        "4xl": "2.25rem",
+        "5xl": "3rem",
+        "6xl": "3.75rem",
+        "7xl": "4.5rem"
+      }
+    },
+    "layout": null,
+    "components": []
+  },
+  "content": {
+    "hero": null,
+    "sections": [],
+    "cta": {
+      "primary": "Agende sua consulta",
+      "variants": [
+        "Reserve uma avaliação",
+        "Transforme sua aparência",
+        "Comece sua jornada"
+      ]
+    },
+    "seo": null,
+    "copy": {
+      "headlines": {
+        "primary": "Transforme sua autoestima com resultados naturais",
+        "variants": [
+          "Descubra o segredo para uma aparência rejuvenescida",
+          "Procedimentos seguros para uma beleza autêntica",
+          "Sua jornada para a confiança começa aqui"
+        ],
+        "psychological_focus": "trust"
+      },
+      "ctas": {
+        "primary": "Agende sua consulta",
+        "variants": [
+          "Reserve uma avaliação",
+          "Transforme sua aparência",
+          "Comece sua jornada"
+        ]
+      },
+      "sectionContent": {
+        "hero": {
+          "headline": "Transforme sua autoestima com resultados naturais",
+          "subheadline": "Na clinica-estetica, cuidamos da sua beleza com tecnologia de ponta e atendimento personalizado.",
+          "social_proof": "+2.000 pacientes satisfeitos",
+          "trust_badges": [
+            "Certificado de Excelência",
+            "Profissionais Qualificados",
+            "Tecnologia de Ponta"
+          ]
+        },
+        "about": {
+          "title": "Sobre nós",
+          "description": "Na clinica-estetica, estamos comprometidos em oferecer tratamentos estéticos de alta qualidade, garantindo resultados naturais e seguros. Nossa equipe de profissionais especializados está pronta para cuidar de você.",
+          "highlights": [
+            "Tecnologia Avançada",
+            "Resultados Naturais",
+            "Atendimento Personalizado"
+          ]
+        },
+        "features": {
+          "title": "Nossos Serviços",
+          "items": [
+            {
+              "title": "Tratamentos Faciais",
+              "description": "Rejuvenescimento facial com técnicas modernas e seguras. 👩‍⚕️",
+              "icon": "👩‍⚕️"
+            },
+            {
+              "title": "Estética Corporal",
+              "description": "Procedimentos para modelar e tonificar o corpo. 💪",
+              "icon": "💪"
+            },
+            {
+              "title": "Depilação a Laser",
+              "description": "Depilação eficaz e duradoura com tecnologia avançada. 💎",
+              "icon": "💎"
+            },
+            {
+              "title": "Consultoria Personalizada",
+              "description": "Plano de tratamento feito sob medida para você. 📋",
+              "icon": "📋"
+            }
+          ]
+        },
+        "benefits": {
+          "title": "Benefícios dos Nossos Tratamentos",
+          "items": [
+            {
+              "title": "Resultados Visíveis",
+              "description": "Transforme sua aparência com resultados rápidos e naturais."
+            },
+            {
+              "title": "Segurança Garantida",
+              "description": "Procedimentos realizados por profissionais experientes e certificados."
+            },
+            {
+              "title": "Confiança Renovada",
+              "description": "Aumente sua autoestima com uma aparência rejuvenescida."
+            }
+          ]
+        },
+        "testimonials": {
+          "title": "O que nossos pacientes dizem",
+          "items": [
+            {
+              "name": "Ana Silva",
+              "role": "Empresária",
+              "text": "Os tratamentos faciais mudaram minha vida. Agora me sinto mais confiante do que nunca.",
+              "rating": 5
+            },
+            {
+              "name": "Carlos Mendes",
+              "role": "Professor",
+              "text": "A depilação a laser foi incrível. Resultados rápidos e sem dor.",
+              "rating": 5
+            },
+            {
+              "name": "Fernanda Costa",
+              "role": "Advogada",
+              "text": "O atendimento personalizado fez toda a diferença. Recomendo a clinica-estetica!",
+              "rating": 5
+            }
+          ]
+        },
+        "pricing": {
+          "title": "Nossos Planos",
+          "subtitle": "Invista em sua beleza com nossos planos acessíveis.",
+          "plans": [
+            {
+              "name": "Plano Básico",
+              "price": "R$ 500",
+              "features": [
+                "Tratamento Facial",
+                "Consultoria Inicial"
+              ],
+              "cta": "Escolher Plano",
+              "highlighted": false
+            },
+            {
+              "name": "Plano Premium",
+              "price": "R$ 1.200",
+              "features": [
+                "Tratamento Facial e Corporal",
+                "Depilação a Laser",
+                "Consultoria Personalizada"
+              ],
+              "cta": "Escolher Plano",
+              "highlighted": true
+            },
+            {
+              "name": "Plano VIP",
+              "price": "Sob Consulta",
+              "features": [
+                "Todos os Tratamentos",
+                "Sessões Ilimitadas",
+                "Acompanhamento Personalizado"
+              ],
+              "cta": "Escolher Plano",
+              "highlighted": false
+            }
+          ]
+        },
+        "faq": {
+          "title": "Perguntas Frequentes",
+          "items": [
+            {
+              "question": "Os procedimentos são dolorosos?",
+              "answer": "Nossos procedimentos são realizados com técnicas minimamente invasivas, garantindo conforto e segurança."
+            },
+            {
+              "question": "Quanto tempo dura cada tratamento?",
+              "answer": "A duração varia conforme o tratamento, mas nossos profissionais informarão todos os detalhes durante a consulta."
+            },
+            {
+              "question": "Os resultados são permanentes?",
+              "answer": "Alguns resultados são duradouros, mas recomendamos manutenções periódicas para garantir o melhor efeito."
+            },
+            {
+              "question": "Como agendar uma consulta?",
+              "answer": "Você pode agendar uma consulta gratuita através do nosso site ou por telefone."
+            }
+          ]
+        },
+        "footer": {
+          "tagline": "Transformando sua beleza com cuidado e excelência",
+          "contact": {
+            "phone": "(11) 98765-4321",
+            "email": "contato@clinicaestetica.com.br",
+            "address": "Av. Paulista, 1000 - São Paulo, SP"
+          },
+          "links": [
+            "Início",
+            "Sobre",
+            "Serviços",
+            "Contato"
+          ]
+        }
+      },
+      "metaContent": {
+        "seo": {
+          "title": "Clínica de Estética | Transforme sua Autoestima com Resultados Naturais",
+          "description": "Descubra tratamentos estéticos seguros e eficazes na clinica-estetica. Agende sua consulta gratuita e renove sua confiança!",
+          "keywords": "clínica de estética, procedimentos estéticos, tratamentos faciais, clínica de beleza, estética corporal",
+          "ogTitle": "Clínica de Estética | Transforme sua Autoestima",
+          "ogDescription": "Na clinica-estetica, oferecemos tratamentos estéticos de alta qualidade com resultados naturais. Agende sua consulta!"
+        }
+      },
+      "abVariants": {
+        "headlines": [
+          "Transforme sua aparência com segurança",
+          "Renove sua autoestima com resultados visíveis"
+        ],
+        "ctas": [
+          "Agende agora",
+          "Comece hoje"
+        ],
+        "valueProps": [
+          "Resultados garantidos",
+          "Atendimento personalizado"
+        ]
+      },
+      "microcopy": {
+        "formLabels": {
+          "name": "Seu nome",
+          "email": "Seu melhor e-mail",
+          "phone": "WhatsApp",
+          "submit": "Agendar Consulta"
+        },
+        "navigation": [
+          "Início",
+          "Sobre",
+          "Serviços",
+          "Depoimentos",
+          "Preços",
+          "Contato"
+        ],
+        "loading": "Carregando sua consulta...",
+        "success": "Consulta agendada com sucesso! Em breve entraremos em contato.",
+        "error": "Ocorreu um erro. Por favor, tente novamente."
+      },
+      "stats": [
+        {
+          "value": "2.000+",
+          "label": "Pacientes Satisfeitos"
+        },
+        {
+          "value": "10",
+          "label": "Anos de Experiência"
+        },
+        {
+          "value": "95%",
+          "label": "Taxa de Satisfação"
+        },
+        {
+          "value": "50+",
+          "label": "Tratamentos Disponíveis"
+        }
+      ],
+      "_generatedBy": "nexus-content-agent-v2",
+      "_generatedAt": "2026-03-12T19:42:16.647Z",
+      "_usedLLM": true
+    }
+  },
+  "image": {
+    "prompts": [],
+    "generated": [],
+    "placeholders": []
+  },
+  "video": {
+    "prompts": [],
+    "scripts": [],
+    "animations": []
+  },
+  "code": {
+    "html": "/root/.openclaw/workspace/nexus-project/projects/clinica-estetica/output/index.html",
+    "css": null,
+    "js": null,
+    "outputPath": "/root/.openclaw/workspace/nexus-project/projects/clinica-estetica/output",
+    "components": [],
+    "libraries": []
+  },
+  "quality": {
+    "score": 0,
+    "lighthouse": null,
+    "accessibility": null,
+    "issues": [
+      "**Business Type:** healthcare",
+      "**Target Audience:** 30-50",
+      "**Site Size:** 87KB",
+      "**Files:** 1 arquivos",
+      "**Audit Date:** undefined",
+      "**Total Size:** 87KB",
+      "**CSS Size:** 0KB  ",
+      "**JS Size:** 0KB",
+      "**Images:** 0KB",
+      "**Load Time:** 17 ms",
+      "💡 Verificar contraste de cores para WCAG AA compliance",
+      "**Title:** ✅ \"Clínica de Estética | Transforme sua Autoestima com Resultados Naturais\"",
+      "**Description:** ✅ \"Descubra tratamentos estéticos seguros e eficazes ...\"",
+      "**Keywords:** ⚠️ Ausente",
+      "⚠️ index.html: Título muito longo (> 60 chars)",
+      "💡 Reduzir título para 50-60 caracteres",
+      "💡 Considerar adicionar meta keywords relevantes",
+      "**HTML Lines:** 1806",
+      "**CSS Lines:** 0  ",
+      "**JS Lines:** 0"
+    ],
+    "passed": false
+  },
+  "deploy": {
+    "url": "https://gabrielrbm-prog.github.io/nexus-framework/generated-site/clinica-estetica/",
+    "platform": "github-pages",
+    "deployedAt": "2026-03-12T19:43:53.149Z",
+    "indexUrl": "https://gabrielrbm-prog.github.io/nexus-framework/generated-site/",
+    "slug": "clinica-estetica"
+  },
+  "references": {
+    "sites": [
+      {
+        "url": "headspace.com",
+        "nicho": "healthcare",
+        "style": "calm-friendly",
+        "colors": {
+          "primary": "#f47d31",
+          "secondary": "#2c2540",
+          "accent": "#ffc233",
+          "background": "#fef3e7",
+          "text": "#2c2540"
+        },
+        "fonts": [
+          "Brandon Grotesque",
+          "system-ui"
+        ],
+        "sections": [
+          "nav",
+          "hero",
+          "benefits",
+          "how-it-works",
+          "science",
+          "plans",
+          "testimonials",
+          "app-download",
+          "footer"
+        ],
+        "components": [
+          "illustration-hero",
+          "benefit-icons",
+          "step-cards",
+          "plan-cards",
+          "app-store-buttons",
+          "meditation-player"
+        ],
+        "animations": [
+          "illustration-float",
+          "fade-up",
+          "breathing-animation",
+          "gentle-bounce"
+        ],
+        "cta_patterns": [
+          "Try for free",
+          "Get started",
+          "Subscribe now"
+        ],
+        "layout": "single-col-centered",
+        "tags": [
+          "meditation",
+          "wellness",
+          "calm",
+          "orange",
+          "illustration",
+          "friendly"
+        ],
+        "hero_type": "text-left-illustration-right",
+        "score": {
+          "design": 9,
+          "performance": 8,
+          "conversion": 8
+        },
+        "last_updated": "2026-03-12"
+      },
+      {
+        "url": "calm.com",
+        "nicho": "healthcare",
+        "style": "serene-dark",
+        "colors": {
+          "primary": "#4a90d9",
+          "secondary": "#1a2540",
+          "accent": "#7dd3c0",
+          "background": "#162447",
+          "text": "#e8e8e8"
+        },
+        "fonts": [
+          "GT Eesti",
+          "system-ui"
+        ],
+        "sections": [
+          "nav",
+          "hero",
+          "features",
+          "sleep-stories",
+          "music",
+          "pricing",
+          "testimonials",
+          "app-download",
+          "footer"
+        ],
+        "components": [
+          "nature-video-bg",
+          "audio-player-mini",
+          "plan-cards",
+          "celebrity-narrator-cards",
+          "app-store-buttons"
+        ],
+        "animations": [
+          "nature-ambient-video",
+          "fade-slow",
+          "breathing-guide",
+          "wave-animation"
+        ],
+        "cta_patterns": [
+          "Try Calm for free",
+          "Start your journey",
+          "Get Calm Premium"
+        ],
+        "layout": "single-col-centered",
+        "tags": [
+          "sleep",
+          "relaxation",
+          "dark-blue",
+          "nature",
+          "audio",
+          "serene"
+        ],
+        "hero_type": "fullscreen-nature-video-with-overlay",
+        "score": {
+          "design": 9,
+          "performance": 7,
+          "conversion": 8
+        },
+        "last_updated": "2026-03-12"
+      }
+    ],
+    "components": [],
+    "niche": "healthcare"
+  },
+  "errors": [],
+  "checkpoints": []
+}

@@ -1,0 +1,159 @@
+{
+  "hero": {
+    "headline": "Transforme sua autoestima com resultados naturais",
+    "subheadline": "Na clinica-estetica, cuidamos da sua beleza com tecnologia de ponta e atendimento personalizado.",
+    "social_proof": "+2.000 pacientes satisfeitos",
+    "trust_badges": [
+      "Certificado de Excelência",
+      "Profissionais Qualificados",
+      "Tecnologia de Ponta"
+    ]
+  },
+  "about": {
+    "title": "Sobre nós",
+    "description": "Na clinica-estetica, estamos comprometidos em oferecer tratamentos estéticos de alta qualidade, garantindo resultados naturais e seguros. Nossa equipe de profissionais especializados está pronta para cuidar de você.",
+    "highlights": [
+      "Tecnologia Avançada",
+      "Resultados Naturais",
+      "Atendimento Personalizado"
+    ]
+  },
+  "features": {
+    "title": "Nossos Serviços",
+    "items": [
+      {
+        "title": "Tratamentos Faciais",
+        "description": "Rejuvenescimento facial com técnicas modernas e seguras. 👩‍⚕️",
+        "icon": "👩‍⚕️"
+      },
+      {
+        "title": "Estética Corporal",
+        "description": "Procedimentos para modelar e tonificar o corpo. 💪",
+        "icon": "💪"
+      },
+      {
+        "title": "Depilação a Laser",
+        "description": "Depilação eficaz e duradoura com tecnologia avançada. 💎",
+        "icon": "💎"
+      },
+      {
+        "title": "Consultoria Personalizada",
+        "description": "Plano de tratamento feito sob medida para você. 📋",
+        "icon": "📋"
+      }
+    ]
+  },
+  "benefits": {
+    "title": "Benefícios dos Nossos Tratamentos",
+    "items": [
+      {
+        "title": "Resultados Visíveis",
+        "description": "Transforme sua aparência com resultados rápidos e naturais."
+      },
+      {
+        "title": "Segurança Garantida",
+        "description": "Procedimentos realizados por profissionais experientes e certificados."
+      },
+      {
+        "title": "Confiança Renovada",
+        "description": "Aumente sua autoestima com uma aparência rejuvenescida."
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "O que nossos pacientes dizem",
+    "items": [
+      {
+        "name": "Ana Silva",
+        "role": "Empresária",
+        "text": "Os tratamentos faciais mudaram minha vida. Agora me sinto mais confiante do que nunca.",
+        "rating": 5
+      },
+      {
+        "name": "Carlos Mendes",
+        "role": "Professor",
+        "text": "A depilação a laser foi incrível. Resultados rápidos e sem dor.",
+        "rating": 5
+      },
+      {
+        "name": "Fernanda Costa",
+        "role": "Advogada",
+        "text": "O atendimento personalizado fez toda a diferença. Recomendo a clinica-estetica!",
+        "rating": 5
+      }
+    ]
+  },
+  "pricing": {
+    "title": "Nossos Planos",
+    "subtitle": "Invista em sua beleza com nossos planos acessíveis.",
+    "plans": [
+      {
+        "name": "Plano Básico",
+        "price": "R$ 500",
+        "features": [
+          "Tratamento Facial",
+          "Consultoria Inicial"
+        ],
+        "cta": "Escolher Plano",
+        "highlighted": false
+      },
+      {
+        "name": "Plano Premium",
+        "price": "R$ 1.200",
+        "features": [
+          "Tratamento Facial e Corporal",
+          "Depilação a Laser",
+          "Consultoria Personalizada"
+        ],
+        "cta": "Escolher Plano",
+        "highlighted": true
+      },
+      {
+        "name": "Plano VIP",
+        "price": "Sob Consulta",
+        "features": [
+          "Todos os Tratamentos",
+          "Sessões Ilimitadas",
+          "Acompanhamento Personalizado"
+        ],
+        "cta": "Escolher Plano",
+        "highlighted": false
+      }
+    ]
+  },
+  "faq": {
+    "title": "Perguntas Frequentes",
+    "items": [
+      {
+        "question": "Os procedimentos são dolorosos?",
+        "answer": "Nossos procedimentos são realizados com técnicas minimamente invasivas, garantindo conforto e segurança."
+      },
+      {
+        "question": "Quanto tempo dura cada tratamento?",
+        "answer": "A duração varia conforme o tratamento, mas nossos profissionais informarão todos os detalhes durante a consulta."
+      },
+      {
+        "question": "Os resultados são permanentes?",
+        "answer": "Alguns resultados são duradouros, mas recomendamos manutenções periódicas para garantir o melhor efeito."
+      },
+      {
+        "question": "Como agendar uma consulta?",
+        "answer": "Você pode agendar uma consulta gratuita através do nosso site ou por telefone."
+      }
+    ]
+  },
+  "footer": {
+    "tagline": "Transformando sua beleza com cuidado e excelência",
+    "contact": {
+      "phone": "(11) 98765-4321",
+      "email": "contato@clinicaestetica.com.br",
+      "address": "Av. Paulista, 1000 - São Paulo, SP"
+    },
+    "links": [
+      "Início",
+      "Sobre",
+      "Serviços",
+      "Contato"
+    ]
+  }
+}
