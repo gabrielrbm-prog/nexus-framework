@@ -1,0 +1,125 @@
+{
+  "category": "navigation",
+  "generated": "2026-03-12T14:08:11.990Z",
+  "count": 6,
+  "patterns": [
+    {
+      "name": "transparent-sticky",
+      "description": "Transparent navbar that becomes solid/blurred on scroll. Logo left, links center, CTA right",
+      "html_structure": "<nav class=\"nav-transparent\"><a class=\"logo\"/><ul class=\"nav-links\"/><a class=\"nav-cta\"/></nav>",
+      "css_classes": [
+        "nav-transparent",
+        "nav-scrolled",
+        "nav-links",
+        "nav-cta",
+        "backdrop-blur"
+      ],
+      "best_for": [
+        "agency",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "apple.com",
+        "tesla.com",
+        "allbirds.com"
+      ]
+    },
+    {
+      "name": "classic-solid",
+      "description": "Solid background navbar with logo, navigation links, and CTA button",
+      "html_structure": "<nav class=\"nav-solid\"><a class=\"logo\"/><ul class=\"nav-links\"/><div class=\"nav-actions\"><a class=\"nav-cta\"/></div></nav>",
+      "css_classes": [
+        "nav-solid",
+        "nav-links",
+        "nav-cta",
+        "nav-actions"
+      ],
+      "best_for": [
+        "saas",
+        "fintech",
+        "healthcare",
+        "education"
+      ],
+      "example_sites": [
+        "stripe.com",
+        "notion.so",
+        "duolingo.com"
+      ]
+    },
+    {
+      "name": "mega-menu-dropdown",
+      "description": "Navigation with mega dropdown menus showing product categories, features, or resources",
+      "html_structure": "<nav><a class=\"logo\"/><ul class=\"nav-links\"><li class=\"has-mega\"><a/><div class=\"mega-menu\"/></li></ul></nav>",
+      "css_classes": [
+        "nav",
+        "has-mega",
+        "mega-menu",
+        "mega-column"
+      ],
+      "best_for": [
+        "saas",
+        "fintech",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "stripe.com",
+        "shopify.com",
+        "webflow.com"
+      ]
+    },
+    {
+      "name": "minimal-dark",
+      "description": "Dark minimal navbar with just logo and essential links. No background distraction",
+      "html_structure": "<nav class=\"nav-dark\"><a class=\"logo\"/><ul class=\"nav-links\"/></nav>",
+      "css_classes": [
+        "nav-dark",
+        "nav-links"
+      ],
+      "best_for": [
+        "saas",
+        "agency"
+      ],
+      "example_sites": [
+        "vercel.com",
+        "linear.app",
+        "framer.com"
+      ]
+    },
+    {
+      "name": "sidebar-navigation",
+      "description": "Vertical sidebar navigation for dashboard-style marketing sites or documentation",
+      "html_structure": "<aside class=\"sidebar-nav\"><a class=\"logo\"/><ul class=\"nav-sections\"><li><a/></li></ul></aside>",
+      "css_classes": [
+        "sidebar-nav",
+        "nav-sections",
+        "nav-active"
+      ],
+      "best_for": [
+        "saas",
+        "education"
+      ],
+      "example_sites": [
+        "supabase.com"
+      ]
+    },
+    {
+      "name": "hamburger-mobile-first",
+      "description": "Hamburger icon that opens fullscreen or slide-in mobile menu. Desktop shows inline links",
+      "html_structure": "<nav><a class=\"logo\"/><button class=\"hamburger\"/><div class=\"mobile-menu\"><ul/></div></nav>",
+      "css_classes": [
+        "hamburger",
+        "mobile-menu",
+        "menu-open"
+      ],
+      "best_for": [
+        "ecommerce",
+        "agency",
+        "healthcare"
+      ],
+      "example_sites": [
+        "gymshark.com",
+        "calm.com"
+      ]
+    }
+  ]
+}

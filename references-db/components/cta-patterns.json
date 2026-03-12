@@ -1,0 +1,162 @@
+{
+  "category": "cta",
+  "generated": "2026-03-12T14:08:11.990Z",
+  "count": 8,
+  "patterns": [
+    {
+      "name": "centered-gradient-cta",
+      "description": "Full-width section with gradient background, centered headline, and primary button",
+      "html_structure": "<section class=\"cta-section gradient-bg\"><h2/><p/><a class=\"cta-button\"/></section>",
+      "css_classes": [
+        "cta-section",
+        "gradient-bg",
+        "cta-button"
+      ],
+      "best_for": [
+        "saas",
+        "fintech",
+        "agency"
+      ],
+      "example_sites": [
+        "vercel.com",
+        "linear.app",
+        "stripe.com"
+      ]
+    },
+    {
+      "name": "split-cta-with-image",
+      "description": "Two-column CTA with compelling text on one side and image/illustration on other",
+      "html_structure": "<section class=\"cta-split\"><div class=\"cta-content\"><h2/><p/><a class=\"cta-button\"/></div><div class=\"cta-image\"><img/></div></section>",
+      "css_classes": [
+        "cta-split",
+        "cta-content",
+        "cta-image",
+        "cta-button"
+      ],
+      "best_for": [
+        "healthcare",
+        "education",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "headspace.com",
+        "duolingo.com"
+      ]
+    },
+    {
+      "name": "email-capture-cta",
+      "description": "Email input field with submit button. Newsletter or free trial signup",
+      "html_structure": "<section class=\"cta-email\"><h2/><form><input type=\"email\" placeholder=\"Enter your email\"/><button type=\"submit\"/></form></section>",
+      "css_classes": [
+        "cta-email",
+        "email-input",
+        "submit-button"
+      ],
+      "best_for": [
+        "saas",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "shopify.com",
+        "allbirds.com"
+      ]
+    },
+    {
+      "name": "two-button-cta",
+      "description": "Primary and secondary action buttons side by side. Get Started + Learn More",
+      "html_structure": "<section class=\"cta-dual\"><h2/><p/><div class=\"cta-buttons\"><a class=\"btn-primary\"/><a class=\"btn-secondary\"/></div></section>",
+      "css_classes": [
+        "cta-dual",
+        "cta-buttons",
+        "btn-primary",
+        "btn-secondary"
+      ],
+      "best_for": [
+        "saas",
+        "fintech",
+        "agency"
+      ],
+      "example_sites": [
+        "supabase.com",
+        "figma.com",
+        "notion.so"
+      ]
+    },
+    {
+      "name": "sticky-bottom-bar",
+      "description": "Fixed bar at bottom of viewport with CTA that appears on scroll",
+      "html_structure": "<div class=\"sticky-cta\"><p/><a class=\"cta-button\"/></div>",
+      "css_classes": [
+        "sticky-cta",
+        "cta-button",
+        "show-on-scroll"
+      ],
+      "best_for": [
+        "ecommerce",
+        "healthcare"
+      ],
+      "example_sites": [
+        "gymshark.com",
+        "calm.com"
+      ]
+    },
+    {
+      "name": "dark-contrast-cta",
+      "description": "Dark background CTA section that contrasts with light page. Creates visual break",
+      "html_structure": "<section class=\"cta-dark\"><h2/><p/><a class=\"cta-button-light\"/></section>",
+      "css_classes": [
+        "cta-dark",
+        "cta-button-light"
+      ],
+      "best_for": [
+        "fintech",
+        "saas",
+        "trading"
+      ],
+      "example_sites": [
+        "mercury.com",
+        "ramp.com",
+        "ftmo.com"
+      ]
+    },
+    {
+      "name": "app-download-cta",
+      "description": "Mobile app download section with App Store and Google Play buttons",
+      "html_structure": "<section class=\"cta-app\"><div class=\"phone-mockup\"><img/></div><div class=\"download-buttons\"><a class=\"app-store\"/><a class=\"play-store\"/></div></section>",
+      "css_classes": [
+        "cta-app",
+        "phone-mockup",
+        "download-buttons",
+        "app-store",
+        "play-store"
+      ],
+      "best_for": [
+        "healthcare",
+        "education",
+        "fintech"
+      ],
+      "example_sites": [
+        "headspace.com",
+        "duolingo.com",
+        "coinbase.com"
+      ]
+    },
+    {
+      "name": "minimal-text-link-cta",
+      "description": "Minimalist CTA with just a text link and arrow. Subtle but effective for premium brands",
+      "html_structure": "<section class=\"cta-minimal\"><p/><a class=\"text-link\">Learn more <span class=\"arrow\">-></span></a></section>",
+      "css_classes": [
+        "cta-minimal",
+        "text-link",
+        "arrow"
+      ],
+      "best_for": [
+        "agency"
+      ],
+      "example_sites": [
+        "apple.com",
+        "tesla.com"
+      ]
+    }
+  ]
+}

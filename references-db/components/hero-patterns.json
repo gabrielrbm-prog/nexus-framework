@@ -1,0 +1,224 @@
+{
+  "category": "hero",
+  "generated": "2026-03-12T14:08:11.990Z",
+  "count": 12,
+  "patterns": [
+    {
+      "name": "text-left-image-right",
+      "description": "Classic split layout with headline and CTA on left, product image or mockup on right",
+      "html_structure": "<section class=\"hero\"><div class=\"hero-content\"><h1/><p/><a class=\"cta\"/></div><div class=\"hero-image\"><img/></div></section>",
+      "css_classes": [
+        "hero",
+        "hero-content",
+        "hero-image",
+        "hero-cta"
+      ],
+      "best_for": [
+        "saas",
+        "fintech",
+        "healthcare"
+      ],
+      "example_sites": [
+        "stripe.com",
+        "slack.com",
+        "headspace.com"
+      ]
+    },
+    {
+      "name": "centered-text-with-product-screenshot",
+      "description": "Centered headline with large product screenshot below. Trust badges or logos underneath",
+      "html_structure": "<section class=\"hero text-center\"><h1/><p/><a class=\"cta\"/><div class=\"hero-screenshot\"><img/></div></section>",
+      "css_classes": [
+        "hero",
+        "text-center",
+        "hero-screenshot",
+        "hero-cta"
+      ],
+      "best_for": [
+        "saas",
+        "fintech"
+      ],
+      "example_sites": [
+        "mercury.com",
+        "notion.so",
+        "cal.com"
+      ]
+    },
+    {
+      "name": "fullscreen-video-with-overlay",
+      "description": "Fullscreen background video with text overlay and minimal CTA",
+      "html_structure": "<section class=\"hero-video\"><video autoplay muted loop/><div class=\"hero-overlay\"><h1/><a class=\"cta\"/></div></section>",
+      "css_classes": [
+        "hero-video",
+        "hero-overlay",
+        "video-bg"
+      ],
+      "best_for": [
+        "agency",
+        "ecommerce",
+        "trading"
+      ],
+      "example_sites": [
+        "tesla.com",
+        "gymshark.com"
+      ]
+    },
+    {
+      "name": "fullscreen-product-centered",
+      "description": "Single product image centered with minimal text. Apple-style immersive hero",
+      "html_structure": "<section class=\"hero-product\"><h1/><img class=\"product-hero\"/><div class=\"hero-actions\"><a/><a/></div></section>",
+      "css_classes": [
+        "hero-product",
+        "product-hero",
+        "hero-actions"
+      ],
+      "best_for": [
+        "agency",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "apple.com"
+      ]
+    },
+    {
+      "name": "centered-text-with-gradient-background",
+      "description": "Bold centered headline with animated gradient or aurora background effect",
+      "html_structure": "<section class=\"hero-gradient\"><div class=\"gradient-bg\"/><h1/><p/><a class=\"cta\"/></section>",
+      "css_classes": [
+        "hero-gradient",
+        "gradient-bg",
+        "gradient-text"
+      ],
+      "best_for": [
+        "saas",
+        "fintech",
+        "agency"
+      ],
+      "example_sites": [
+        "linear.app",
+        "vercel.com"
+      ]
+    },
+    {
+      "name": "split-mascot-left-cta-right",
+      "description": "Brand mascot or illustration on one side with headline, description, and CTA on the other",
+      "html_structure": "<section class=\"hero-split\"><div class=\"hero-mascot\"><img/></div><div class=\"hero-content\"><h1/><p/><a class=\"cta\"/></div></section>",
+      "css_classes": [
+        "hero-split",
+        "hero-mascot",
+        "hero-content"
+      ],
+      "best_for": [
+        "education",
+        "healthcare"
+      ],
+      "example_sites": [
+        "duolingo.com",
+        "headspace.com"
+      ]
+    },
+    {
+      "name": "centered-text-with-email-input",
+      "description": "Centered headline with email signup form as primary CTA. High-conversion pattern",
+      "html_structure": "<section class=\"hero\"><h1/><p/><form class=\"hero-form\"><input type=\"email\"/><button/></form></section>",
+      "css_classes": [
+        "hero",
+        "hero-form",
+        "email-input",
+        "submit-btn"
+      ],
+      "best_for": [
+        "saas",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "shopify.com"
+      ]
+    },
+    {
+      "name": "centered-text-with-terminal-demo",
+      "description": "Developer-focused hero with centered text and animated terminal/code demo below",
+      "html_structure": "<section class=\"hero-dev\"><h1/><p/><div class=\"terminal-demo\"><pre><code/></pre></div><a class=\"cta\"/></section>",
+      "css_classes": [
+        "hero-dev",
+        "terminal-demo",
+        "code-block"
+      ],
+      "best_for": [
+        "saas",
+        "fintech"
+      ],
+      "example_sites": [
+        "vercel.com",
+        "supabase.com"
+      ]
+    },
+    {
+      "name": "text-left-calculator-right",
+      "description": "Interactive calculator or tool on right side. Headline and trust elements on left",
+      "html_structure": "<section class=\"hero-interactive\"><div class=\"hero-content\"><h1/><p/></div><div class=\"hero-tool\"><div class=\"calculator\"/></div></section>",
+      "css_classes": [
+        "hero-interactive",
+        "hero-tool",
+        "calculator"
+      ],
+      "best_for": [
+        "fintech"
+      ],
+      "example_sites": [
+        "wise.com"
+      ]
+    },
+    {
+      "name": "dynamic-showcase-carousel",
+      "description": "Auto-rotating showcase of featured projects or products with hover interactions",
+      "html_structure": "<section class=\"hero-showcase\"><h1/><div class=\"showcase-carousel\"><div class=\"showcase-item\"/></div></section>",
+      "css_classes": [
+        "hero-showcase",
+        "showcase-carousel",
+        "showcase-item"
+      ],
+      "best_for": [
+        "agency"
+      ],
+      "example_sites": [
+        "awwwards.com",
+        "framer.com"
+      ]
+    },
+    {
+      "name": "centered-text-with-video-player",
+      "description": "Centered headline with embedded video player demonstrating the product",
+      "html_structure": "<section class=\"hero\"><h1/><p/><div class=\"video-wrapper\"><video controls/></div><a class=\"cta\"/></section>",
+      "css_classes": [
+        "hero",
+        "video-wrapper",
+        "video-player"
+      ],
+      "best_for": [
+        "saas",
+        "education"
+      ],
+      "example_sites": [
+        "loom.com"
+      ]
+    },
+    {
+      "name": "centered-search-with-background",
+      "description": "Large search bar as the primary CTA, with categories below and patterned background",
+      "html_structure": "<section class=\"hero-search\"><h1/><form class=\"search-form\"><input type=\"search\"/><button/></form><div class=\"categories\"/></section>",
+      "css_classes": [
+        "hero-search",
+        "search-form",
+        "categories"
+      ],
+      "best_for": [
+        "education",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "coursera.org"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "category": "pricing",
+  "generated": "2026-03-12T14:08:11.990Z",
+  "count": 8,
+  "patterns": [
+    {
+      "name": "three-tier-cards",
+      "description": "Classic three-column pricing with Free, Pro, and Enterprise tiers. Middle card highlighted",
+      "html_structure": "<section class=\"pricing\"><div class=\"pricing-grid\"><div class=\"pricing-card\"/><div class=\"pricing-card featured\"/><div class=\"pricing-card\"/></div></section>",
+      "css_classes": [
+        "pricing",
+        "pricing-grid",
+        "pricing-card",
+        "featured",
+        "price-amount"
+      ],
+      "best_for": [
+        "saas",
+        "education"
+      ],
+      "example_sites": [
+        "notion.so",
+        "figma.com",
+        "slack.com"
+      ]
+    },
+    {
+      "name": "toggle-monthly-annual",
+      "description": "Pricing cards with monthly/annual toggle switch. Annual shows discount badge",
+      "html_structure": "<section class=\"pricing\"><div class=\"toggle\"><button>Monthly</button><button>Annual</button></div><div class=\"pricing-grid\"/></section>",
+      "css_classes": [
+        "pricing",
+        "toggle",
+        "toggle-active",
+        "discount-badge"
+      ],
+      "best_for": [
+        "saas",
+        "healthcare"
+      ],
+      "example_sites": [
+        "supabase.com",
+        "loom.com",
+        "cal.com"
+      ]
+    },
+    {
+      "name": "comparison-table",
+      "description": "Full feature comparison table with checkmarks across plan tiers",
+      "html_structure": "<section class=\"pricing\"><table class=\"comparison\"><thead><tr><th/><th>Free</th><th>Pro</th><th>Enterprise</th></tr></thead><tbody/></table></section>",
+      "css_classes": [
+        "pricing",
+        "comparison",
+        "check-mark",
+        "plan-header"
+      ],
+      "best_for": [
+        "saas",
+        "fintech",
+        "enterprise"
+      ],
+      "example_sites": [
+        "stripe.com",
+        "figma.com"
+      ]
+    },
+    {
+      "name": "single-plan-cta",
+      "description": "Single prominent plan with feature list and strong CTA. For products with one main tier",
+      "html_structure": "<section class=\"pricing-single\"><div class=\"plan-card\"><h2/><p class=\"price\"/><ul class=\"features\"/><a class=\"cta\"/></div></section>",
+      "css_classes": [
+        "pricing-single",
+        "plan-card",
+        "price",
+        "features"
+      ],
+      "best_for": [
+        "ecommerce",
+        "trading"
+      ],
+      "example_sites": [
+        "ftmo.com"
+      ]
+    },
+    {
+      "name": "freemium-highlight",
+      "description": "Free tier prominently displayed with clear upgrade path to paid plans",
+      "html_structure": "<section class=\"pricing\"><div class=\"free-tier\"><h3>Free forever</h3><ul/><a/></div><div class=\"paid-tiers\"/></section>",
+      "css_classes": [
+        "pricing",
+        "free-tier",
+        "paid-tiers",
+        "upgrade-arrow"
+      ],
+      "best_for": [
+        "saas",
+        "education"
+      ],
+      "example_sites": [
+        "duolingo.com",
+        "notion.so",
+        "raycast.com"
+      ]
+    },
+    {
+      "name": "slider-based-pricing",
+      "description": "Interactive slider to adjust usage/seats with dynamic price calculation",
+      "html_structure": "<section class=\"pricing\"><div class=\"slider-container\"><input type=\"range\"/><div class=\"price-display\"/></div><div class=\"plan-details\"/></section>",
+      "css_classes": [
+        "pricing",
+        "slider-container",
+        "price-display",
+        "range-slider"
+      ],
+      "best_for": [
+        "saas",
+        "fintech"
+      ],
+      "example_sites": [
+        "vercel.com"
+      ]
+    },
+    {
+      "name": "enterprise-contact",
+      "description": "Custom enterprise pricing with Contact Sales CTA. Feature list and social proof",
+      "html_structure": "<section class=\"pricing-enterprise\"><div class=\"features\"/><div class=\"social-proof\"><img class=\"logo\"/>...</div><a class=\"cta\">Contact Sales</a></section>",
+      "css_classes": [
+        "pricing-enterprise",
+        "features",
+        "social-proof",
+        "cta-enterprise"
+      ],
+      "best_for": [
+        "fintech",
+        "saas",
+        "agency"
+      ],
+      "example_sites": [
+        "stripe.com",
+        "ramp.com",
+        "slack.com"
+      ]
+    },
+    {
+      "name": "plan-cards-with-addons",
+      "description": "Base plan cards with optional add-on modules displayed below",
+      "html_structure": "<section class=\"pricing\"><div class=\"plans\"/><div class=\"addons\"><h3>Add-ons</h3><div class=\"addon-grid\"/></div></section>",
+      "css_classes": [
+        "pricing",
+        "plans",
+        "addons",
+        "addon-card"
+      ],
+      "best_for": [
+        "saas",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "shopify.com",
+        "webflow.com"
+      ]
+    }
+  ]
+}

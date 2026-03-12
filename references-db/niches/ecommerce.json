@@ -1,0 +1,344 @@
+{
+  "nicho": "ecommerce",
+  "generated": "2026-03-12T14:08:11.989Z",
+  "count": 5,
+  "common_colors": {
+    "primary": [
+      "#212a2f",
+      "#1a1a1a",
+      "#f5c6c6"
+    ],
+    "secondary": [
+      "#ffffff",
+      "#f5f1eb",
+      "#004c3f"
+    ],
+    "accent": [
+      "#2d8653",
+      "#00b0ff",
+      "#d63384"
+    ],
+    "background": [
+      "#ffffff",
+      "#f5f1eb",
+      "#fff5f5"
+    ],
+    "text": [
+      "#212a2f",
+      "#1a1a1a",
+      "#2c2c2c"
+    ]
+  },
+  "common_fonts": [
+    "system-ui",
+    "Helvetica Neue",
+    "GT Walsheim",
+    "Druk Wide",
+    "Apercu"
+  ],
+  "common_animations": [
+    "fade-in",
+    "smooth-scroll",
+    "hover-zoom",
+    "image-zoom-hover",
+    "cart-bounce",
+    "video-autoplay",
+    "carousel-slide",
+    "parallax-hero"
+  ],
+  "sites": [
+    {
+      "url": "allbirds.com",
+      "nicho": "ecommerce",
+      "style": "eco-clean",
+      "colors": {
+        "primary": "#212a2f",
+        "secondary": "#f5f1eb",
+        "accent": "#2d8653",
+        "background": "#f5f1eb",
+        "text": "#212a2f"
+      },
+      "fonts": [
+        "GT Walsheim",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero-banner",
+        "product-grid",
+        "sustainability",
+        "reviews",
+        "newsletter",
+        "footer"
+      ],
+      "components": [
+        "product-card",
+        "color-swatch-selector",
+        "sustainability-badge",
+        "review-stars",
+        "newsletter-input"
+      ],
+      "animations": [
+        "image-zoom-hover",
+        "fade-in",
+        "smooth-scroll",
+        "cart-bounce"
+      ],
+      "cta_patterns": [
+        "Shop now",
+        "Explore collection",
+        "Add to cart"
+      ],
+      "layout": "grid-product-layout",
+      "tags": [
+        "eco",
+        "sustainable",
+        "clean",
+        "product",
+        "natural"
+      ],
+      "hero_type": "fullscreen-product-image-with-overlay-text",
+      "score": {
+        "design": 9,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "gymshark.com",
+      "nicho": "ecommerce",
+      "style": "bold-dark",
+      "colors": {
+        "primary": "#1a1a1a",
+        "secondary": "#ffffff",
+        "accent": "#00b0ff",
+        "background": "#ffffff",
+        "text": "#1a1a1a"
+      },
+      "fonts": [
+        "Druk Wide",
+        "Helvetica Neue",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero-video",
+        "new-arrivals",
+        "collections",
+        "athletes",
+        "community",
+        "footer"
+      ],
+      "components": [
+        "video-hero",
+        "product-carousel",
+        "collection-grid",
+        "athlete-cards",
+        "size-filter"
+      ],
+      "animations": [
+        "video-autoplay",
+        "carousel-slide",
+        "hover-zoom",
+        "parallax-hero"
+      ],
+      "cta_patterns": [
+        "Shop now",
+        "View collection",
+        "Add to bag"
+      ],
+      "layout": "grid-product-layout",
+      "tags": [
+        "fitness",
+        "bold",
+        "dark",
+        "athletic",
+        "lifestyle"
+      ],
+      "hero_type": "fullscreen-video-with-overlay",
+      "score": {
+        "design": 8,
+        "performance": 7,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "glossier.com",
+      "nicho": "ecommerce",
+      "style": "minimal-pink",
+      "colors": {
+        "primary": "#f5c6c6",
+        "secondary": "#ffffff",
+        "accent": "#d63384",
+        "background": "#fff5f5",
+        "text": "#2c2c2c"
+      },
+      "fonts": [
+        "Apercu",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "bestsellers",
+        "categories",
+        "reviews",
+        "instagram-feed",
+        "footer"
+      ],
+      "components": [
+        "product-card-minimal",
+        "review-photos",
+        "instagram-grid",
+        "shade-selector",
+        "quick-add"
+      ],
+      "animations": [
+        "fade-in",
+        "hover-scale",
+        "image-pan",
+        "smooth-scroll"
+      ],
+      "cta_patterns": [
+        "Shop now",
+        "Add to bag",
+        "Choose your shade"
+      ],
+      "layout": "grid-product-layout",
+      "tags": [
+        "beauty",
+        "pink",
+        "minimal",
+        "feminine",
+        "clean"
+      ],
+      "hero_type": "split-image-and-text",
+      "score": {
+        "design": 9,
+        "performance": 8,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "shopify.com",
+      "nicho": "ecommerce",
+      "style": "green-modern",
+      "colors": {
+        "primary": "#008060",
+        "secondary": "#004c3f",
+        "accent": "#5c6ac4",
+        "background": "#ffffff",
+        "text": "#212b36"
+      },
+      "fonts": [
+        "Shopify Sans",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features",
+        "themes",
+        "pricing",
+        "success-stories",
+        "free-trial",
+        "footer"
+      ],
+      "components": [
+        "trial-form",
+        "feature-cards",
+        "theme-gallery",
+        "pricing-table",
+        "success-story-carousel"
+      ],
+      "animations": [
+        "fade-up",
+        "form-focus",
+        "carousel-auto",
+        "counter-up"
+      ],
+      "cta_patterns": [
+        "Start free trial",
+        "Get started",
+        "Try Shopify free"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "platform",
+        "green",
+        "commerce",
+        "store-builder",
+        "enterprise"
+      ],
+      "hero_type": "centered-text-with-email-input",
+      "score": {
+        "design": 8,
+        "performance": 8,
+        "conversion": 10
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "nike.com",
+      "nicho": "ecommerce",
+      "style": "bold-athletic",
+      "colors": {
+        "primary": "#111111",
+        "secondary": "#ffffff",
+        "accent": "#fa5400",
+        "background": "#ffffff",
+        "text": "#111111"
+      },
+      "fonts": [
+        "Helvetica Neue",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero-banner",
+        "featured-products",
+        "collections",
+        "member-benefits",
+        "trending",
+        "footer"
+      ],
+      "components": [
+        "mega-nav",
+        "product-card-hover",
+        "collection-banner",
+        "size-selector",
+        "wishlist-heart"
+      ],
+      "animations": [
+        "banner-slide",
+        "hover-zoom",
+        "quick-view-pop",
+        "cart-fly"
+      ],
+      "cta_patterns": [
+        "Shop",
+        "Just Do It",
+        "Join Us",
+        "Add to Bag"
+      ],
+      "layout": "grid-product-layout",
+      "tags": [
+        "athletic",
+        "bold",
+        "iconic",
+        "sport",
+        "lifestyle"
+      ],
+      "hero_type": "fullscreen-campaign-image-with-cta",
+      "score": {
+        "design": 9,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    }
+  ]
+}

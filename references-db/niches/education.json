@@ -1,0 +1,230 @@
+{
+  "nicho": "education",
+  "generated": "2026-03-12T14:08:11.989Z",
+  "count": 3,
+  "common_colors": {
+    "primary": [
+      "#58cc02",
+      "#0056d2",
+      "#000000"
+    ],
+    "secondary": [
+      "#235390",
+      "#1f1f1f",
+      "#1a1a1a"
+    ],
+    "accent": [
+      "#ff4b4b",
+      "#00bfa5",
+      "#c8102e"
+    ],
+    "background": [
+      "#ffffff",
+      "#0a0a0a"
+    ],
+    "text": [
+      "#4b4b4b",
+      "#1f1f1f",
+      "#ffffff"
+    ]
+  },
+  "common_fonts": [
+    "system-ui",
+    "Nunito",
+    "Source Sans Pro",
+    "Founders Grotesk"
+  ],
+  "common_animations": [
+    "fade-in",
+    "character-bounce",
+    "progress-fill",
+    "confetti",
+    "slide-in",
+    "gamification-pop",
+    "card-hover-lift",
+    "search-expand"
+  ],
+  "sites": [
+    {
+      "url": "duolingo.com",
+      "nicho": "education",
+      "style": "playful-gamified",
+      "colors": {
+        "primary": "#58cc02",
+        "secondary": "#235390",
+        "accent": "#ff4b4b",
+        "background": "#ffffff",
+        "text": "#4b4b4b"
+      },
+      "fonts": [
+        "Nunito",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "how-it-works",
+        "features",
+        "stats",
+        "leaderboard",
+        "app-download",
+        "footer"
+      ],
+      "components": [
+        "character-mascot",
+        "language-selector",
+        "progress-bar",
+        "streak-counter",
+        "lesson-preview",
+        "app-store-buttons"
+      ],
+      "animations": [
+        "character-bounce",
+        "progress-fill",
+        "confetti",
+        "slide-in",
+        "gamification-pop"
+      ],
+      "cta_patterns": [
+        "Get started",
+        "Learn for free",
+        "Start learning"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "language",
+        "gamified",
+        "green",
+        "playful",
+        "education",
+        "fun"
+      ],
+      "hero_type": "split-mascot-left-cta-right",
+      "score": {
+        "design": 9,
+        "performance": 8,
+        "conversion": 10
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "coursera.org",
+      "nicho": "education",
+      "style": "professional-clean",
+      "colors": {
+        "primary": "#0056d2",
+        "secondary": "#1f1f1f",
+        "accent": "#00bfa5",
+        "background": "#ffffff",
+        "text": "#1f1f1f"
+      },
+      "fonts": [
+        "Source Sans Pro",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero-search",
+        "categories",
+        "popular-courses",
+        "partners",
+        "testimonials",
+        "enterprise",
+        "footer"
+      ],
+      "components": [
+        "search-bar",
+        "course-cards",
+        "university-logos",
+        "category-pills",
+        "certificate-badge",
+        "review-stars"
+      ],
+      "animations": [
+        "fade-in",
+        "card-hover-lift",
+        "search-expand",
+        "smooth-scroll"
+      ],
+      "cta_patterns": [
+        "Join for free",
+        "Enroll now",
+        "Start learning"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "courses",
+        "university",
+        "blue",
+        "professional",
+        "certificates"
+      ],
+      "hero_type": "centered-search-with-background-pattern",
+      "score": {
+        "design": 7,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "masterclass.com",
+      "nicho": "education",
+      "style": "premium-dark",
+      "colors": {
+        "primary": "#000000",
+        "secondary": "#1a1a1a",
+        "accent": "#c8102e",
+        "background": "#0a0a0a",
+        "text": "#ffffff"
+      },
+      "fonts": [
+        "Founders Grotesk",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero-video",
+        "instructors",
+        "categories",
+        "how-it-works",
+        "gift",
+        "pricing",
+        "footer"
+      ],
+      "components": [
+        "video-trailer",
+        "instructor-cards",
+        "category-carousel",
+        "gift-card-widget",
+        "pricing-annual"
+      ],
+      "animations": [
+        "video-autoplay",
+        "card-hover-reveal",
+        "fade-in",
+        "parallax-scroll"
+      ],
+      "cta_patterns": [
+        "Get started",
+        "Gift Masterclass",
+        "Start learning"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "premium",
+        "celebrity",
+        "dark",
+        "video",
+        "learning"
+      ],
+      "hero_type": "fullscreen-video-with-overlay",
+      "score": {
+        "design": 9,
+        "performance": 7,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    }
+  ]
+}

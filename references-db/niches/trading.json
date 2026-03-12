@@ -1,0 +1,95 @@
+{
+  "nicho": "trading",
+  "generated": "2026-03-12T14:08:11.988Z",
+  "count": 1,
+  "common_colors": {
+    "primary": [
+      "#00b4d8"
+    ],
+    "secondary": [
+      "#0a0a1a"
+    ],
+    "accent": [
+      "#f5a623"
+    ],
+    "background": [
+      "#0d0d1a"
+    ],
+    "text": [
+      "#e0e0e0"
+    ]
+  },
+  "common_fonts": [
+    "Poppins",
+    "sans-serif"
+  ],
+  "common_animations": [
+    "fade-in",
+    "counter-up",
+    "pulse-glow",
+    "slide-in"
+  ],
+  "sites": [
+    {
+      "url": "ftmo.com",
+      "nicho": "trading",
+      "style": "dark-trust",
+      "colors": {
+        "primary": "#00b4d8",
+        "secondary": "#0a0a1a",
+        "accent": "#f5a623",
+        "background": "#0d0d1a",
+        "text": "#e0e0e0"
+      },
+      "fonts": [
+        "Poppins",
+        "sans-serif"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "how-it-works",
+        "stats",
+        "features",
+        "testimonials",
+        "faq",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "step-cards",
+        "stat-counters",
+        "video-modal",
+        "faq-accordion",
+        "trust-badges"
+      ],
+      "animations": [
+        "fade-in",
+        "counter-up",
+        "pulse-glow",
+        "slide-in"
+      ],
+      "cta_patterns": [
+        "Start FTMO Challenge",
+        "Get funded",
+        "Begin your journey"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "trading",
+        "forex",
+        "dark",
+        "trust",
+        "challenge",
+        "funded"
+      ],
+      "hero_type": "centered-text-with-cta-button",
+      "score": {
+        "design": 7,
+        "performance": 7,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    }
+  ]
+}

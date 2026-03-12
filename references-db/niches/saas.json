@@ -1,0 +1,529 @@
+{
+  "nicho": "saas",
+  "generated": "2026-03-12T14:08:11.989Z",
+  "count": 8,
+  "common_colors": {
+    "primary": [
+      "#000000",
+      "#3ecf8e",
+      "#a259ff"
+    ],
+    "secondary": [
+      "#111111",
+      "#1c1c1c",
+      "#37352f"
+    ],
+    "accent": [
+      "#0070f3",
+      "#6ee7b7",
+      "#eb5757"
+    ],
+    "background": [
+      "#ffffff",
+      "#000000",
+      "#1c1c1c"
+    ],
+    "text": [
+      "#ededed",
+      "#37352f",
+      "#333333"
+    ]
+  },
+  "common_fonts": [
+    "system-ui",
+    "Inter",
+    "Circular",
+    "Geist",
+    "Georgia"
+  ],
+  "common_animations": [
+    "fade-up",
+    "fade-stagger",
+    "glow-border",
+    "hover-scale",
+    "fade-in",
+    "gradient-flow",
+    "terminal-type",
+    "code-typing"
+  ],
+  "sites": [
+    {
+      "url": "vercel.com",
+      "nicho": "saas",
+      "style": "dark-gradient",
+      "colors": {
+        "primary": "#000000",
+        "secondary": "#111111",
+        "accent": "#0070f3",
+        "background": "#000000",
+        "text": "#ededed"
+      },
+      "fonts": [
+        "Inter",
+        "Geist",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features-grid",
+        "performance-demo",
+        "integrations",
+        "customers",
+        "pricing",
+        "footer"
+      ],
+      "components": [
+        "terminal-demo",
+        "performance-metrics",
+        "framework-logos",
+        "deployment-flow",
+        "pricing-cards"
+      ],
+      "animations": [
+        "gradient-flow",
+        "terminal-type",
+        "fade-stagger",
+        "glow-border"
+      ],
+      "cta_patterns": [
+        "Start Deploying",
+        "Get Started",
+        "Start for Free ->"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "developer",
+        "deploy",
+        "dark",
+        "performance",
+        "nextjs"
+      ],
+      "hero_type": "centered-text-with-terminal-demo",
+      "score": {
+        "design": 10,
+        "performance": 10,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "supabase.com",
+      "nicho": "saas",
+      "style": "dark-green",
+      "colors": {
+        "primary": "#3ecf8e",
+        "secondary": "#1c1c1c",
+        "accent": "#6ee7b7",
+        "background": "#1c1c1c",
+        "text": "#ededed"
+      },
+      "fonts": [
+        "Circular",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features",
+        "code-examples",
+        "dashboard-preview",
+        "pricing",
+        "community",
+        "footer"
+      ],
+      "components": [
+        "code-block-tabs",
+        "feature-cards",
+        "dashboard-screenshot",
+        "pricing-toggle",
+        "github-stars"
+      ],
+      "animations": [
+        "code-typing",
+        "fade-up",
+        "glow-pulse",
+        "hover-scale"
+      ],
+      "cta_patterns": [
+        "Start your project",
+        "Start for free",
+        "Read the docs"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "database",
+        "backend",
+        "green",
+        "developer",
+        "open-source"
+      ],
+      "hero_type": "centered-text-with-code-snippet",
+      "score": {
+        "design": 9,
+        "performance": 9,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "notion.so",
+      "nicho": "saas",
+      "style": "clean-white",
+      "colors": {
+        "primary": "#000000",
+        "secondary": "#37352f",
+        "accent": "#eb5757",
+        "background": "#ffffff",
+        "text": "#37352f"
+      },
+      "fonts": [
+        "Inter",
+        "Georgia",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "use-cases",
+        "templates",
+        "integrations",
+        "teams",
+        "pricing",
+        "footer"
+      ],
+      "components": [
+        "use-case-tabs",
+        "template-gallery",
+        "team-avatars",
+        "integration-logos",
+        "toggle-pricing"
+      ],
+      "animations": [
+        "smooth-scroll",
+        "tab-slide",
+        "fade-in",
+        "illustration-bounce"
+      ],
+      "cta_patterns": [
+        "Get Notion free",
+        "Try Notion ->",
+        "Download now"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "productivity",
+        "workspace",
+        "clean",
+        "minimal",
+        "wiki"
+      ],
+      "hero_type": "centered-text-with-product-screenshot",
+      "score": {
+        "design": 9,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "figma.com",
+      "nicho": "saas",
+      "style": "colorful-creative",
+      "colors": {
+        "primary": "#a259ff",
+        "secondary": "#1e1e1e",
+        "accent": "#0acf83",
+        "background": "#ffffff",
+        "text": "#333333"
+      },
+      "fonts": [
+        "Whyte",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features-showcase",
+        "use-cases",
+        "community",
+        "plugins",
+        "pricing",
+        "footer"
+      ],
+      "components": [
+        "interactive-demo",
+        "feature-video",
+        "community-grid",
+        "plugin-cards",
+        "comparison-table"
+      ],
+      "animations": [
+        "cursor-follow",
+        "prototype-transition",
+        "color-morph",
+        "scroll-parallax"
+      ],
+      "cta_patterns": [
+        "Get started for free",
+        "Try Figma",
+        "Design something great"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "design",
+        "collaboration",
+        "colorful",
+        "creative",
+        "prototyping"
+      ],
+      "hero_type": "centered-text-with-interactive-canvas",
+      "score": {
+        "design": 10,
+        "performance": 8,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "raycast.com",
+      "nicho": "saas",
+      "style": "dark-command",
+      "colors": {
+        "primary": "#ff6363",
+        "secondary": "#1a1a2e",
+        "accent": "#e8a838",
+        "background": "#0d0d15",
+        "text": "#e0e0e0"
+      },
+      "fonts": [
+        "Inter",
+        "JetBrains Mono",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "extensions",
+        "features",
+        "pro-features",
+        "community",
+        "pricing",
+        "footer"
+      ],
+      "components": [
+        "command-palette-demo",
+        "extension-grid",
+        "keyboard-shortcuts",
+        "video-demo",
+        "testimonial-wall"
+      ],
+      "animations": [
+        "command-type",
+        "spotlight-focus",
+        "fade-stagger",
+        "glow-border"
+      ],
+      "cta_patterns": [
+        "Download for free",
+        "Get Raycast",
+        "Install now"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "productivity",
+        "developer",
+        "dark",
+        "spotlight",
+        "mac"
+      ],
+      "hero_type": "centered-text-with-app-demo",
+      "score": {
+        "design": 9,
+        "performance": 9,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "slack.com",
+      "nicho": "saas",
+      "style": "friendly-colorful",
+      "colors": {
+        "primary": "#4a154b",
+        "secondary": "#1d1c1d",
+        "accent": "#36c5f0",
+        "background": "#ffffff",
+        "text": "#1d1c1d"
+      },
+      "fonts": [
+        "Slack-Circular",
+        "Helvetica Neue",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features",
+        "integrations",
+        "enterprise",
+        "customer-stories",
+        "pricing",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "chat-demo",
+        "integration-grid",
+        "customer-logo-wall",
+        "feature-tabs",
+        "pricing-cards"
+      ],
+      "animations": [
+        "message-pop-in",
+        "fade-up",
+        "emoji-bounce",
+        "slide-in"
+      ],
+      "cta_patterns": [
+        "Get started for free",
+        "Talk to sales",
+        "Try for free"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "communication",
+        "teams",
+        "colorful",
+        "enterprise",
+        "messaging"
+      ],
+      "hero_type": "text-left-product-screenshot-right",
+      "score": {
+        "design": 8,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "loom.com",
+      "nicho": "saas",
+      "style": "friendly-purple",
+      "colors": {
+        "primary": "#625df5",
+        "secondary": "#2b2250",
+        "accent": "#ff5c72",
+        "background": "#f4f2ff",
+        "text": "#2b2250"
+      },
+      "fonts": [
+        "Circular",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "video-demo",
+        "features",
+        "use-cases",
+        "integrations",
+        "pricing",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "video-player-inline",
+        "use-case-tabs",
+        "feature-cards",
+        "integration-logos",
+        "pricing-toggle"
+      ],
+      "animations": [
+        "video-reveal",
+        "tab-transition",
+        "fade-up",
+        "hover-lift"
+      ],
+      "cta_patterns": [
+        "Get Loom for free",
+        "Record your first video",
+        "Try Loom"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "video",
+        "async",
+        "purple",
+        "communication",
+        "recording"
+      ],
+      "hero_type": "centered-text-with-video-player",
+      "score": {
+        "design": 8,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "cal.com",
+      "nicho": "saas",
+      "style": "clean-modern",
+      "colors": {
+        "primary": "#111827",
+        "secondary": "#292929",
+        "accent": "#f97316",
+        "background": "#ffffff",
+        "text": "#374151"
+      },
+      "fonts": [
+        "Cal Sans",
+        "Inter",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features",
+        "integrations",
+        "open-source",
+        "pricing",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "booking-demo",
+        "feature-list",
+        "integration-logos",
+        "github-stars-badge",
+        "pricing-cards"
+      ],
+      "animations": [
+        "fade-in",
+        "booking-flow-demo",
+        "hover-scale"
+      ],
+      "cta_patterns": [
+        "Get started",
+        "Start for free",
+        "Self-host"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "scheduling",
+        "open-source",
+        "clean",
+        "booking",
+        "calendar"
+      ],
+      "hero_type": "text-left-booking-widget-right",
+      "score": {
+        "design": 8,
+        "performance": 9,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    }
+  ]
+}

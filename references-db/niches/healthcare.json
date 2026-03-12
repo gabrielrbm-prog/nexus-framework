@@ -1,0 +1,167 @@
+{
+  "nicho": "healthcare",
+  "generated": "2026-03-12T14:08:11.989Z",
+  "count": 2,
+  "common_colors": {
+    "primary": [
+      "#f47d31",
+      "#4a90d9"
+    ],
+    "secondary": [
+      "#2c2540",
+      "#1a2540"
+    ],
+    "accent": [
+      "#ffc233",
+      "#7dd3c0"
+    ],
+    "background": [
+      "#fef3e7",
+      "#162447"
+    ],
+    "text": [
+      "#2c2540",
+      "#e8e8e8"
+    ]
+  },
+  "common_fonts": [
+    "system-ui",
+    "Brandon Grotesque",
+    "GT Eesti"
+  ],
+  "common_animations": [
+    "illustration-float",
+    "fade-up",
+    "breathing-animation",
+    "gentle-bounce",
+    "nature-ambient-video",
+    "fade-slow",
+    "breathing-guide",
+    "wave-animation"
+  ],
+  "sites": [
+    {
+      "url": "headspace.com",
+      "nicho": "healthcare",
+      "style": "calm-friendly",
+      "colors": {
+        "primary": "#f47d31",
+        "secondary": "#2c2540",
+        "accent": "#ffc233",
+        "background": "#fef3e7",
+        "text": "#2c2540"
+      },
+      "fonts": [
+        "Brandon Grotesque",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "benefits",
+        "how-it-works",
+        "science",
+        "plans",
+        "testimonials",
+        "app-download",
+        "footer"
+      ],
+      "components": [
+        "illustration-hero",
+        "benefit-icons",
+        "step-cards",
+        "plan-cards",
+        "app-store-buttons",
+        "meditation-player"
+      ],
+      "animations": [
+        "illustration-float",
+        "fade-up",
+        "breathing-animation",
+        "gentle-bounce"
+      ],
+      "cta_patterns": [
+        "Try for free",
+        "Get started",
+        "Subscribe now"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "meditation",
+        "wellness",
+        "calm",
+        "orange",
+        "illustration",
+        "friendly"
+      ],
+      "hero_type": "text-left-illustration-right",
+      "score": {
+        "design": 9,
+        "performance": 8,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "calm.com",
+      "nicho": "healthcare",
+      "style": "serene-dark",
+      "colors": {
+        "primary": "#4a90d9",
+        "secondary": "#1a2540",
+        "accent": "#7dd3c0",
+        "background": "#162447",
+        "text": "#e8e8e8"
+      },
+      "fonts": [
+        "GT Eesti",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features",
+        "sleep-stories",
+        "music",
+        "pricing",
+        "testimonials",
+        "app-download",
+        "footer"
+      ],
+      "components": [
+        "nature-video-bg",
+        "audio-player-mini",
+        "plan-cards",
+        "celebrity-narrator-cards",
+        "app-store-buttons"
+      ],
+      "animations": [
+        "nature-ambient-video",
+        "fade-slow",
+        "breathing-guide",
+        "wave-animation"
+      ],
+      "cta_patterns": [
+        "Try Calm for free",
+        "Start your journey",
+        "Get Calm Premium"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "sleep",
+        "relaxation",
+        "dark-blue",
+        "nature",
+        "audio",
+        "serene"
+      ],
+      "hero_type": "fullscreen-nature-video-with-overlay",
+      "score": {
+        "design": 9,
+        "performance": 7,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    }
+  ]
+}

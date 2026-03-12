@@ -1,0 +1,405 @@
+{
+  "nicho": "agency",
+  "generated": "2026-03-12T14:08:11.990Z",
+  "count": 6,
+  "common_colors": {
+    "primary": [
+      "#000000",
+      "#171a20",
+      "#222222"
+    ],
+    "secondary": [
+      "#1d1d1f",
+      "#393c41",
+      "#f5f5f5"
+    ],
+    "accent": [
+      "#0071e3",
+      "#3e6ae1",
+      "#ff3c00"
+    ],
+    "background": [
+      "#ffffff",
+      "#000000",
+      "#0e0e16"
+    ],
+    "text": [
+      "#ffffff",
+      "#1d1d1f",
+      "#222222"
+    ]
+  },
+  "common_fonts": [
+    "system-ui",
+    "Inter",
+    "SF Pro",
+    "Gotham",
+    "Druk"
+  ],
+  "common_animations": [
+    "scroll-trigger-reveal",
+    "parallax-product",
+    "3d-product-rotate",
+    "fade-on-scroll",
+    "fullscreen-scroll-snap",
+    "parallax-deep",
+    "video-autoplay",
+    "smooth-morph"
+  ],
+  "sites": [
+    {
+      "url": "apple.com",
+      "nicho": "agency",
+      "style": "minimal-premium",
+      "colors": {
+        "primary": "#000000",
+        "secondary": "#1d1d1f",
+        "accent": "#0071e3",
+        "background": "#ffffff",
+        "text": "#1d1d1f"
+      },
+      "fonts": [
+        "SF Pro",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero-product",
+        "product-showcase",
+        "features-scroll",
+        "comparison",
+        "accessories",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "product-hero-fullscreen",
+        "scroll-reveal-features",
+        "comparison-table",
+        "accessory-carousel",
+        "trade-in-calculator"
+      ],
+      "animations": [
+        "scroll-trigger-reveal",
+        "parallax-product",
+        "3d-product-rotate",
+        "fade-on-scroll"
+      ],
+      "cta_patterns": [
+        "Buy",
+        "Learn more",
+        "Compare models"
+      ],
+      "layout": "single-col-immersive",
+      "tags": [
+        "premium",
+        "minimal",
+        "product",
+        "glass",
+        "immersive"
+      ],
+      "hero_type": "fullscreen-product-centered",
+      "score": {
+        "design": 10,
+        "performance": 9,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "tesla.com",
+      "nicho": "agency",
+      "style": "immersive-fullscreen",
+      "colors": {
+        "primary": "#171a20",
+        "secondary": "#393c41",
+        "accent": "#3e6ae1",
+        "background": "#000000",
+        "text": "#ffffff"
+      },
+      "fonts": [
+        "Gotham",
+        "system-ui"
+      ],
+      "sections": [
+        "hero-fullscreen",
+        "model-showcase",
+        "features",
+        "order-config",
+        "footer"
+      ],
+      "components": [
+        "fullscreen-hero-scroll",
+        "model-selector",
+        "config-builder",
+        "video-background",
+        "minimal-nav"
+      ],
+      "animations": [
+        "fullscreen-scroll-snap",
+        "parallax-deep",
+        "video-autoplay",
+        "smooth-morph"
+      ],
+      "cta_patterns": [
+        "Order Now",
+        "Custom Order",
+        "Learn More"
+      ],
+      "layout": "fullscreen-scroll-sections",
+      "tags": [
+        "automotive",
+        "immersive",
+        "dark",
+        "fullscreen",
+        "premium",
+        "minimal-text"
+      ],
+      "hero_type": "fullscreen-video-with-minimal-text",
+      "score": {
+        "design": 10,
+        "performance": 8,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "awwwards.com",
+      "nicho": "agency",
+      "style": "brutalist-experimental",
+      "colors": {
+        "primary": "#222222",
+        "secondary": "#f5f5f5",
+        "accent": "#ff3c00",
+        "background": "#ffffff",
+        "text": "#222222"
+      },
+      "fonts": [
+        "Druk",
+        "Inter",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero-showcase",
+        "site-of-the-day",
+        "nominees",
+        "collections",
+        "blog",
+        "footer"
+      ],
+      "components": [
+        "site-card-hover",
+        "jury-avatars",
+        "category-filter",
+        "site-preview-modal",
+        "rating-bars"
+      ],
+      "animations": [
+        "hover-distort",
+        "cursor-follow",
+        "image-reveal",
+        "text-scramble"
+      ],
+      "cta_patterns": [
+        "Submit your site",
+        "Join Awwwards",
+        "See all nominees"
+      ],
+      "layout": "grid-masonry",
+      "tags": [
+        "design",
+        "awards",
+        "experimental",
+        "brutalist",
+        "showcase"
+      ],
+      "hero_type": "dynamic-showcase-carousel",
+      "score": {
+        "design": 10,
+        "performance": 7,
+        "conversion": 6
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "framer.com",
+      "nicho": "agency",
+      "style": "dark-creative",
+      "colors": {
+        "primary": "#0055ff",
+        "secondary": "#111111",
+        "accent": "#ff0080",
+        "background": "#000000",
+        "text": "#ffffff"
+      },
+      "fonts": [
+        "Inter",
+        "Framer",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "templates",
+        "features",
+        "ai-builder",
+        "pricing",
+        "showcase",
+        "footer"
+      ],
+      "components": [
+        "template-gallery",
+        "live-preview",
+        "ai-prompt-input",
+        "feature-video",
+        "pricing-toggle"
+      ],
+      "animations": [
+        "template-morph",
+        "3d-tilt",
+        "glow-pulse",
+        "smooth-resize"
+      ],
+      "cta_patterns": [
+        "Start for free",
+        "Build your site",
+        "Try AI"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "website-builder",
+        "creative",
+        "dark",
+        "ai",
+        "no-code"
+      ],
+      "hero_type": "centered-text-with-template-morphing",
+      "score": {
+        "design": 10,
+        "performance": 8,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "webflow.com",
+      "nicho": "agency",
+      "style": "dark-professional",
+      "colors": {
+        "primary": "#4353ff",
+        "secondary": "#1a1a2e",
+        "accent": "#00d4aa",
+        "background": "#0e0e16",
+        "text": "#e4e4e7"
+      },
+      "fonts": [
+        "Plus Jakarta Sans",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "visual-builder-demo",
+        "features",
+        "enterprise",
+        "templates",
+        "pricing",
+        "footer"
+      ],
+      "components": [
+        "visual-editor-demo",
+        "feature-bento",
+        "enterprise-logos",
+        "template-cards",
+        "cms-showcase"
+      ],
+      "animations": [
+        "builder-demo-interact",
+        "bento-hover",
+        "fade-stagger",
+        "glow-border"
+      ],
+      "cta_patterns": [
+        "Get started - it is free",
+        "Start building",
+        "Contact sales"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "no-code",
+        "design",
+        "professional",
+        "dark",
+        "visual-builder"
+      ],
+      "hero_type": "centered-text-with-builder-preview",
+      "score": {
+        "design": 9,
+        "performance": 8,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "wix.com",
+      "nicho": "agency",
+      "style": "colorful-modern",
+      "colors": {
+        "primary": "#116dff",
+        "secondary": "#20303c",
+        "accent": "#fbbc05",
+        "background": "#ffffff",
+        "text": "#20303c"
+      },
+      "fonts": [
+        "Madefor",
+        "Helvetica Neue",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "templates",
+        "features",
+        "ai-site-builder",
+        "business-tools",
+        "pricing",
+        "footer"
+      ],
+      "components": [
+        "template-preview",
+        "ai-chat-builder",
+        "feature-tabs",
+        "pricing-comparison",
+        "business-type-selector"
+      ],
+      "animations": [
+        "template-slide",
+        "ai-generate-demo",
+        "fade-up",
+        "tab-switch"
+      ],
+      "cta_patterns": [
+        "Get Started",
+        "Create your website",
+        "Start now"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "website-builder",
+        "templates",
+        "colorful",
+        "ai",
+        "business"
+      ],
+      "hero_type": "centered-text-with-ai-demo",
+      "score": {
+        "design": 7,
+        "performance": 7,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    }
+  ]
+}

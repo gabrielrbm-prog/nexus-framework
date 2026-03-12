@@ -1,0 +1,401 @@
+{
+  "nicho": "fintech",
+  "generated": "2026-03-12T14:08:11.988Z",
+  "count": 6,
+  "common_colors": {
+    "primary": [
+      "#635bff",
+      "#5856d6",
+      "#6c47ff"
+    ],
+    "secondary": [
+      "#0a2540",
+      "#1a1a2e",
+      "#1a0a3e"
+    ],
+    "accent": [
+      "#00d4aa",
+      "#7c6ef0",
+      "#ffcc00"
+    ],
+    "background": [
+      "#ffffff",
+      "#f8f7ff",
+      "#0a0a15"
+    ],
+    "text": [
+      "#425466",
+      "#333344",
+      "#1a0a3e"
+    ]
+  },
+  "common_fonts": [
+    "system-ui",
+    "Inter",
+    "GT Walsheim",
+    "Graphik",
+    "Gilroy"
+  ],
+  "common_animations": [
+    "fade-up",
+    "fade-in-scroll",
+    "hover-scale",
+    "gradient-shift",
+    "counter-increment",
+    "smooth-scroll",
+    "scroll-reveal",
+    "number-count-up"
+  ],
+  "sites": [
+    {
+      "url": "stripe.com",
+      "nicho": "fintech",
+      "style": "clean-modern",
+      "colors": {
+        "primary": "#635bff",
+        "secondary": "#0a2540",
+        "accent": "#00d4aa",
+        "background": "#ffffff",
+        "text": "#425466"
+      },
+      "fonts": [
+        "Inter",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features-grid",
+        "testimonials",
+        "pricing",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "gradient-text",
+        "card-grid",
+        "feature-icon-cards",
+        "testimonial-carousel",
+        "pricing-table"
+      ],
+      "animations": [
+        "fade-in-scroll",
+        "hover-scale",
+        "gradient-shift"
+      ],
+      "cta_patterns": [
+        "Get Started",
+        "Start now ->",
+        "Contact Sales"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "trust",
+        "enterprise",
+        "payment",
+        "purple",
+        "clean"
+      ],
+      "hero_type": "text-left-image-right",
+      "score": {
+        "design": 9,
+        "performance": 9,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "mercury.com",
+      "nicho": "fintech",
+      "style": "minimal-modern",
+      "colors": {
+        "primary": "#5856d6",
+        "secondary": "#1a1a2e",
+        "accent": "#7c6ef0",
+        "background": "#ffffff",
+        "text": "#333344"
+      },
+      "fonts": [
+        "GT Walsheim",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "trust-bar",
+        "features",
+        "integrations",
+        "testimonials",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "logo-wall",
+        "feature-cards",
+        "metric-counters",
+        "testimonial-cards"
+      ],
+      "animations": [
+        "fade-up",
+        "counter-increment",
+        "smooth-scroll"
+      ],
+      "cta_patterns": [
+        "Open an account",
+        "Get started free",
+        "See how it works"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "banking",
+        "startup",
+        "clean",
+        "trust",
+        "minimal"
+      ],
+      "hero_type": "centered-text-with-product-screenshot",
+      "score": {
+        "design": 9,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "ramp.com",
+      "nicho": "fintech",
+      "style": "bold-corporate",
+      "colors": {
+        "primary": "#6c47ff",
+        "secondary": "#1a0a3e",
+        "accent": "#ffcc00",
+        "background": "#f8f7ff",
+        "text": "#1a0a3e"
+      },
+      "fonts": [
+        "Graphik",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "stats-bar",
+        "features-showcase",
+        "integrations",
+        "case-studies",
+        "pricing",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "stats-counter",
+        "tabbed-features",
+        "integration-grid",
+        "case-study-cards",
+        "pricing-comparison"
+      ],
+      "animations": [
+        "scroll-reveal",
+        "number-count-up",
+        "tab-transition",
+        "hover-lift"
+      ],
+      "cta_patterns": [
+        "Get started free",
+        "Request a demo",
+        "Talk to sales"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "corporate",
+        "expense",
+        "bold",
+        "purple",
+        "enterprise"
+      ],
+      "hero_type": "text-center-with-dashboard-preview",
+      "score": {
+        "design": 8,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "linear.app",
+      "nicho": "fintech",
+      "style": "dark-developer",
+      "colors": {
+        "primary": "#5e6ad2",
+        "secondary": "#171723",
+        "accent": "#8b5cf6",
+        "background": "#0a0a15",
+        "text": "#d4d4e0"
+      },
+      "fonts": [
+        "Inter",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "features-bento",
+        "integrations",
+        "workflow",
+        "customers",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "bento-grid",
+        "feature-spotlight",
+        "keyboard-shortcut-hints",
+        "customer-logos",
+        "changelog-feed"
+      ],
+      "animations": [
+        "fade-in-stagger",
+        "gradient-aurora",
+        "hover-glow",
+        "parallax-subtle"
+      ],
+      "cta_patterns": [
+        "Get started",
+        "Start building",
+        "Try Linear free"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "developer",
+        "productivity",
+        "dark",
+        "clean",
+        "fast"
+      ],
+      "hero_type": "centered-text-with-gradient-background",
+      "score": {
+        "design": 10,
+        "performance": 10,
+        "conversion": 8
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "wise.com",
+      "nicho": "fintech",
+      "style": "friendly-modern",
+      "colors": {
+        "primary": "#9fe870",
+        "secondary": "#163300",
+        "accent": "#2ed06e",
+        "background": "#ffffff",
+        "text": "#2e3033"
+      },
+      "fonts": [
+        "Gilroy",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "calculator",
+        "how-it-works",
+        "features",
+        "trust-bar",
+        "reviews",
+        "cta",
+        "footer"
+      ],
+      "components": [
+        "currency-calculator",
+        "step-timeline",
+        "comparison-table",
+        "review-carousel",
+        "trust-badges"
+      ],
+      "animations": [
+        "smooth-transition",
+        "calculator-live",
+        "fade-up"
+      ],
+      "cta_patterns": [
+        "Send money now",
+        "Get started",
+        "Compare rates"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "transfer",
+        "international",
+        "green",
+        "friendly",
+        "calculator"
+      ],
+      "hero_type": "text-left-calculator-right",
+      "score": {
+        "design": 8,
+        "performance": 9,
+        "conversion": 10
+      },
+      "last_updated": "2026-03-12"
+    },
+    {
+      "url": "coinbase.com",
+      "nicho": "fintech",
+      "style": "clean-blue",
+      "colors": {
+        "primary": "#0052ff",
+        "secondary": "#050f19",
+        "accent": "#00d395",
+        "background": "#ffffff",
+        "text": "#0a0b0d"
+      },
+      "fonts": [
+        "Coinbase Sans",
+        "system-ui"
+      ],
+      "sections": [
+        "nav",
+        "hero",
+        "crypto-ticker",
+        "features",
+        "education",
+        "security",
+        "app-download",
+        "footer"
+      ],
+      "components": [
+        "price-ticker",
+        "crypto-cards",
+        "feature-tabs",
+        "security-badges",
+        "app-store-buttons"
+      ],
+      "animations": [
+        "ticker-scroll",
+        "fade-in",
+        "price-update-flash"
+      ],
+      "cta_patterns": [
+        "Get started",
+        "Sign up",
+        "Start trading"
+      ],
+      "layout": "single-col-centered",
+      "tags": [
+        "crypto",
+        "blue",
+        "trust",
+        "exchange",
+        "modern"
+      ],
+      "hero_type": "split-text-and-signup-form",
+      "score": {
+        "design": 8,
+        "performance": 8,
+        "conversion": 9
+      },
+      "last_updated": "2026-03-12"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "category": "testimonials",
+  "generated": "2026-03-12T14:08:11.990Z",
+  "count": 6,
+  "patterns": [
+    {
+      "name": "carousel-with-photos",
+      "description": "Horizontal carousel of testimonial cards with user photo, name, role, and quote",
+      "html_structure": "<section class=\"testimonials\"><div class=\"carousel\"><div class=\"testimonial-card\"><img class=\"avatar\"/><blockquote/><cite/></div></div></section>",
+      "css_classes": [
+        "testimonials",
+        "carousel",
+        "testimonial-card",
+        "avatar",
+        "blockquote"
+      ],
+      "best_for": [
+        "saas",
+        "fintech",
+        "healthcare"
+      ],
+      "example_sites": [
+        "stripe.com",
+        "notion.so",
+        "headspace.com"
+      ]
+    },
+    {
+      "name": "masonry-wall",
+      "description": "Masonry grid of testimonials in varying heights. Creates a social proof wall effect",
+      "html_structure": "<section class=\"testimonial-wall\"><div class=\"masonry\"><div class=\"testimonial-card\"/></div></section>",
+      "css_classes": [
+        "testimonial-wall",
+        "masonry",
+        "testimonial-card"
+      ],
+      "best_for": [
+        "saas",
+        "agency"
+      ],
+      "example_sites": [
+        "raycast.com",
+        "linear.app"
+      ]
+    },
+    {
+      "name": "logo-bar-with-quotes",
+      "description": "Company logos in a bar, clicking reveals the full testimonial quote from that company",
+      "html_structure": "<section class=\"testimonials\"><div class=\"logo-bar\"><img class=\"company-logo\"/></div><div class=\"quote-display\"><blockquote/></div></section>",
+      "css_classes": [
+        "testimonials",
+        "logo-bar",
+        "company-logo",
+        "quote-display"
+      ],
+      "best_for": [
+        "fintech",
+        "saas",
+        "enterprise"
+      ],
+      "example_sites": [
+        "ramp.com",
+        "vercel.com"
+      ]
+    },
+    {
+      "name": "video-testimonials",
+      "description": "Grid of video testimonial thumbnails that play on click or hover",
+      "html_structure": "<section class=\"testimonials-video\"><div class=\"video-grid\"><div class=\"video-thumb\"><video/><p class=\"name\"/></div></div></section>",
+      "css_classes": [
+        "testimonials-video",
+        "video-grid",
+        "video-thumb"
+      ],
+      "best_for": [
+        "education",
+        "healthcare",
+        "ecommerce"
+      ],
+      "example_sites": [
+        "duolingo.com",
+        "coursera.org"
+      ]
+    },
+    {
+      "name": "single-featured-quote",
+      "description": "One large, prominent testimonial with big quote marks and customer branding",
+      "html_structure": "<section class=\"testimonial-featured\"><div class=\"quote-icon\"/><blockquote class=\"big-quote\"/><div class=\"author\"><img/><div><strong/><span/></div></div></section>",
+      "css_classes": [
+        "testimonial-featured",
+        "big-quote",
+        "quote-icon",
+        "author"
+      ],
+      "best_for": [
+        "agency",
+        "fintech"
+      ],
+      "example_sites": [
+        "mercury.com",
+        "apple.com"
+      ]
+    },
+    {
+      "name": "twitter-style-cards",
+      "description": "Testimonials styled like social media posts with profile pictures and platform icons",
+      "html_structure": "<section class=\"social-proof\"><div class=\"tweet-grid\"><div class=\"tweet-card\"><div class=\"tweet-header\"><img/><span/></div><p/></div></div></section>",
+      "css_classes": [
+        "social-proof",
+        "tweet-grid",
+        "tweet-card",
+        "tweet-header"
+      ],
+      "best_for": [
+        "saas",
+        "education"
+      ],
+      "example_sites": [
+        "supabase.com",
+        "cal.com"
+      ]
+    }
+  ]
+}
