@@ -1060,10 +1060,13 @@
     // Stagger for card grids
     document.querySelectorAll('.method-grid, .stats-grid, .pricing-grid, .testimonials-grid').forEach(grid => {
       gsap.from(grid.children, {
-        scrollTrigger: { trigger: grid, start: 'top 85%' },
+        scrollTrigger: { trigger: grid, start: 'top 90%', toggleActions: 'play none none none' },
         opacity: 0, y: 30, stagger: 0.15, duration: 0.8, ease: 'power2.out'
       });
     });
+
+    // Force refresh after hash navigation
+    setTimeout(() => ScrollTrigger.refresh(), 100);
 
     /* ═══════════════════════════════════════════════════════
        COUNTER ANIMATION
