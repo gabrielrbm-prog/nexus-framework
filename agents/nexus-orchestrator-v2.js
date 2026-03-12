@@ -83,8 +83,8 @@ class NexusOrchestratorV2 {
         continue;
       }
 
-      // Skip optional stages if --fast mode
-      if (opts.fast && !step.required) {
+      // Skip optional stages if --fast mode (but never skip deploy when --deploy is set)
+      if (opts.fast && !step.required && !(step.stage === 'deploy' && opts.deploy)) {
         board.transition(step.stage, 'skipped');
         console.log(`⏭️  ${step.stage} — pulado (modo fast)`);
         continue;
@@ -309,29 +309,78 @@ class NexusOrchestratorV2 {
   async _runDeploy(projectName, opts) {
     const outputDir = path.join(WORKSPACE, 'projects', projectName, 'output');
     const generatedSite = path.join(WORKSPACE, 'generated-site');
+    const slug = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-    if (!fs.existsSync(outputDir) && !fs.existsSync(path.join(WORKSPACE, 'projects', projectName))) {
-      return { success: false, error: 'No output to deploy' };
+    if (!fs.existsSync(outputDir)) {
+      return { success: false, error: 'No output directory found' };
     }
 
-    // Copy to generated-site for GitHub Pages
     try {
-      execSync(`cp -r ${outputDir || path.join(WORKSPACE, 'projects', projectName)}/*.html ${generatedSite}/ 2>/dev/null || true`, {
-        cwd: WORKSPACE, encoding: 'utf-8'
-      });
+      // Copy to generated-site/index.html (latest)
+      fs.mkdirSync(generatedSite, { recursive: true });
+      execSync(`cp ${outputDir}/index.html ${generatedSite}/index.html`, { cwd: WORKSPACE });
+      console.log('   Copiado para generated-site/index.html');
 
-      // Git push
-      if (opts.deploy) {
-        execSync('cd ~/.openclaw/workspace/nexus-project && git add -A && git commit -m "Deploy: ' + projectName + '" && git push', {
-          timeout: 30000, encoding: 'utf-8'
-        });
-        board.set('deploy.url', `https://gabrielrbm-prog.github.io/nexus-framework/generated-site/`);
-        board.set('deploy.platform', 'github-pages');
-        board.set('deploy.deployedAt', new Date().toISOString());
-      }
+      // Copy to generated-site/<slug>/index.html (project-specific URL)
+      const projectSiteDir = path.join(generatedSite, slug);
+      fs.mkdirSync(projectSiteDir, { recursive: true });
+      execSync(`cp ${outputDir}/index.html ${projectSiteDir}/index.html`, { cwd: WORKSPACE });
+      console.log(`   Copiado para generated-site/${slug}/index.html`);
+
+      // Update navigation index
+      this._updateSiteIndex(generatedSite);
+
+      // Git commit and push
+      execSync(`cd ${WORKSPACE} && git add generated-site/ && git commit -m "deploy: ${slug}"`, {
+        timeout: 15000, encoding: 'utf-8'
+      });
+      console.log('   Git commit criado');
+
+      execSync(`cd ${WORKSPACE} && git push origin main`, { timeout: 30000, encoding: 'utf-8' });
+      console.log('   Push para GitHub Pages');
+
+      const baseUrl = 'https://gabrielrbm-prog.github.io/nexus-framework/generated-site';
+      board.set('deploy.url', `${baseUrl}/${slug}/`);
+      board.set('deploy.indexUrl', `${baseUrl}/`);
+      board.set('deploy.platform', 'github-pages');
+      board.set('deploy.deployedAt', new Date().toISOString());
+      board.set('deploy.slug', slug);
+
+      console.log(`\n   URL: ${baseUrl}/${slug}/`);
+      console.log(`   Index: ${baseUrl}/`);
+
       return { success: true };
     } catch (err) {
       return { success: false, error: err.message };
+    }
+  }
+
+  _updateSiteIndex(generatedSiteDir) {
+    try {
+      const dirs = fs.readdirSync(generatedSiteDir).filter(f => {
+        const fp = path.join(generatedSiteDir, f);
+        return fs.statSync(fp).isDirectory() && fs.existsSync(path.join(fp, 'index.html'));
+      });
+      if (dirs.length === 0) return;
+      const links = dirs.map(d => `      <a href="${d}/" class="project-link">${d}</a>`).join('\n');
+      const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>NEXUS Framework</title>
+  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',-apple-system,sans-serif;background:#0a0a0f;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 24px}h1{font-size:32px;font-weight:800;background:linear-gradient(90deg,#3b82f6,#22d3ee,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}.sub{color:#94a3b8;font-size:16px;margin-bottom:48px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:900px;width:100%}.project-link{display:block;padding:24px;background:rgba(18,18,26,.9);border:1px solid rgba(255,255,255,.06);border-radius:16px;text-decoration:none;color:#e2e8f0;font-size:18px;font-weight:600;transition:all .3s;text-transform:capitalize}.project-link:hover{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(59,130,246,.15)}.ct{color:#94a3b8;font-size:14px;margin-top:32px}</style>
+</head>
+<body>
+  <h1>NEXUS Framework</h1>
+  <p class="sub">Landing pages geradas automaticamente</p>
+  <div class="grid">
+${links}
+  </div>
+  <p class="ct">${dirs.length} projeto${dirs.length > 1 ? 's' : ''}</p>
+</body></html>`;
+      fs.writeFileSync(path.join(generatedSiteDir, 'index.html'), html, 'utf-8');
+    } catch (err) {
+      console.log('   [warn] Site index update failed:', err.message);
     }
   }
 
