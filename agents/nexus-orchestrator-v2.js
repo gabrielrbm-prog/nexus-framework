@@ -116,6 +116,24 @@ class NexusOrchestratorV2 {
         break;
       }
 
+      // Feedback loop: if quality score < 70, re-run code + quality (max 1 retry)
+      if (step.stage === 'quality' && success && !opts._retried) {
+        const qScore = board.get('quality.score') || 0;
+        if (qScore > 0 && qScore < 70) {
+          console.log(`\n🔄 Score ${qScore}/100 < 70 — re-gerando código...`);
+          opts._retried = true;
+          // Re-run code stage
+          board.transition('code', 'pending');
+          const codeStep = this.pipeline.find(p => p.stage === 'code');
+          await this._executeStage(codeStep, projectName, opts);
+          // Re-run quality
+          board.transition('quality', 'pending');
+          await this._executeStage(step, projectName, opts);
+          const newScore = board.get('quality.score') || 0;
+          console.log(`   Score após retry: ${newScore}/100`);
+        }
+      }
+
       // Human checkpoint after briefing report
       if (step.stage === 'report' && opts.interactive) {
         const cp = board.addCheckpoint('report', 'Revise o relatório do briefing antes de continuar', true);
