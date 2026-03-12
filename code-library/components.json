@@ -4,8 +4,8 @@
     "version": "1.0.0",
     "source": "escola-trader-financiado-v5.html",
     "extracted": "2026-03-12",
-    "total_components": 721,
-    "last_updated": "2026-03-12T16:40:48.515Z"
+    "total_components": 771,
+    "last_updated": "2026-03-12T18:51:15.719061"
   },
   "global_dependencies": {
     "fonts": [
@@ -21632,6 +21632,1881 @@
         "dark-mode"
       ],
       "quality_score": 7
+    },
+    {
+      "id": "scroll-driven-reveal",
+      "name": "Scroll-Driven Reveal Animation",
+      "category": "Animations/Scroll",
+      "description": "Elements fade in and slide up as they enter the viewport using CSS scroll-timeline with IntersectionObserver fallback. Pure CSS where supported, JS polyfill for older browsers.",
+      "dependencies": [],
+      "css": "\n.scroll-reveal-container { overflow: hidden; }\n.scroll-reveal-item {\n  opacity: 0;\n  transform: translateY({{translateDistance}});\n  transition: opacity {{duration}} {{easing}}, transform {{duration}} {{easing}};\n}\n.scroll-reveal-item.revealed {\n  opacity: 1;\n  transform: translateY(0);\n}\n.scroll-reveal-item:nth-child(2) { transition-delay: 0.1s; }\n.scroll-reveal-item:nth-child(3) { transition-delay: 0.2s; }\n.scroll-reveal-item:nth-child(4) { transition-delay: 0.3s; }\n.scroll-reveal-item:nth-child(5) { transition-delay: 0.4s; }\n.scroll-reveal-item:nth-child(6) { transition-delay: 0.5s; }\n@supports (animation-timeline: view()) {\n  .scroll-reveal-item {\n    animation: scrollReveal linear both;\n    animation-timeline: view();\n    animation-range: entry 0% entry 100%;\n    opacity: 0;\n    transform: translateY({{translateDistance}});\n  }\n  @keyframes scrollReveal {\n    to { opacity: 1; transform: translateY(0); }\n  }\n}\n",
+      "html_template": "\n<div class=\"scroll-reveal-container\">\n  <div class=\"scroll-reveal-item\">\n    <h3>{{heading1}}</h3>\n    <p>{{text1}}</p>\n  </div>\n  <div class=\"scroll-reveal-item\">\n    <h3>{{heading2}}</h3>\n    <p>{{text2}}</p>\n  </div>\n  <div class=\"scroll-reveal-item\">\n    <h3>{{heading3}}</h3>\n    <p>{{text3}}</p>\n  </div>\n</div>\n",
+      "js_init": "\n(function(){\n  const items = document.querySelectorAll('.scroll-reveal-item');\n  if (!CSS.supports('animation-timeline', 'view()')) {\n    const observer = new IntersectionObserver((entries) => {\n      entries.forEach(entry => {\n        if (entry.isIntersecting) {\n          entry.target.classList.add('revealed');\n          observer.unobserve(entry.target);\n        }\n      });\n    }, { threshold: {{threshold}}, rootMargin: '0px 0px -50px 0px' });\n    items.forEach(item => observer.observe(item));\n  }\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "translateDistance": {
+          "type": "string",
+          "default": "60px",
+          "description": "How far elements slide up from"
+        },
+        "duration": {
+          "type": "string",
+          "default": "0.7s",
+          "description": "Animation duration"
+        },
+        "easing": {
+          "type": "string",
+          "default": "cubic-bezier(0.16, 1, 0.3, 1)",
+          "description": "CSS easing function"
+        },
+        "threshold": {
+          "type": "number",
+          "default": 0.15,
+          "description": "IntersectionObserver threshold (0-1)"
+        },
+        "heading1": {
+          "type": "string",
+          "default": "Feature One",
+          "description": "First heading"
+        },
+        "text1": {
+          "type": "string",
+          "default": "Description of the first feature.",
+          "description": "First text"
+        },
+        "heading2": {
+          "type": "string",
+          "default": "Feature Two",
+          "description": "Second heading"
+        },
+        "text2": {
+          "type": "string",
+          "default": "Description of the second feature.",
+          "description": "Second text"
+        },
+        "heading3": {
+          "type": "string",
+          "default": "Feature Three",
+          "description": "Third heading"
+        },
+        "text3": {
+          "type": "string",
+          "default": "Description of the third feature.",
+          "description": "Third text"
+        }
+      }
+    },
+    {
+      "id": "magnetic-cursor-button",
+      "name": "Magnetic Cursor Button",
+      "category": "Buttons/Interactive",
+      "description": "Button that magnetically attracts toward the mouse cursor when nearby. Smooth spring-like return animation when mouse leaves. Premium interaction feel used by top agencies.",
+      "dependencies": [],
+      "css": "\n.magnetic-btn-wrap {\n  display: inline-block;\n  position: relative;\n  cursor: pointer;\n}\n.magnetic-btn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  padding: {{paddingY}} {{paddingX}};\n  background: {{bgColor}};\n  color: {{textColor}};\n  border: 1px solid {{borderColor}};\n  border-radius: {{borderRadius}};\n  font-size: {{fontSize}};\n  font-weight: 600;\n  letter-spacing: -0.01em;\n  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s, box-shadow 0.3s;\n  will-change: transform;\n  position: relative;\n  overflow: hidden;\n}\n.magnetic-btn::before {\n  content: '';\n  position: absolute;\n  inset: 0;\n  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.15) 0%, transparent 60%);\n  opacity: 0;\n  transition: opacity 0.3s;\n}\n.magnetic-btn-wrap:hover .magnetic-btn::before { opacity: 1; }\n.magnetic-btn-wrap:hover .magnetic-btn {\n  box-shadow: {{glowShadow}};\n}\n",
+      "html_template": "\n<div class=\"magnetic-btn-wrap\" data-magnetic data-strength=\"{{strength}}\">\n  <button class=\"magnetic-btn\">{{buttonText}}</button>\n</div>\n",
+      "js_init": "\n(function(){\n  document.querySelectorAll('[data-magnetic]').forEach(wrap => {\n    const btn = wrap.querySelector('.magnetic-btn');\n    const strength = parseFloat(wrap.dataset.strength) || 0.3;\n    let rect, animId;\n    wrap.addEventListener('mouseenter', () => { rect = wrap.getBoundingClientRect(); });\n    wrap.addEventListener('mousemove', (e) => {\n      if (!rect) rect = wrap.getBoundingClientRect();\n      const x = e.clientX - rect.left - rect.width / 2;\n      const y = e.clientY - rect.top - rect.height / 2;\n      btn.style.transform = `translate(${x * strength}px, ${y * strength}px)`;\n      btn.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');\n      btn.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');\n    });\n    wrap.addEventListener('mouseleave', () => {\n      btn.style.transform = 'translate(0, 0)';\n      btn.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s, box-shadow 0.3s';\n      setTimeout(() => {\n        btn.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s, box-shadow 0.3s';\n      }, 500);\n    });\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "strength": {
+          "type": "number",
+          "default": 0.3,
+          "description": "Magnetic pull strength (0.1 = subtle, 0.5 = strong)"
+        },
+        "paddingY": {
+          "type": "string",
+          "default": "14px",
+          "description": "Vertical padding"
+        },
+        "paddingX": {
+          "type": "string",
+          "default": "32px",
+          "description": "Horizontal padding"
+        },
+        "bgColor": {
+          "type": "color",
+          "default": "#3b82f6",
+          "description": "Button background color"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#ffffff",
+          "description": "Button text color"
+        },
+        "borderColor": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.1)",
+          "description": "Border color"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "12px",
+          "description": "Border radius"
+        },
+        "fontSize": {
+          "type": "string",
+          "default": "1rem",
+          "description": "Font size"
+        },
+        "glowShadow": {
+          "type": "string",
+          "default": "0 0 30px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.1)",
+          "description": "Hover glow shadow"
+        },
+        "buttonText": {
+          "type": "string",
+          "default": "Get Started",
+          "description": "Button label"
+        }
+      }
+    },
+    {
+      "id": "clip-path-reveal",
+      "name": "Clip-Path Reveal Mask",
+      "category": "Animations/Reveal",
+      "description": "Content reveals with a smooth clip-path animation that wipes from one direction. Supports multiple directions (left, right, top, bottom, circle). Triggers on scroll into view.",
+      "dependencies": [],
+      "css": "\n.clip-reveal {\n  --clip-from: inset(0 100% 0 0);\n  --clip-to: inset(0 0 0 0);\n  clip-path: var(--clip-from);\n  transition: clip-path {{duration}} {{easing}};\n}\n.clip-reveal[data-direction=\"right\"] { --clip-from: inset(0 0 0 100%); }\n.clip-reveal[data-direction=\"top\"] { --clip-from: inset(100% 0 0 0); }\n.clip-reveal[data-direction=\"bottom\"] { --clip-from: inset(0 0 100% 0); }\n.clip-reveal[data-direction=\"circle\"] {\n  --clip-from: circle(0% at 50% 50%);\n  --clip-to: circle(75% at 50% 50%);\n}\n.clip-reveal.revealed {\n  clip-path: var(--clip-to);\n}\n",
+      "html_template": "\n<div class=\"clip-reveal\" data-direction=\"{{direction}}\">\n  <img src=\"{{imageSrc}}\" alt=\"{{imageAlt}}\" style=\"width:100%;height:auto;display:block;border-radius:{{borderRadius}};\">\n</div>\n",
+      "js_init": "\n(function(){\n  const els = document.querySelectorAll('.clip-reveal');\n  const observer = new IntersectionObserver((entries) => {\n    entries.forEach(entry => {\n      if (entry.isIntersecting) {\n        entry.target.classList.add('revealed');\n        observer.unobserve(entry.target);\n      }\n    });\n  }, { threshold: 0.2 });\n  els.forEach(el => observer.observe(el));\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "direction": {
+          "type": "string",
+          "default": "left",
+          "description": "Reveal direction: left, right, top, bottom, circle"
+        },
+        "duration": {
+          "type": "string",
+          "default": "1s",
+          "description": "Animation duration"
+        },
+        "easing": {
+          "type": "string",
+          "default": "cubic-bezier(0.77, 0, 0.175, 1)",
+          "description": "Easing function"
+        },
+        "imageSrc": {
+          "type": "string",
+          "default": "https://picsum.photos/800/500",
+          "description": "Image source URL"
+        },
+        "imageAlt": {
+          "type": "string",
+          "default": "Revealed image",
+          "description": "Image alt text"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "16px",
+          "description": "Image border radius"
+        }
+      }
+    },
+    {
+      "id": "bento-grid",
+      "name": "Bento Grid Layout",
+      "category": "Layouts/Grid",
+      "description": "Modern asymmetric bento-box grid with cards of different sizes. Responsive, with hover effects and subtle animations. Inspired by Apple and Linear design patterns.",
+      "dependencies": [],
+      "css": "\n.bento-grid {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  grid-template-rows: auto;\n  gap: {{gap}};\n  max-width: {{maxWidth}};\n  margin: 0 auto;\n  padding: 2rem;\n}\n.bento-card {\n  background: {{cardBg}};\n  border: 1px solid {{borderColor}};\n  border-radius: {{borderRadius}};\n  padding: {{cardPadding}};\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;\n  overflow: hidden;\n  position: relative;\n}\n.bento-card:hover {\n  transform: translateY(-4px);\n  box-shadow: 0 20px 40px rgba(0,0,0,0.3);\n  border-color: {{hoverBorderColor}};\n}\n.bento-card--large { grid-column: span 2; grid-row: span 2; }\n.bento-card--wide { grid-column: span 2; }\n.bento-card--tall { grid-row: span 2; }\n.bento-card h3 {\n  font-size: 1.25rem;\n  font-weight: 700;\n  color: {{headingColor}};\n  margin: 0 0 0.5rem;\n}\n.bento-card p {\n  font-size: 0.9rem;\n  color: {{textColor}};\n  line-height: 1.5;\n  margin: 0;\n}\n.bento-card__icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: {{iconBg}};\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 1.5rem;\n  margin-bottom: 1rem;\n}\n@media (max-width: 768px) {\n  .bento-grid { grid-template-columns: repeat(2, 1fr); }\n  .bento-card--large { grid-column: span 2; grid-row: span 1; }\n}\n@media (max-width: 480px) {\n  .bento-grid { grid-template-columns: 1fr; }\n  .bento-card--large, .bento-card--wide { grid-column: span 1; }\n}\n",
+      "html_template": "\n<div class=\"bento-grid\">\n  <div class=\"bento-card bento-card--large\">\n    <div class=\"bento-card__icon\">{{icon1}}</div>\n    <div><h3>{{title1}}</h3><p>{{desc1}}</p></div>\n  </div>\n  <div class=\"bento-card\">\n    <div class=\"bento-card__icon\">{{icon2}}</div>\n    <div><h3>{{title2}}</h3><p>{{desc2}}</p></div>\n  </div>\n  <div class=\"bento-card\">\n    <div class=\"bento-card__icon\">{{icon3}}</div>\n    <div><h3>{{title3}}</h3><p>{{desc3}}</p></div>\n  </div>\n  <div class=\"bento-card bento-card--wide\">\n    <div class=\"bento-card__icon\">{{icon4}}</div>\n    <div><h3>{{title4}}</h3><p>{{desc4}}</p></div>\n  </div>\n  <div class=\"bento-card bento-card--tall\">\n    <div class=\"bento-card__icon\">{{icon5}}</div>\n    <div><h3>{{title5}}</h3><p>{{desc5}}</p></div>\n  </div>\n  <div class=\"bento-card\">\n    <div class=\"bento-card__icon\">{{icon6}}</div>\n    <div><h3>{{title6}}</h3><p>{{desc6}}</p></div>\n  </div>\n</div>\n",
+      "js_init": "// No JS needed - pure CSS layout",
+      "js_type": "inline",
+      "variables": {
+        "gap": {
+          "type": "string",
+          "default": "16px",
+          "description": "Grid gap"
+        },
+        "maxWidth": {
+          "type": "string",
+          "default": "1200px",
+          "description": "Max width of grid"
+        },
+        "cardBg": {
+          "type": "color",
+          "default": "rgba(18,18,26,0.8)",
+          "description": "Card background"
+        },
+        "borderColor": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.06)",
+          "description": "Card border color"
+        },
+        "hoverBorderColor": {
+          "type": "color",
+          "default": "rgba(59,130,246,0.3)",
+          "description": "Border color on hover"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "20px",
+          "description": "Card border radius"
+        },
+        "cardPadding": {
+          "type": "string",
+          "default": "2rem",
+          "description": "Card inner padding"
+        },
+        "headingColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Heading text color"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#94a3b8",
+          "description": "Body text color"
+        },
+        "iconBg": {
+          "type": "color",
+          "default": "rgba(59,130,246,0.15)",
+          "description": "Icon background"
+        },
+        "icon1": {
+          "type": "string",
+          "default": "⚡",
+          "description": "Icon 1"
+        },
+        "title1": {
+          "type": "string",
+          "default": "Lightning Fast",
+          "description": "Title 1"
+        },
+        "desc1": {
+          "type": "string",
+          "default": "Optimized for speed at every layer of the stack.",
+          "description": "Desc 1"
+        },
+        "icon2": {
+          "type": "string",
+          "default": "🔒",
+          "description": "Icon 2"
+        },
+        "title2": {
+          "type": "string",
+          "default": "Secure",
+          "description": "Title 2"
+        },
+        "desc2": {
+          "type": "string",
+          "default": "Enterprise-grade security built in.",
+          "description": "Desc 2"
+        },
+        "icon3": {
+          "type": "string",
+          "default": "📊",
+          "description": "Icon 3"
+        },
+        "title3": {
+          "type": "string",
+          "default": "Analytics",
+          "description": "Title 3"
+        },
+        "desc3": {
+          "type": "string",
+          "default": "Real-time insights and metrics.",
+          "description": "Desc 3"
+        },
+        "icon4": {
+          "type": "string",
+          "default": "🌐",
+          "description": "Icon 4"
+        },
+        "title4": {
+          "type": "string",
+          "default": "Global Scale",
+          "description": "Title 4"
+        },
+        "desc4": {
+          "type": "string",
+          "default": "Deploy to 300+ edge locations worldwide.",
+          "description": "Desc 4"
+        },
+        "icon5": {
+          "type": "string",
+          "default": "🎨",
+          "description": "Icon 5"
+        },
+        "title5": {
+          "type": "string",
+          "default": "Customizable",
+          "description": "Title 5"
+        },
+        "desc5": {
+          "type": "string",
+          "default": "Every detail can be tailored to your brand.",
+          "description": "Desc 5"
+        },
+        "icon6": {
+          "type": "string",
+          "default": "🤖",
+          "description": "Icon 6"
+        },
+        "title6": {
+          "type": "string",
+          "default": "AI-Powered",
+          "description": "Title 6"
+        },
+        "desc6": {
+          "type": "string",
+          "default": "Smart automation that learns.",
+          "description": "Desc 6"
+        }
+      }
+    },
+    {
+      "id": "spotlight-torch",
+      "name": "Spotlight Torch Effect",
+      "category": "Effects/Cursor",
+      "description": "A radial gradient spotlight that follows the mouse cursor, creating a flashlight/torch effect. Reveals content underneath a dark overlay. Used by Stripe, Vercel, and premium SaaS sites.",
+      "dependencies": [],
+      "css": "\n.spotlight-container {\n  position: relative;\n  background: {{bgColor}};\n  min-height: {{minHeight}};\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: crosshair;\n}\n.spotlight-overlay {\n  position: absolute;\n  inset: 0;\n  background: radial-gradient(\n    {{spotlightSize}} circle at var(--mx, 50%) var(--my, 50%),\n    transparent 0%,\n    {{overlayColor}} 100%\n  );\n  pointer-events: none;\n  z-index: 2;\n  transition: opacity 0.3s;\n}\n.spotlight-content {\n  position: relative;\n  z-index: 1;\n  text-align: center;\n  padding: 2rem;\n  color: {{textColor}};\n}\n.spotlight-content h2 {\n  font-size: clamp(2rem, 5vw, 4rem);\n  font-weight: 800;\n  margin: 0 0 1rem;\n  background: {{headingGradient}};\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  background-clip: text;\n}\n.spotlight-content p {\n  font-size: 1.2rem;\n  color: {{subtextColor}};\n  max-width: 600px;\n  margin: 0 auto;\n}\n.spotlight-grid {\n  position: absolute;\n  inset: 0;\n  background-image:\n    linear-gradient({{gridColor}} 1px, transparent 1px),\n    linear-gradient(90deg, {{gridColor}} 1px, transparent 1px);\n  background-size: 60px 60px;\n  z-index: 0;\n}\n",
+      "html_template": "\n<div class=\"spotlight-container\" data-spotlight>\n  <div class=\"spotlight-grid\"></div>\n  <div class=\"spotlight-overlay\"></div>\n  <div class=\"spotlight-content\">\n    <h2>{{heading}}</h2>\n    <p>{{subtext}}</p>\n  </div>\n</div>\n",
+      "js_init": "\n(function(){\n  document.querySelectorAll('[data-spotlight]').forEach(container => {\n    container.addEventListener('mousemove', (e) => {\n      const rect = container.getBoundingClientRect();\n      const x = ((e.clientX - rect.left) / rect.width * 100);\n      const y = ((e.clientY - rect.top) / rect.height * 100);\n      container.style.setProperty('--mx', x + '%');\n      container.style.setProperty('--my', y + '%');\n    });\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "bgColor": {
+          "type": "color",
+          "default": "#0a0a0f",
+          "description": "Background color"
+        },
+        "overlayColor": {
+          "type": "color",
+          "default": "rgba(10,10,15,0.85)",
+          "description": "Dark overlay color"
+        },
+        "spotlightSize": {
+          "type": "string",
+          "default": "400px",
+          "description": "Spotlight radius"
+        },
+        "minHeight": {
+          "type": "string",
+          "default": "500px",
+          "description": "Container minimum height"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Content text color"
+        },
+        "subtextColor": {
+          "type": "color",
+          "default": "#94a3b8",
+          "description": "Subtext color"
+        },
+        "headingGradient": {
+          "type": "string",
+          "default": "linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899)",
+          "description": "Heading gradient"
+        },
+        "gridColor": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.03)",
+          "description": "Grid line color"
+        },
+        "heading": {
+          "type": "string",
+          "default": "Illuminate Your Vision",
+          "description": "Main heading"
+        },
+        "subtext": {
+          "type": "string",
+          "default": "Move your cursor to explore the hidden details beneath the surface.",
+          "description": "Subtext"
+        }
+      }
+    },
+    {
+      "id": "text-scramble",
+      "name": "Text Scramble Decode Effect",
+      "category": "Typography/Animation",
+      "description": "Text that shuffles through random characters before resolving to the final text. Matrix-inspired decode effect. Can trigger on scroll, hover, or page load.",
+      "dependencies": [],
+      "css": "\n.text-scramble {\n  font-family: {{fontFamily}};\n  font-size: {{fontSize}};\n  font-weight: {{fontWeight}};\n  color: {{textColor}};\n  letter-spacing: {{letterSpacing}};\n  min-height: 1.2em;\n  display: inline-block;\n}\n.text-scramble .char-scrambling {\n  color: {{scrambleColor}};\n  opacity: 0.7;\n}\n",
+      "html_template": "\n<span class=\"text-scramble\" data-scramble data-text=\"{{text}}\" data-trigger=\"{{trigger}}\">{{text}}</span>\n",
+      "js_init": "\n(function(){\n  const chars = '{{charSet}}';\n  class TextScramble {\n    constructor(el) {\n      this.el = el;\n      this.text = el.dataset.text;\n      this.queue = [];\n      this.frame = 0;\n      this.running = false;\n    }\n    scramble() {\n      if (this.running) return;\n      this.running = true;\n      const oldText = this.el.textContent;\n      const newText = this.text;\n      const length = Math.max(oldText.length, newText.length);\n      this.queue = [];\n      for (let i = 0; i < length; i++) {\n        const from = oldText[i] || '';\n        const to = newText[i] || '';\n        const start = Math.floor(Math.random() * 20);\n        const end = start + Math.floor(Math.random() * 20) + 10;\n        this.queue.push({ from, to, start, end });\n      }\n      this.frame = 0;\n      this.update();\n    }\n    update() {\n      let output = '';\n      let complete = 0;\n      for (let i = 0; i < this.queue.length; i++) {\n        let { from, to, start, end, char } = this.queue[i];\n        if (this.frame >= end) {\n          complete++;\n          output += to;\n        } else if (this.frame >= start) {\n          if (!char || Math.random() < 0.28) {\n            char = chars[Math.floor(Math.random() * chars.length)];\n            this.queue[i].char = char;\n          }\n          output += '<span class=\"char-scrambling\">' + char + '</span>';\n        } else {\n          output += from;\n        }\n      }\n      this.el.innerHTML = output;\n      if (complete < this.queue.length) {\n        requestAnimationFrame(() => this.update());\n        this.frame++;\n      } else {\n        this.running = false;\n      }\n    }\n  }\n  document.querySelectorAll('[data-scramble]').forEach(el => {\n    const scrambler = new TextScramble(el);\n    const trigger = el.dataset.trigger || 'scroll';\n    if (trigger === 'load') {\n      scrambler.scramble();\n    } else if (trigger === 'hover') {\n      el.addEventListener('mouseenter', () => scrambler.scramble());\n    } else {\n      const obs = new IntersectionObserver(entries => {\n        entries.forEach(entry => {\n          if (entry.isIntersecting) { scrambler.scramble(); obs.unobserve(entry.target); }\n        });\n      }, { threshold: 0.5 });\n      obs.observe(el);\n    }\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "text": {
+          "type": "string",
+          "default": "The future is now.",
+          "description": "Final resolved text"
+        },
+        "trigger": {
+          "type": "string",
+          "default": "scroll",
+          "description": "Trigger type: load, hover, scroll"
+        },
+        "charSet": {
+          "type": "string",
+          "default": "!@#$%^&*()_+-=[]{}|;:,./<>?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+          "description": "Characters used during scramble"
+        },
+        "fontFamily": {
+          "type": "string",
+          "default": "'JetBrains Mono', 'Fira Code', monospace",
+          "description": "Font family"
+        },
+        "fontSize": {
+          "type": "string",
+          "default": "clamp(1.5rem, 4vw, 3rem)",
+          "description": "Font size"
+        },
+        "fontWeight": {
+          "type": "string",
+          "default": "700",
+          "description": "Font weight"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Final text color"
+        },
+        "scrambleColor": {
+          "type": "color",
+          "default": "#3b82f6",
+          "description": "Scrambling characters color"
+        },
+        "letterSpacing": {
+          "type": "string",
+          "default": "-0.02em",
+          "description": "Letter spacing"
+        }
+      }
+    },
+    {
+      "id": "noise-grain-overlay",
+      "name": "Noise Grain Overlay",
+      "category": "Effects/Texture",
+      "description": "Subtle animated film grain texture overlay using SVG filter. Adds a premium, organic feel to dark backgrounds. No external dependencies, pure SVG + CSS.",
+      "dependencies": [],
+      "css": "\n.grain-container {\n  position: relative;\n  overflow: hidden;\n}\n.grain-overlay {\n  position: absolute;\n  inset: -50%;\n  width: 200%;\n  height: 200%;\n  background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><filter id=\"n\" x=\"0\" y=\"0\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"{{frequency}}\" numOctaves=\"{{octaves}}\" stitchTiles=\"stitch\"/></filter><rect width=\"256\" height=\"256\" filter=\"url(%23n)\" opacity=\"1\"/></svg>');\n  background-size: 256px 256px;\n  opacity: {{opacity}};\n  pointer-events: none;\n  z-index: 100;\n  mix-blend-mode: {{blendMode}};\n  animation: grainShift {{speed}} steps({{steps}}) infinite;\n}\n@keyframes grainShift {\n  0%, 100% { transform: translate(0, 0); }\n  10% { transform: translate(-5%, -10%); }\n  20% { transform: translate(-15%, 5%); }\n  30% { transform: translate(7%, -25%); }\n  40% { transform: translate(-5%, 25%); }\n  50% { transform: translate(-15%, 10%); }\n  60% { transform: translate(15%, 0%); }\n  70% { transform: translate(0%, 15%); }\n  80% { transform: translate(3%, -35%); }\n  90% { transform: translate(-10%, 10%); }\n}\n",
+      "html_template": "\n<div class=\"grain-container\" style=\"min-height:{{minHeight}};background:{{bgColor}};\">\n  <div class=\"grain-overlay\"></div>\n  <!-- Your content goes inside this container -->\n  <div style=\"position:relative;z-index:1;padding:4rem 2rem;text-align:center;\">\n    <h2 style=\"color:#f8fafc;font-size:2.5rem;font-weight:800;\">{{heading}}</h2>\n    <p style=\"color:#94a3b8;font-size:1.1rem;\">{{subtext}}</p>\n  </div>\n</div>\n",
+      "js_init": "// No JS needed - pure CSS animation",
+      "js_type": "inline",
+      "variables": {
+        "frequency": {
+          "type": "string",
+          "default": "0.65",
+          "description": "Noise frequency (0.1-1.0)"
+        },
+        "octaves": {
+          "type": "number",
+          "default": 4,
+          "description": "Noise octaves (1-6)"
+        },
+        "opacity": {
+          "type": "number",
+          "default": 0.04,
+          "description": "Overlay opacity (0.01-0.15)"
+        },
+        "blendMode": {
+          "type": "string",
+          "default": "overlay",
+          "description": "CSS blend mode"
+        },
+        "speed": {
+          "type": "string",
+          "default": "0.5s",
+          "description": "Animation speed"
+        },
+        "steps": {
+          "type": "number",
+          "default": 6,
+          "description": "Animation steps"
+        },
+        "minHeight": {
+          "type": "string",
+          "default": "400px",
+          "description": "Container min height"
+        },
+        "bgColor": {
+          "type": "color",
+          "default": "#0a0a0f",
+          "description": "Background color"
+        },
+        "heading": {
+          "type": "string",
+          "default": "Cinematic Feel",
+          "description": "Demo heading"
+        },
+        "subtext": {
+          "type": "string",
+          "default": "Subtle grain adds depth and warmth to any surface.",
+          "description": "Demo subtext"
+        }
+      }
+    },
+    {
+      "id": "infinite-marquee",
+      "name": "Infinite Marquee Ticker",
+      "category": "Layouts/Marquee",
+      "description": "Infinite horizontal scrolling marquee for logos, text, or badges. Pure CSS animation with no JS. Includes pause on hover, gradient fade edges, and reverse direction option.",
+      "dependencies": [],
+      "css": "\n.marquee-wrapper {\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n  padding: {{paddingY}} 0;\n  background: {{bgColor}};\n}\n.marquee-wrapper::before,\n.marquee-wrapper::after {\n  content: '';\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: {{fadeWidth}};\n  z-index: 2;\n  pointer-events: none;\n}\n.marquee-wrapper::before {\n  left: 0;\n  background: linear-gradient(to right, {{bgColor}}, transparent);\n}\n.marquee-wrapper::after {\n  right: 0;\n  background: linear-gradient(to left, {{bgColor}}, transparent);\n}\n.marquee-track {\n  display: flex;\n  width: max-content;\n  animation: marqueeScroll {{speed}} linear infinite;\n  gap: {{itemGap}};\n}\n.marquee-wrapper:hover .marquee-track {\n  animation-play-state: paused;\n}\n.marquee-wrapper[data-reverse] .marquee-track {\n  animation-direction: reverse;\n}\n.marquee-item {\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: {{itemPadding}};\n  background: {{itemBg}};\n  border: 1px solid {{itemBorder}};\n  border-radius: {{itemRadius}};\n  color: {{itemColor}};\n  font-size: {{itemFontSize}};\n  font-weight: 600;\n  white-space: nowrap;\n  transition: border-color 0.3s;\n}\n.marquee-item:hover { border-color: {{itemHoverBorder}}; }\n@keyframes marqueeScroll {\n  from { transform: translateX(0); }\n  to { transform: translateX(-50%); }\n}\n",
+      "html_template": "\n<div class=\"marquee-wrapper\">\n  <div class=\"marquee-track\">\n    <div class=\"marquee-item\">{{item1}}</div>\n    <div class=\"marquee-item\">{{item2}}</div>\n    <div class=\"marquee-item\">{{item3}}</div>\n    <div class=\"marquee-item\">{{item4}}</div>\n    <div class=\"marquee-item\">{{item5}}</div>\n    <div class=\"marquee-item\">{{item6}}</div>\n    <div class=\"marquee-item\">{{item7}}</div>\n    <div class=\"marquee-item\">{{item8}}</div>\n    <!-- Duplicate for seamless loop -->\n    <div class=\"marquee-item\">{{item1}}</div>\n    <div class=\"marquee-item\">{{item2}}</div>\n    <div class=\"marquee-item\">{{item3}}</div>\n    <div class=\"marquee-item\">{{item4}}</div>\n    <div class=\"marquee-item\">{{item5}}</div>\n    <div class=\"marquee-item\">{{item6}}</div>\n    <div class=\"marquee-item\">{{item7}}</div>\n    <div class=\"marquee-item\">{{item8}}</div>\n  </div>\n</div>\n",
+      "js_init": "// Pure CSS - no JS needed. Duplicate items in HTML for seamless loop.",
+      "js_type": "inline",
+      "variables": {
+        "speed": {
+          "type": "string",
+          "default": "30s",
+          "description": "Scroll speed (lower = faster)"
+        },
+        "bgColor": {
+          "type": "color",
+          "default": "#0a0a0f",
+          "description": "Background color"
+        },
+        "fadeWidth": {
+          "type": "string",
+          "default": "80px",
+          "description": "Width of edge fade"
+        },
+        "paddingY": {
+          "type": "string",
+          "default": "1.5rem",
+          "description": "Vertical padding"
+        },
+        "itemGap": {
+          "type": "string",
+          "default": "1.5rem",
+          "description": "Gap between items"
+        },
+        "itemPadding": {
+          "type": "string",
+          "default": "12px 24px",
+          "description": "Item padding"
+        },
+        "itemBg": {
+          "type": "color",
+          "default": "rgba(18,18,26,0.8)",
+          "description": "Item background"
+        },
+        "itemBorder": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.06)",
+          "description": "Item border"
+        },
+        "itemHoverBorder": {
+          "type": "color",
+          "default": "rgba(59,130,246,0.3)",
+          "description": "Item hover border"
+        },
+        "itemRadius": {
+          "type": "string",
+          "default": "999px",
+          "description": "Item border radius"
+        },
+        "itemColor": {
+          "type": "color",
+          "default": "#e2e8f0",
+          "description": "Item text color"
+        },
+        "itemFontSize": {
+          "type": "string",
+          "default": "0.95rem",
+          "description": "Item font size"
+        },
+        "item1": {
+          "type": "string",
+          "default": "React",
+          "description": "Item 1"
+        },
+        "item2": {
+          "type": "string",
+          "default": "Next.js",
+          "description": "Item 2"
+        },
+        "item3": {
+          "type": "string",
+          "default": "TypeScript",
+          "description": "Item 3"
+        },
+        "item4": {
+          "type": "string",
+          "default": "Tailwind CSS",
+          "description": "Item 4"
+        },
+        "item5": {
+          "type": "string",
+          "default": "Vercel",
+          "description": "Item 5"
+        },
+        "item6": {
+          "type": "string",
+          "default": "Supabase",
+          "description": "Item 6"
+        },
+        "item7": {
+          "type": "string",
+          "default": "Prisma",
+          "description": "Item 7"
+        },
+        "item8": {
+          "type": "string",
+          "default": "tRPC",
+          "description": "Item 8"
+        }
+      }
+    },
+    {
+      "id": "morphing-blobs",
+      "name": "Morphing Blob Background",
+      "category": "Backgrounds/Animated",
+      "description": "Animated organic blobs that morph and float in the background using CSS animations. Multiple layered blobs with different colors create a dynamic, premium ambient effect.",
+      "dependencies": [],
+      "css": "\n.blobs-container {\n  position: relative;\n  min-height: {{minHeight}};\n  background: {{bgColor}};\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.blob {\n  position: absolute;\n  border-radius: 50%;\n  filter: blur({{blurAmount}});\n  opacity: {{blobOpacity}};\n  animation: blobFloat var(--duration, 20s) ease-in-out infinite alternate;\n  will-change: transform, border-radius;\n}\n.blob-1 {\n  width: 500px; height: 500px;\n  background: {{color1}};\n  top: -10%; left: -10%;\n  --duration: {{speed1}};\n  animation-name: blobMorph1;\n}\n.blob-2 {\n  width: 400px; height: 400px;\n  background: {{color2}};\n  bottom: -10%; right: -10%;\n  --duration: {{speed2}};\n  animation-name: blobMorph2;\n}\n.blob-3 {\n  width: 350px; height: 350px;\n  background: {{color3}};\n  top: 50%; left: 50%;\n  transform: translate(-50%, -50%);\n  --duration: {{speed3}};\n  animation-name: blobMorph3;\n}\n@keyframes blobMorph1 {\n  0% { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; transform: translate(0, 0) scale(1); }\n  50% { border-radius: 60% 40% 30% 70% / 40% 60% 40% 60%; transform: translate(50px, 30px) scale(1.1); }\n  100% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(-30px, 50px) scale(0.95); }\n}\n@keyframes blobMorph2 {\n  0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(0, 0) scale(1); }\n  50% { border-radius: 40% 60% 70% 30% / 30% 60% 40% 60%; transform: translate(-40px, -30px) scale(1.15); }\n  100% { border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; transform: translate(30px, -50px) scale(0.9); }\n}\n@keyframes blobMorph3 {\n  0% { border-radius: 50% 50% 50% 50%; transform: translate(-50%, -50%) scale(1); }\n  50% { border-radius: 40% 60% 50% 50% / 50% 50% 60% 40%; transform: translate(-40%, -60%) scale(1.2); }\n  100% { border-radius: 60% 40% 40% 60% / 40% 60% 50% 50%; transform: translate(-60%, -40%) scale(0.85); }\n}\n.blobs-content {\n  position: relative;\n  z-index: 1;\n  text-align: center;\n  padding: 2rem;\n}\n",
+      "html_template": "\n<div class=\"blobs-container\">\n  <div class=\"blob blob-1\"></div>\n  <div class=\"blob blob-2\"></div>\n  <div class=\"blob blob-3\"></div>\n  <div class=\"blobs-content\">\n    <h2 style=\"color:#f8fafc;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;margin:0 0 1rem;\">{{heading}}</h2>\n    <p style=\"color:#94a3b8;font-size:1.2rem;max-width:500px;margin:0 auto;\">{{subtext}}</p>\n  </div>\n</div>\n",
+      "js_init": "// Pure CSS animation - no JS needed",
+      "js_type": "inline",
+      "variables": {
+        "minHeight": {
+          "type": "string",
+          "default": "500px",
+          "description": "Container min height"
+        },
+        "bgColor": {
+          "type": "color",
+          "default": "#050510",
+          "description": "Background color"
+        },
+        "blurAmount": {
+          "type": "string",
+          "default": "80px",
+          "description": "Blob blur intensity"
+        },
+        "blobOpacity": {
+          "type": "number",
+          "default": 0.4,
+          "description": "Blob opacity"
+        },
+        "color1": {
+          "type": "color",
+          "default": "#3b82f6",
+          "description": "Blob 1 color"
+        },
+        "color2": {
+          "type": "color",
+          "default": "#8b5cf6",
+          "description": "Blob 2 color"
+        },
+        "color3": {
+          "type": "color",
+          "default": "#ec4899",
+          "description": "Blob 3 color"
+        },
+        "speed1": {
+          "type": "string",
+          "default": "18s",
+          "description": "Blob 1 animation speed"
+        },
+        "speed2": {
+          "type": "string",
+          "default": "22s",
+          "description": "Blob 2 animation speed"
+        },
+        "speed3": {
+          "type": "string",
+          "default": "25s",
+          "description": "Blob 3 animation speed"
+        },
+        "heading": {
+          "type": "string",
+          "default": "Organic Motion",
+          "description": "Demo heading"
+        },
+        "subtext": {
+          "type": "string",
+          "default": "Living, breathing backgrounds that captivate.",
+          "description": "Demo subtext"
+        }
+      }
+    },
+    {
+      "id": "parallax-tilt-card",
+      "name": "Parallax Tilt Card",
+      "category": "Cards/3D",
+      "description": "3D card that tilts based on mouse position with parallax layers. Inner elements shift at different depths for a holographic feel. Smooth spring-like return on mouse leave.",
+      "dependencies": [],
+      "css": "\n.tilt-card-wrap {\n  perspective: {{perspective}};\n  display: inline-block;\n}\n.tilt-card {\n  width: {{cardWidth}};\n  min-height: {{cardHeight}};\n  background: {{cardBg}};\n  border: 1px solid {{borderColor}};\n  border-radius: {{borderRadius}};\n  padding: 2rem;\n  transform-style: preserve-3d;\n  transition: transform 0.15s ease-out, box-shadow 0.3s;\n  position: relative;\n  overflow: hidden;\n}\n.tilt-card:hover {\n  box-shadow: {{hoverShadow}};\n}\n.tilt-card::before {\n  content: '';\n  position: absolute;\n  inset: 0;\n  background: linear-gradient(\n    105deg,\n    transparent 40%,\n    rgba(255,255,255,0.03) 45%,\n    rgba(255,255,255,0.07) 50%,\n    rgba(255,255,255,0.03) 55%,\n    transparent 60%\n  );\n  transform: translateX(var(--shine, -100%));\n  transition: transform 0.3s;\n  pointer-events: none;\n}\n.tilt-card:hover::before { transform: translateX(var(--shine, 0%)); }\n.tilt-layer-1 { transform: translateZ(30px); }\n.tilt-layer-2 { transform: translateZ(60px); }\n.tilt-card h3 {\n  color: {{headingColor}};\n  font-size: 1.5rem;\n  font-weight: 700;\n  margin: 0 0 0.75rem;\n}\n.tilt-card p {\n  color: {{textColor}};\n  font-size: 0.95rem;\n  line-height: 1.6;\n  margin: 0;\n}\n",
+      "html_template": "\n<div class=\"tilt-card-wrap\">\n  <div class=\"tilt-card\" data-tilt data-max=\"{{maxTilt}}\">\n    <div class=\"tilt-layer-1\">\n      <h3>{{title}}</h3>\n    </div>\n    <div class=\"tilt-layer-2\">\n      <p>{{description}}</p>\n    </div>\n  </div>\n</div>\n",
+      "js_init": "\n(function(){\n  document.querySelectorAll('[data-tilt]').forEach(card => {\n    const max = parseFloat(card.dataset.max) || 15;\n    const wrap = card.parentElement;\n    wrap.addEventListener('mousemove', (e) => {\n      const rect = wrap.getBoundingClientRect();\n      const x = (e.clientX - rect.left) / rect.width;\n      const y = (e.clientY - rect.top) / rect.height;\n      const rotateX = (0.5 - y) * max;\n      const rotateY = (x - 0.5) * max;\n      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;\n      const shine = (x * 200) - 100;\n      card.style.setProperty('--shine', shine + '%');\n    });\n    wrap.addEventListener('mouseleave', () => {\n      card.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s';\n      card.style.transform = 'rotateX(0) rotateY(0)';\n      setTimeout(() => { card.style.transition = 'transform 0.15s ease-out, box-shadow 0.3s'; }, 600);\n    });\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "maxTilt": {
+          "type": "number",
+          "default": 15,
+          "description": "Maximum tilt angle in degrees"
+        },
+        "perspective": {
+          "type": "string",
+          "default": "1000px",
+          "description": "3D perspective distance"
+        },
+        "cardWidth": {
+          "type": "string",
+          "default": "350px",
+          "description": "Card width"
+        },
+        "cardHeight": {
+          "type": "string",
+          "default": "250px",
+          "description": "Card min height"
+        },
+        "cardBg": {
+          "type": "color",
+          "default": "rgba(18,18,26,0.9)",
+          "description": "Card background"
+        },
+        "borderColor": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.08)",
+          "description": "Border color"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "20px",
+          "description": "Border radius"
+        },
+        "hoverShadow": {
+          "type": "string",
+          "default": "0 25px 50px rgba(0,0,0,0.4), 0 0 40px rgba(59,130,246,0.1)",
+          "description": "Hover shadow"
+        },
+        "headingColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Heading color"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#94a3b8",
+          "description": "Text color"
+        },
+        "title": {
+          "type": "string",
+          "default": "Dimensional Card",
+          "description": "Card title"
+        },
+        "description": {
+          "type": "string",
+          "default": "Tilt me around to see the parallax effect in action. Multiple layers create depth.",
+          "description": "Card description"
+        }
+      }
+    },
+    {
+      "id": "aurora-background",
+      "name": "Aurora Northern Lights Background",
+      "category": "Backgrounds/Animated",
+      "description": "Animated gradient waves simulating northern lights / aurora borealis. Multiple overlapping gradient layers with different speeds create an organic, mesmerizing effect.",
+      "dependencies": [],
+      "css": "\n.aurora-container {\n  position: relative;\n  min-height: {{minHeight}};\n  background: {{bgColor}};\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.aurora-layer {\n  position: absolute;\n  inset: -50%;\n  width: 200%;\n  height: 200%;\n  opacity: {{layerOpacity}};\n  mix-blend-mode: screen;\n}\n.aurora-1 {\n  background: linear-gradient(180deg, transparent 30%, {{color1}} 50%, transparent 70%);\n  animation: aurora 8s ease-in-out infinite alternate;\n}\n.aurora-2 {\n  background: linear-gradient(180deg, transparent 35%, {{color2}} 55%, transparent 75%);\n  animation: aurora 12s ease-in-out infinite alternate-reverse;\n  animation-delay: -2s;\n}\n.aurora-3 {\n  background: linear-gradient(180deg, transparent 25%, {{color3}} 45%, transparent 65%);\n  animation: aurora 15s ease-in-out infinite alternate;\n  animation-delay: -5s;\n}\n@keyframes aurora {\n  0% { transform: translateX(-20%) translateY(-10%) rotate(-5deg) scale(1); }\n  33% { transform: translateX(10%) translateY(5%) rotate(3deg) scale(1.1); }\n  66% { transform: translateX(-10%) translateY(-5%) rotate(-3deg) scale(0.95); }\n  100% { transform: translateX(15%) translateY(10%) rotate(5deg) scale(1.05); }\n}\n.aurora-content {\n  position: relative;\n  z-index: 1;\n  text-align: center;\n  padding: 2rem;\n}\n",
+      "html_template": "\n<div class=\"aurora-container\">\n  <div class=\"aurora-layer aurora-1\"></div>\n  <div class=\"aurora-layer aurora-2\"></div>\n  <div class=\"aurora-layer aurora-3\"></div>\n  <div class=\"aurora-content\">\n    <h2 style=\"color:#f8fafc;font-size:clamp(2rem,5vw,4rem);font-weight:800;margin:0 0 1rem;\">{{heading}}</h2>\n    <p style=\"color:#c4b5fd;font-size:1.2rem;max-width:500px;margin:0 auto;\">{{subtext}}</p>\n  </div>\n</div>\n",
+      "js_init": "// Pure CSS animation - no JS required",
+      "js_type": "inline",
+      "variables": {
+        "minHeight": {
+          "type": "string",
+          "default": "500px",
+          "description": "Container min height"
+        },
+        "bgColor": {
+          "type": "color",
+          "default": "#020010",
+          "description": "Background color"
+        },
+        "layerOpacity": {
+          "type": "number",
+          "default": 0.3,
+          "description": "Layer opacity"
+        },
+        "color1": {
+          "type": "color",
+          "default": "#4ade80",
+          "description": "Aurora color 1 (green)"
+        },
+        "color2": {
+          "type": "color",
+          "default": "#8b5cf6",
+          "description": "Aurora color 2 (purple)"
+        },
+        "color3": {
+          "type": "color",
+          "default": "#06b6d4",
+          "description": "Aurora color 3 (cyan)"
+        },
+        "heading": {
+          "type": "string",
+          "default": "Northern Lights",
+          "description": "Demo heading"
+        },
+        "subtext": {
+          "type": "string",
+          "default": "Mesmerizing gradients that dance across the sky.",
+          "description": "Demo subtext"
+        }
+      }
+    },
+    {
+      "id": "staggered-grid-reveal",
+      "name": "Staggered Grid Reveal",
+      "category": "Animations/Grid",
+      "description": "Grid of cards that animate in one by one with staggered delays when scrolled into view. Each card fades in and slides up with increasing delay for a wave-like reveal effect.",
+      "dependencies": [],
+      "css": "\n.stagger-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax({{minColWidth}}, 1fr));\n  gap: {{gap}};\n  max-width: {{maxWidth}};\n  margin: 0 auto;\n  padding: 2rem;\n}\n.stagger-card {\n  background: {{cardBg}};\n  border: 1px solid {{borderColor}};\n  border-radius: {{borderRadius}};\n  padding: 1.5rem;\n  opacity: 0;\n  transform: translateY(40px) scale(0.95);\n  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),\n              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),\n              border-color 0.3s, box-shadow 0.3s;\n}\n.stagger-card.revealed {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n}\n.stagger-card:hover {\n  border-color: {{hoverBorder}};\n  box-shadow: 0 10px 30px rgba(0,0,0,0.2);\n}\n.stagger-card h4 {\n  color: {{headingColor}};\n  font-size: 1.1rem;\n  font-weight: 700;\n  margin: 0 0 0.5rem;\n}\n.stagger-card p {\n  color: {{textColor}};\n  font-size: 0.9rem;\n  line-height: 1.5;\n  margin: 0;\n}\n",
+      "html_template": "\n<div class=\"stagger-grid\" data-stagger>\n  <div class=\"stagger-card\"><h4>{{title1}}</h4><p>{{desc1}}</p></div>\n  <div class=\"stagger-card\"><h4>{{title2}}</h4><p>{{desc2}}</p></div>\n  <div class=\"stagger-card\"><h4>{{title3}}</h4><p>{{desc3}}</p></div>\n  <div class=\"stagger-card\"><h4>{{title4}}</h4><p>{{desc4}}</p></div>\n  <div class=\"stagger-card\"><h4>{{title5}}</h4><p>{{desc5}}</p></div>\n  <div class=\"stagger-card\"><h4>{{title6}}</h4><p>{{desc6}}</p></div>\n</div>\n",
+      "js_init": "\n(function(){\n  document.querySelectorAll('[data-stagger]').forEach(grid => {\n    const cards = grid.querySelectorAll('.stagger-card');\n    const staggerDelay = {{staggerDelay}};\n    const observer = new IntersectionObserver((entries) => {\n      entries.forEach(entry => {\n        if (entry.isIntersecting) {\n          cards.forEach((card, i) => {\n            setTimeout(() => card.classList.add('revealed'), i * staggerDelay);\n          });\n          observer.unobserve(entry.target);\n        }\n      });\n    }, { threshold: 0.15 });\n    observer.observe(grid);\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "staggerDelay": {
+          "type": "number",
+          "default": 100,
+          "description": "Delay between each card in ms"
+        },
+        "minColWidth": {
+          "type": "string",
+          "default": "280px",
+          "description": "Minimum column width"
+        },
+        "gap": {
+          "type": "string",
+          "default": "1.5rem",
+          "description": "Grid gap"
+        },
+        "maxWidth": {
+          "type": "string",
+          "default": "1200px",
+          "description": "Max width"
+        },
+        "cardBg": {
+          "type": "color",
+          "default": "rgba(18,18,26,0.8)",
+          "description": "Card background"
+        },
+        "borderColor": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.06)",
+          "description": "Border color"
+        },
+        "hoverBorder": {
+          "type": "color",
+          "default": "rgba(59,130,246,0.3)",
+          "description": "Hover border"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "16px",
+          "description": "Border radius"
+        },
+        "headingColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Heading color"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#94a3b8",
+          "description": "Text color"
+        },
+        "title1": {
+          "type": "string",
+          "default": "Component 1",
+          "description": "Title 1"
+        },
+        "desc1": {
+          "type": "string",
+          "default": "Description of the first component.",
+          "description": "Desc 1"
+        },
+        "title2": {
+          "type": "string",
+          "default": "Component 2",
+          "description": "Title 2"
+        },
+        "desc2": {
+          "type": "string",
+          "default": "Description of the second component.",
+          "description": "Desc 2"
+        },
+        "title3": {
+          "type": "string",
+          "default": "Component 3",
+          "description": "Title 3"
+        },
+        "desc3": {
+          "type": "string",
+          "default": "Description of the third component.",
+          "description": "Desc 3"
+        },
+        "title4": {
+          "type": "string",
+          "default": "Component 4",
+          "description": "Title 4"
+        },
+        "desc4": {
+          "type": "string",
+          "default": "Description of the fourth component.",
+          "description": "Desc 4"
+        },
+        "title5": {
+          "type": "string",
+          "default": "Component 5",
+          "description": "Title 5"
+        },
+        "desc5": {
+          "type": "string",
+          "default": "Description of the fifth component.",
+          "description": "Desc 5"
+        },
+        "title6": {
+          "type": "string",
+          "default": "Component 6",
+          "description": "Title 6"
+        },
+        "desc6": {
+          "type": "string",
+          "default": "Description of the sixth component.",
+          "description": "Desc 6"
+        }
+      }
+    },
+    {
+      "id": "liquid-glass",
+      "name": "Liquid Glass Card",
+      "category": "Cards/Glassmorphism",
+      "description": "Frosted glass card with animated distortion effect. Uses backdrop-filter for blur and a subtle animated gradient border. The glass effect shifts based on mouse position for a liquid feel.",
+      "dependencies": [],
+      "css": "\n.liquid-glass {\n  position: relative;\n  width: {{cardWidth}};\n  min-height: {{cardHeight}};\n  background: {{glassBg}};\n  backdrop-filter: blur({{blurAmount}}) saturate({{saturate}});\n  -webkit-backdrop-filter: blur({{blurAmount}}) saturate({{saturate}});\n  border-radius: {{borderRadius}};\n  padding: 2rem;\n  overflow: hidden;\n  cursor: pointer;\n}\n.liquid-glass::before {\n  content: '';\n  position: absolute;\n  inset: 0;\n  border-radius: inherit;\n  padding: 1px;\n  background: linear-gradient(\n    var(--angle, 135deg),\n    {{borderColor1}},\n    {{borderColor2}},\n    {{borderColor3}},\n    {{borderColor1}}\n  );\n  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);\n  -webkit-mask-composite: xor;\n  mask-composite: exclude;\n  animation: liquidBorderRotate 4s linear infinite;\n}\n@keyframes liquidBorderRotate {\n  to { --angle: 495deg; }\n}\n@property --angle {\n  syntax: '<angle>';\n  initial-value: 135deg;\n  inherits: false;\n}\n.liquid-glass::after {\n  content: '';\n  position: absolute;\n  width: 200px;\n  height: 200px;\n  background: radial-gradient(circle, {{glowColor}} 0%, transparent 70%);\n  border-radius: 50%;\n  top: var(--gy, 50%);\n  left: var(--gx, 50%);\n  transform: translate(-50%, -50%);\n  opacity: 0;\n  transition: opacity 0.3s;\n  pointer-events: none;\n  mix-blend-mode: overlay;\n}\n.liquid-glass:hover::after { opacity: 0.6; }\n.liquid-glass h3 {\n  color: {{headingColor}};\n  font-size: 1.4rem;\n  font-weight: 700;\n  margin: 0 0 0.75rem;\n  position: relative;\n}\n.liquid-glass p {\n  color: {{textColor}};\n  font-size: 0.95rem;\n  line-height: 1.6;\n  margin: 0;\n  position: relative;\n}\n",
+      "html_template": "\n<div class=\"liquid-glass\" data-liquid-glass>\n  <h3>{{title}}</h3>\n  <p>{{description}}</p>\n</div>\n",
+      "js_init": "\n(function(){\n  document.querySelectorAll('[data-liquid-glass]').forEach(el => {\n    el.addEventListener('mousemove', (e) => {\n      const rect = el.getBoundingClientRect();\n      el.style.setProperty('--gx', ((e.clientX - rect.left) / rect.width * 100) + '%');\n      el.style.setProperty('--gy', ((e.clientY - rect.top) / rect.height * 100) + '%');\n    });\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "cardWidth": {
+          "type": "string",
+          "default": "380px",
+          "description": "Card width"
+        },
+        "cardHeight": {
+          "type": "string",
+          "default": "220px",
+          "description": "Card min height"
+        },
+        "glassBg": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.05)",
+          "description": "Glass background"
+        },
+        "blurAmount": {
+          "type": "string",
+          "default": "20px",
+          "description": "Backdrop blur"
+        },
+        "saturate": {
+          "type": "string",
+          "default": "180%",
+          "description": "Backdrop saturate"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "24px",
+          "description": "Border radius"
+        },
+        "borderColor1": {
+          "type": "color",
+          "default": "rgba(59,130,246,0.4)",
+          "description": "Gradient border color 1"
+        },
+        "borderColor2": {
+          "type": "color",
+          "default": "rgba(139,92,246,0.4)",
+          "description": "Gradient border color 2"
+        },
+        "borderColor3": {
+          "type": "color",
+          "default": "rgba(236,72,153,0.4)",
+          "description": "Gradient border color 3"
+        },
+        "glowColor": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.3)",
+          "description": "Mouse follow glow"
+        },
+        "headingColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Heading color"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#cbd5e1",
+          "description": "Text color"
+        },
+        "title": {
+          "type": "string",
+          "default": "Liquid Glass",
+          "description": "Card title"
+        },
+        "description": {
+          "type": "string",
+          "default": "Hover to see the liquid glass distortion effect with animated gradient borders.",
+          "description": "Card description"
+        }
+      }
+    },
+    {
+      "id": "typewriter-cursor",
+      "name": "Typewriter with Blinking Cursor",
+      "category": "Typography/Animation",
+      "description": "Classic typewriter effect that types text character by character with a blinking cursor. Supports multiple strings with delete and retype cycle. Configurable speed and delays.",
+      "dependencies": [],
+      "css": "\n.typewriter-container {\n  display: inline-block;\n  font-family: {{fontFamily}};\n  font-size: {{fontSize}};\n  font-weight: {{fontWeight}};\n  color: {{textColor}};\n  line-height: 1.4;\n}\n.typewriter-text {\n  display: inline;\n}\n.typewriter-cursor {\n  display: inline-block;\n  width: {{cursorWidth}};\n  height: 1.1em;\n  background: {{cursorColor}};\n  margin-left: 2px;\n  vertical-align: text-bottom;\n  animation: typewriterBlink {{blinkSpeed}} step-end infinite;\n}\n@keyframes typewriterBlink {\n  50% { opacity: 0; }\n}\n",
+      "html_template": "\n<div class=\"typewriter-container\">\n  <span class=\"typewriter-text\" data-typewriter data-strings='{{strings}}' data-speed=\"{{typeSpeed}}\" data-pause=\"{{pauseTime}}\" data-delete-speed=\"{{deleteSpeed}}\"></span>\n  <span class=\"typewriter-cursor\"></span>\n</div>\n",
+      "js_init": "\n(function(){\n  document.querySelectorAll('[data-typewriter]').forEach(el => {\n    const strings = JSON.parse(el.dataset.strings || '[\"Hello World\"]');\n    const speed = parseInt(el.dataset.speed) || 80;\n    const pause = parseInt(el.dataset.pause) || 2000;\n    const delSpeed = parseInt(el.dataset.deleteSpeed) || 40;\n    let strIdx = 0, charIdx = 0, isDeleting = false;\n    function tick() {\n      const current = strings[strIdx % strings.length];\n      if (isDeleting) {\n        el.textContent = current.substring(0, charIdx - 1);\n        charIdx--;\n        if (charIdx === 0) {\n          isDeleting = false;\n          strIdx++;\n          setTimeout(tick, 400);\n          return;\n        }\n        setTimeout(tick, delSpeed);\n      } else {\n        el.textContent = current.substring(0, charIdx + 1);\n        charIdx++;\n        if (charIdx === current.length) {\n          if (strings.length > 1) {\n            isDeleting = true;\n            setTimeout(tick, pause);\n          }\n          return;\n        }\n        setTimeout(tick, speed + Math.random() * 40 - 20);\n      }\n    }\n    tick();\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "strings": {
+          "type": "string",
+          "default": "[\"Build faster.\",\"Ship smarter.\",\"Scale globally.\"]",
+          "description": "JSON array of strings to type"
+        },
+        "typeSpeed": {
+          "type": "number",
+          "default": 80,
+          "description": "Typing speed in ms per character"
+        },
+        "deleteSpeed": {
+          "type": "number",
+          "default": 40,
+          "description": "Delete speed in ms per character"
+        },
+        "pauseTime": {
+          "type": "number",
+          "default": 2000,
+          "description": "Pause before deleting in ms"
+        },
+        "fontFamily": {
+          "type": "string",
+          "default": "'JetBrains Mono', monospace",
+          "description": "Font family"
+        },
+        "fontSize": {
+          "type": "string",
+          "default": "clamp(1.5rem, 4vw, 3rem)",
+          "description": "Font size"
+        },
+        "fontWeight": {
+          "type": "string",
+          "default": "700",
+          "description": "Font weight"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Text color"
+        },
+        "cursorColor": {
+          "type": "color",
+          "default": "#3b82f6",
+          "description": "Cursor color"
+        },
+        "cursorWidth": {
+          "type": "string",
+          "default": "3px",
+          "description": "Cursor width"
+        },
+        "blinkSpeed": {
+          "type": "string",
+          "default": "0.7s",
+          "description": "Cursor blink speed"
+        }
+      }
+    },
+    {
+      "id": "gradient-mesh",
+      "name": "Animated Gradient Mesh",
+      "category": "Backgrounds/Animated",
+      "description": "Multi-point animated gradient mesh background using multiple radial gradients. Each gradient point moves independently, creating a living, organic mesh effect similar to Stripe's backgrounds.",
+      "dependencies": [],
+      "css": "\n.gradient-mesh {\n  position: relative;\n  min-height: {{minHeight}};\n  background: {{bgColor}};\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.gradient-mesh::before {\n  content: '';\n  position: absolute;\n  inset: -20%;\n  width: 140%;\n  height: 140%;\n  background:\n    radial-gradient(ellipse at 20% 50%, {{color1}} 0%, transparent 50%),\n    radial-gradient(ellipse at 80% 20%, {{color2}} 0%, transparent 50%),\n    radial-gradient(ellipse at 50% 80%, {{color3}} 0%, transparent 50%),\n    radial-gradient(ellipse at 70% 60%, {{color4}} 0%, transparent 50%);\n  animation: meshFloat {{speed}} ease-in-out infinite alternate;\n  opacity: {{meshOpacity}};\n}\n@keyframes meshFloat {\n  0% { transform: translate(0%, 0%) rotate(0deg); }\n  25% { transform: translate(5%, -3%) rotate(2deg); }\n  50% { transform: translate(-3%, 5%) rotate(-1deg); }\n  75% { transform: translate(-5%, -2%) rotate(3deg); }\n  100% { transform: translate(3%, 4%) rotate(-2deg); }\n}\n.gradient-mesh-content {\n  position: relative;\n  z-index: 1;\n  text-align: center;\n  padding: 2rem;\n}\n",
+      "html_template": "\n<div class=\"gradient-mesh\">\n  <div class=\"gradient-mesh-content\">\n    <h2 style=\"color:#f8fafc;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;margin:0 0 1rem;\">{{heading}}</h2>\n    <p style=\"color:#94a3b8;font-size:1.2rem;max-width:500px;margin:0 auto;\">{{subtext}}</p>\n  </div>\n</div>\n",
+      "js_init": "// Pure CSS - no JS needed",
+      "js_type": "inline",
+      "variables": {
+        "minHeight": {
+          "type": "string",
+          "default": "500px",
+          "description": "Min height"
+        },
+        "bgColor": {
+          "type": "color",
+          "default": "#0a0a0f",
+          "description": "Base background"
+        },
+        "meshOpacity": {
+          "type": "number",
+          "default": 0.5,
+          "description": "Mesh opacity"
+        },
+        "color1": {
+          "type": "color",
+          "default": "rgba(59,130,246,0.6)",
+          "description": "Gradient point 1"
+        },
+        "color2": {
+          "type": "color",
+          "default": "rgba(139,92,246,0.5)",
+          "description": "Gradient point 2"
+        },
+        "color3": {
+          "type": "color",
+          "default": "rgba(236,72,153,0.4)",
+          "description": "Gradient point 3"
+        },
+        "color4": {
+          "type": "color",
+          "default": "rgba(34,211,238,0.3)",
+          "description": "Gradient point 4"
+        },
+        "speed": {
+          "type": "string",
+          "default": "20s",
+          "description": "Animation duration"
+        },
+        "heading": {
+          "type": "string",
+          "default": "Gradient Mesh",
+          "description": "Demo heading"
+        },
+        "subtext": {
+          "type": "string",
+          "default": "Organic multi-point gradients in constant motion.",
+          "description": "Demo subtext"
+        }
+      }
+    },
+    {
+      "id": "hover-card-shine",
+      "name": "Hover Card Shine Effect",
+      "category": "Cards/Effects",
+      "description": "Holographic-style light sweep effect on card hover. A diagonal band of light sweeps across the card surface, similar to premium holographic or foil cards.",
+      "dependencies": [],
+      "css": "\n.shine-card {\n  position: relative;\n  width: {{cardWidth}};\n  background: {{cardBg}};\n  border: 1px solid {{borderColor}};\n  border-radius: {{borderRadius}};\n  padding: {{padding}};\n  overflow: hidden;\n  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;\n}\n.shine-card:hover {\n  border-color: {{hoverBorder}};\n  box-shadow: {{hoverShadow}};\n  transform: translateY(-2px);\n}\n.shine-card::after {\n  content: '';\n  position: absolute;\n  top: -50%;\n  left: -50%;\n  width: 200%;\n  height: 200%;\n  background: linear-gradient(\n    {{shineAngle}},\n    transparent 0%,\n    transparent 40%,\n    {{shineColor}} 50%,\n    transparent 60%,\n    transparent 100%\n  );\n  transform: translateX(-100%) rotate(0deg);\n  transition: none;\n  pointer-events: none;\n}\n.shine-card:hover::after {\n  animation: cardShine {{shineSpeed}} ease-in-out forwards;\n}\n@keyframes cardShine {\n  0% { transform: translateX(-100%); }\n  100% { transform: translateX(100%); }\n}\n.shine-card h3 {\n  color: {{headingColor}};\n  font-size: 1.25rem;\n  font-weight: 700;\n  margin: 0 0 0.5rem;\n  position: relative;\n}\n.shine-card p {\n  color: {{textColor}};\n  font-size: 0.95rem;\n  line-height: 1.5;\n  margin: 0;\n  position: relative;\n}\n",
+      "html_template": "\n<div class=\"shine-card\">\n  <h3>{{title}}</h3>\n  <p>{{description}}</p>\n</div>\n",
+      "js_init": "// Pure CSS - no JS needed",
+      "js_type": "inline",
+      "variables": {
+        "cardWidth": {
+          "type": "string",
+          "default": "350px",
+          "description": "Card width"
+        },
+        "cardBg": {
+          "type": "color",
+          "default": "rgba(18,18,26,0.8)",
+          "description": "Card background"
+        },
+        "borderColor": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.06)",
+          "description": "Border color"
+        },
+        "hoverBorder": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.15)",
+          "description": "Hover border"
+        },
+        "hoverShadow": {
+          "type": "string",
+          "default": "0 15px 30px rgba(0,0,0,0.3)",
+          "description": "Hover shadow"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "16px",
+          "description": "Border radius"
+        },
+        "padding": {
+          "type": "string",
+          "default": "2rem",
+          "description": "Card padding"
+        },
+        "shineAngle": {
+          "type": "string",
+          "default": "105deg",
+          "description": "Shine angle"
+        },
+        "shineColor": {
+          "type": "color",
+          "default": "rgba(255,255,255,0.08)",
+          "description": "Shine color"
+        },
+        "shineSpeed": {
+          "type": "string",
+          "default": "0.7s",
+          "description": "Shine animation speed"
+        },
+        "headingColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Heading color"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#94a3b8",
+          "description": "Text color"
+        },
+        "title": {
+          "type": "string",
+          "default": "Premium Card",
+          "description": "Card title"
+        },
+        "description": {
+          "type": "string",
+          "default": "Hover to see the holographic shine sweep across the surface.",
+          "description": "Card description"
+        }
+      }
+    },
+    {
+      "id": "spring-physics-button",
+      "name": "Spring Physics Button",
+      "category": "Buttons/Animation",
+      "description": "Button with spring physics animation on click - bounces and wobbles naturally like a physical button being pressed. Uses CSS spring easing and JS for press state.",
+      "dependencies": [],
+      "css": "\n.spring-btn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  padding: {{paddingY}} {{paddingX}};\n  background: {{bgGradient}};\n  color: {{textColor}};\n  border: none;\n  border-radius: {{borderRadius}};\n  font-size: {{fontSize}};\n  font-weight: 700;\n  cursor: pointer;\n  position: relative;\n  transform: scale(1);\n  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);\n  user-select: none;\n  overflow: hidden;\n  letter-spacing: -0.01em;\n}\n.spring-btn:hover {\n  transform: scale(1.05);\n}\n.spring-btn:active, .spring-btn.pressed {\n  transform: scale(0.92);\n  transition: transform 0.1s ease-out;\n}\n.spring-btn.bounce {\n  animation: springBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n@keyframes springBounce {\n  0% { transform: scale(0.92); }\n  40% { transform: scale(1.08); }\n  60% { transform: scale(0.97); }\n  80% { transform: scale(1.02); }\n  100% { transform: scale(1); }\n}\n.spring-btn::after {\n  content: '';\n  position: absolute;\n  inset: 0;\n  background: linear-gradient(rgba(255,255,255,0.2), transparent);\n  opacity: 0;\n  transition: opacity 0.3s;\n}\n.spring-btn:hover::after { opacity: 1; }\n.spring-btn .ripple {\n  position: absolute;\n  border-radius: 50%;\n  background: rgba(255,255,255,0.3);\n  transform: scale(0);\n  animation: springRipple 0.6s ease-out forwards;\n  pointer-events: none;\n}\n@keyframes springRipple {\n  to { transform: scale(4); opacity: 0; }\n}\n",
+      "html_template": "\n<button class=\"spring-btn\" data-spring-btn>{{buttonText}}</button>\n",
+      "js_init": "\n(function(){\n  document.querySelectorAll('[data-spring-btn]').forEach(btn => {\n    btn.addEventListener('click', (e) => {\n      // Ripple\n      const ripple = document.createElement('span');\n      ripple.className = 'ripple';\n      const rect = btn.getBoundingClientRect();\n      const size = Math.max(rect.width, rect.height);\n      ripple.style.width = ripple.style.height = size + 'px';\n      ripple.style.left = (e.clientX - rect.left - size/2) + 'px';\n      ripple.style.top = (e.clientY - rect.top - size/2) + 'px';\n      btn.appendChild(ripple);\n      setTimeout(() => ripple.remove(), 600);\n      // Spring bounce\n      btn.classList.remove('bounce');\n      void btn.offsetWidth;\n      btn.classList.add('bounce');\n      setTimeout(() => btn.classList.remove('bounce'), 600);\n    });\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "paddingY": {
+          "type": "string",
+          "default": "16px",
+          "description": "Vertical padding"
+        },
+        "paddingX": {
+          "type": "string",
+          "default": "40px",
+          "description": "Horizontal padding"
+        },
+        "bgGradient": {
+          "type": "string",
+          "default": "linear-gradient(135deg, #3b82f6, #8b5cf6)",
+          "description": "Background gradient"
+        },
+        "textColor": {
+          "type": "color",
+          "default": "#ffffff",
+          "description": "Text color"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "14px",
+          "description": "Border radius"
+        },
+        "fontSize": {
+          "type": "string",
+          "default": "1.05rem",
+          "description": "Font size"
+        },
+        "buttonText": {
+          "type": "string",
+          "default": "Click Me",
+          "description": "Button text"
+        }
+      }
+    },
+    {
+      "id": "scroll-progress-bar",
+      "name": "Scroll Progress Indicator",
+      "category": "Navigation/Scroll",
+      "description": "Fixed top bar showing page scroll progress. Gradient-colored bar that fills from left to right as the user scrolls. Lightweight, accessible, and performant using requestAnimationFrame.",
+      "dependencies": [],
+      "css": "\n.scroll-progress {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: {{barHeight}};\n  z-index: 9999;\n  pointer-events: none;\n  background: {{trackBg}};\n}\n.scroll-progress-bar {\n  height: 100%;\n  width: 0%;\n  background: {{barGradient}};\n  transition: width 0.05s linear;\n  box-shadow: {{barGlow}};\n  border-radius: 0 {{barHeight}} {{barHeight}} 0;\n}\n",
+      "html_template": "\n<div class=\"scroll-progress\" role=\"progressbar\" aria-valuenow=\"0\" aria-valuemin=\"0\" aria-valuemax=\"100\">\n  <div class=\"scroll-progress-bar\"></div>\n</div>\n",
+      "js_init": "\n(function(){\n  const bar = document.querySelector('.scroll-progress-bar');\n  const container = document.querySelector('.scroll-progress');\n  if (!bar) return;\n  let ticking = false;\n  function updateProgress() {\n    const scrollTop = window.scrollY || document.documentElement.scrollTop;\n    const docHeight = document.documentElement.scrollHeight - window.innerHeight;\n    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;\n    bar.style.width = progress + '%';\n    container.setAttribute('aria-valuenow', Math.round(progress));\n    ticking = false;\n  }\n  window.addEventListener('scroll', () => {\n    if (!ticking) { requestAnimationFrame(updateProgress); ticking = true; }\n  }, { passive: true });\n  updateProgress();\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "barHeight": {
+          "type": "string",
+          "default": "3px",
+          "description": "Progress bar height"
+        },
+        "trackBg": {
+          "type": "color",
+          "default": "transparent",
+          "description": "Track background"
+        },
+        "barGradient": {
+          "type": "string",
+          "default": "linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899)",
+          "description": "Bar gradient"
+        },
+        "barGlow": {
+          "type": "string",
+          "default": "0 0 10px rgba(59,130,246,0.5)",
+          "description": "Bar glow shadow"
+        }
+      }
+    },
+    {
+      "id": "image-comparison-slider",
+      "name": "Image Comparison Slider",
+      "category": "Interactive/Media",
+      "description": "Before/after image comparison with a draggable slider. Supports touch and mouse. The divider line is draggable to reveal either image. Great for showing transformations, redesigns, or before/after effects.",
+      "dependencies": [],
+      "css": "\n.compare-slider {\n  position: relative;\n  width: {{width}};\n  max-width: 100%;\n  overflow: hidden;\n  border-radius: {{borderRadius}};\n  cursor: col-resize;\n  user-select: none;\n  -webkit-user-select: none;\n}\n.compare-slider img {\n  display: block;\n  width: 100%;\n  height: auto;\n  pointer-events: none;\n}\n.compare-before {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n}\n.compare-before img {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: var(--container-width, 100%);\n  height: 100%;\n  object-fit: cover;\n}\n.compare-divider {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: {{dividerWidth}};\n  background: {{dividerColor}};\n  left: 50%;\n  transform: translateX(-50%);\n  z-index: 3;\n  cursor: col-resize;\n}\n.compare-handle {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  width: {{handleSize}};\n  height: {{handleSize}};\n  background: {{handleBg}};\n  border: 2px solid {{handleBorder}};\n  border-radius: 50%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 4;\n  box-shadow: 0 2px 10px rgba(0,0,0,0.3);\n}\n.compare-handle::before,\n.compare-handle::after {\n  content: '';\n  width: 0;\n  height: 0;\n  border-style: solid;\n  position: absolute;\n}\n.compare-handle::before {\n  border-width: 6px 8px 6px 0;\n  border-color: transparent {{handleArrowColor}} transparent transparent;\n  left: 8px;\n}\n.compare-handle::after {\n  border-width: 6px 0 6px 8px;\n  border-color: transparent transparent transparent {{handleArrowColor}};\n  right: 8px;\n}\n.compare-label {\n  position: absolute;\n  bottom: 12px;\n  padding: 4px 12px;\n  background: rgba(0,0,0,0.6);\n  color: #fff;\n  font-size: 0.8rem;\n  font-weight: 600;\n  border-radius: 6px;\n  z-index: 2;\n  pointer-events: none;\n}\n.compare-label--before { left: 12px; }\n.compare-label--after { right: 12px; }\n",
+      "html_template": "\n<div class=\"compare-slider\" data-compare>\n  <img src=\"{{afterImage}}\" alt=\"{{afterAlt}}\" class=\"compare-after-img\">\n  <div class=\"compare-before\" style=\"width:50%;\">\n    <img src=\"{{beforeImage}}\" alt=\"{{beforeAlt}}\">\n  </div>\n  <div class=\"compare-divider\">\n    <div class=\"compare-handle\"></div>\n  </div>\n  <span class=\"compare-label compare-label--before\">{{beforeLabel}}</span>\n  <span class=\"compare-label compare-label--after\">{{afterLabel}}</span>\n</div>\n",
+      "js_init": "\n(function(){\n  document.querySelectorAll('[data-compare]').forEach(slider => {\n    const before = slider.querySelector('.compare-before');\n    const divider = slider.querySelector('.compare-divider');\n    let isDragging = false;\n    function setPosition(x) {\n      const rect = slider.getBoundingClientRect();\n      let pct = ((x - rect.left) / rect.width) * 100;\n      pct = Math.max(0, Math.min(100, pct));\n      before.style.width = pct + '%';\n      divider.style.left = pct + '%';\n      slider.style.setProperty('--container-width', rect.width + 'px');\n    }\n    slider.addEventListener('mousedown', (e) => { isDragging = true; setPosition(e.clientX); });\n    window.addEventListener('mousemove', (e) => { if (isDragging) setPosition(e.clientX); });\n    window.addEventListener('mouseup', () => { isDragging = false; });\n    slider.addEventListener('touchstart', (e) => { isDragging = true; setPosition(e.touches[0].clientX); }, { passive: true });\n    window.addEventListener('touchmove', (e) => { if (isDragging) setPosition(e.touches[0].clientX); }, { passive: true });\n    window.addEventListener('touchend', () => { isDragging = false; });\n    // Set initial container width\n    const rect = slider.getBoundingClientRect();\n    slider.style.setProperty('--container-width', rect.width + 'px');\n    window.addEventListener('resize', () => {\n      slider.style.setProperty('--container-width', slider.getBoundingClientRect().width + 'px');\n    });\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "width": {
+          "type": "string",
+          "default": "100%",
+          "description": "Slider width"
+        },
+        "borderRadius": {
+          "type": "string",
+          "default": "16px",
+          "description": "Container border radius"
+        },
+        "dividerWidth": {
+          "type": "string",
+          "default": "3px",
+          "description": "Divider line width"
+        },
+        "dividerColor": {
+          "type": "color",
+          "default": "#ffffff",
+          "description": "Divider color"
+        },
+        "handleSize": {
+          "type": "string",
+          "default": "44px",
+          "description": "Handle circle size"
+        },
+        "handleBg": {
+          "type": "color",
+          "default": "#ffffff",
+          "description": "Handle background"
+        },
+        "handleBorder": {
+          "type": "color",
+          "default": "#e2e8f0",
+          "description": "Handle border"
+        },
+        "handleArrowColor": {
+          "type": "color",
+          "default": "#334155",
+          "description": "Arrow color"
+        },
+        "beforeImage": {
+          "type": "string",
+          "default": "https://picsum.photos/800/500?grayscale",
+          "description": "Before image URL"
+        },
+        "afterImage": {
+          "type": "string",
+          "default": "https://picsum.photos/800/500",
+          "description": "After image URL"
+        },
+        "beforeAlt": {
+          "type": "string",
+          "default": "Before",
+          "description": "Before image alt"
+        },
+        "afterAlt": {
+          "type": "string",
+          "default": "After",
+          "description": "After image alt"
+        },
+        "beforeLabel": {
+          "type": "string",
+          "default": "Before",
+          "description": "Before label text"
+        },
+        "afterLabel": {
+          "type": "string",
+          "default": "After",
+          "description": "After label text"
+        }
+      }
+    },
+    {
+      "id": "animated-counter",
+      "name": "Animated Counter with Suffix",
+      "category": "Typography/Numbers",
+      "description": "Numbers that count up from 0 to target value when scrolled into view. Supports suffixes like K, M, +, %, etc. Smooth easing with configurable duration. Great for stats sections.",
+      "dependencies": [],
+      "css": "\n.counter-section {\n  display: flex;\n  gap: {{gap}};\n  flex-wrap: wrap;\n  justify-content: center;\n  padding: 2rem;\n}\n.counter-item {\n  text-align: center;\n  min-width: {{minItemWidth}};\n}\n.counter-value {\n  font-size: {{valueFontSize}};\n  font-weight: 800;\n  color: {{valueColor}};\n  letter-spacing: -0.03em;\n  line-height: 1;\n  font-variant-numeric: tabular-nums;\n  display: block;\n}\n.counter-suffix {\n  color: {{suffixColor}};\n  font-size: 0.6em;\n  font-weight: 700;\n}\n.counter-label {\n  font-size: {{labelFontSize}};\n  color: {{labelColor}};\n  margin-top: 0.5rem;\n  font-weight: 500;\n}\n",
+      "html_template": "\n<div class=\"counter-section\" data-counters>\n  <div class=\"counter-item\">\n    <span class=\"counter-value\" data-target=\"{{value1}}\" data-suffix=\"{{suffix1}}\">0{{suffix1}}</span>\n    <div class=\"counter-label\">{{label1}}</div>\n  </div>\n  <div class=\"counter-item\">\n    <span class=\"counter-value\" data-target=\"{{value2}}\" data-suffix=\"{{suffix2}}\">0{{suffix2}}</span>\n    <div class=\"counter-label\">{{label2}}</div>\n  </div>\n  <div class=\"counter-item\">\n    <span class=\"counter-value\" data-target=\"{{value3}}\" data-suffix=\"{{suffix3}}\">0{{suffix3}}</span>\n    <div class=\"counter-label\">{{label3}}</div>\n  </div>\n  <div class=\"counter-item\">\n    <span class=\"counter-value\" data-target=\"{{value4}}\" data-suffix=\"{{suffix4}}\">0{{suffix4}}</span>\n    <div class=\"counter-label\">{{label4}}</div>\n  </div>\n</div>\n",
+      "js_init": "\n(function(){\n  function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }\n  document.querySelectorAll('[data-counters]').forEach(section => {\n    const counters = section.querySelectorAll('[data-target]');\n    const duration = {{duration}};\n    let started = false;\n    const observer = new IntersectionObserver((entries) => {\n      entries.forEach(entry => {\n        if (entry.isIntersecting && !started) {\n          started = true;\n          counters.forEach(counter => {\n            const target = parseFloat(counter.dataset.target);\n            const suffix = counter.dataset.suffix || '';\n            const isDecimal = target % 1 !== 0;\n            const startTime = performance.now();\n            function update(now) {\n              const elapsed = now - startTime;\n              const progress = Math.min(elapsed / duration, 1);\n              const current = target * easeOutExpo(progress);\n              counter.textContent = (isDecimal ? current.toFixed(1) : Math.floor(current)) + suffix;\n              if (progress < 1) requestAnimationFrame(update);\n            }\n            requestAnimationFrame(update);\n          });\n          observer.unobserve(entry.target);\n        }\n      });\n    }, { threshold: 0.3 });\n    observer.observe(section);\n  });\n})();\n",
+      "js_type": "inline",
+      "variables": {
+        "duration": {
+          "type": "number",
+          "default": 2000,
+          "description": "Animation duration in ms"
+        },
+        "gap": {
+          "type": "string",
+          "default": "3rem",
+          "description": "Gap between counters"
+        },
+        "minItemWidth": {
+          "type": "string",
+          "default": "150px",
+          "description": "Min width per counter"
+        },
+        "valueFontSize": {
+          "type": "string",
+          "default": "clamp(2.5rem, 6vw, 4.5rem)",
+          "description": "Value font size"
+        },
+        "valueColor": {
+          "type": "color",
+          "default": "#f8fafc",
+          "description": "Value color"
+        },
+        "suffixColor": {
+          "type": "color",
+          "default": "#3b82f6",
+          "description": "Suffix color"
+        },
+        "labelFontSize": {
+          "type": "string",
+          "default": "1rem",
+          "description": "Label font size"
+        },
+        "labelColor": {
+          "type": "color",
+          "default": "#94a3b8",
+          "description": "Label color"
+        },
+        "value1": {
+          "type": "number",
+          "default": 50,
+          "description": "Counter 1 target"
+        },
+        "suffix1": {
+          "type": "string",
+          "default": "K+",
+          "description": "Counter 1 suffix"
+        },
+        "label1": {
+          "type": "string",
+          "default": "Active Users",
+          "description": "Counter 1 label"
+        },
+        "value2": {
+          "type": "number",
+          "default": 99.9,
+          "description": "Counter 2 target"
+        },
+        "suffix2": {
+          "type": "string",
+          "default": "%",
+          "description": "Counter 2 suffix"
+        },
+        "label2": {
+          "type": "string",
+          "default": "Uptime",
+          "description": "Counter 2 label"
+        },
+        "value3": {
+          "type": "number",
+          "default": 300,
+          "description": "Counter 3 target"
+        },
+        "suffix3": {
+          "type": "string",
+          "default": "M",
+          "description": "Counter 3 suffix"
+        },
+        "label3": {
+          "type": "string",
+          "default": "API Requests",
+          "description": "Counter 3 label"
+        },
+        "value4": {
+          "type": "number",
+          "default": 4.9,
+          "description": "Counter 4 target"
+        },
+        "suffix4": {
+          "type": "string",
+          "default": "/5",
+          "description": "Counter 4 suffix"
+        },
+        "label4": {
+          "type": "string",
+          "default": "User Rating",
+          "description": "Counter 4 label"
+        }
+      }
+    },
+    {
+      "id": "brandly-gradient-cta-btn",
+      "name": "Gradient CTA Button with Pulse Animation",
+      "category": "button",
+      "description": "Bold CTA button with cyan-to-blue gradient, rounded corners, uppercase text, and a subtle pulse animation to draw attention. Based on Brandly's main conversion button.",
+      "html": "<div class=\"bc-cta-wrapper\">\n  <a href=\"{{cta_url}}\" class=\"bc-cta-btn\">{{cta_text}}</a>\n</div>",
+      "css": ".bc-cta-wrapper {\n  text-align: center;\n  padding: 20px 0;\n}\n.bc-cta-btn {\n  display: inline-block;\n  padding: 16px 40px;\n  background: linear-gradient(135deg, #1D45D8 0%, #00DFFF 100%);\n  color: #fff;\n  font-size: 16px;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  text-decoration: none;\n  border-radius: 50px;\n  border: none;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  animation: bc-pulse 2s infinite;\n  box-shadow: 0 4px 20px rgba(29, 69, 216, 0.4);\n}\n.bc-cta-btn:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 30px rgba(29, 69, 216, 0.6);\n  background: linear-gradient(135deg, #00DFFF 0%, #1D45D8 100%);\n}\n@keyframes bc-pulse {\n  0%, 100% { box-shadow: 0 4px 20px rgba(29, 69, 216, 0.4); }\n  50% { box-shadow: 0 4px 30px rgba(0, 223, 255, 0.6); }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-dark-hero-section",
+      "name": "Dark Hero Section with Split Layout",
+      "category": "hero",
+      "description": "Dark background hero with left-aligned text content (badge, headline, subheadline, CTA) and right-side image stack. Uses the Brandly deep navy/dark color scheme with cyan accents.",
+      "html": "<section class=\"bc-hero\">\n  <div class=\"bc-hero-inner\">\n    <div class=\"bc-hero-content\">\n      <div class=\"bc-hero-badge\">\n        <span class=\"bc-badge-icon\">&#128197;</span>\n        <span class=\"bc-badge-text\">{{badge_text}}</span>\n      </div>\n      <h1 class=\"bc-hero-title\">{{headline}} <b>{{highlight_text}}</b></h1>\n      <p class=\"bc-hero-sub\">{{subheadline}}</p>\n      <p class=\"bc-hero-note\">{{note_text}}</p>\n      <a href=\"{{cta_url}}\" class=\"bc-hero-cta\">{{cta_text}}</a>\n    </div>\n    <div class=\"bc-hero-media\">\n      <img src=\"{{hero_image}}\" alt=\"{{hero_alt}}\" class=\"bc-hero-img\" />\n    </div>\n  </div>\n</section>",
+      "css": ".bc-hero {\n  background: #0A0A1A;\n  padding: 60px 20px;\n  overflow: hidden;\n}\n.bc-hero-inner {\n  max-width: 1200px;\n  margin: 0 auto;\n  display: flex;\n  align-items: center;\n  gap: 40px;\n  flex-wrap: wrap;\n}\n.bc-hero-content {\n  flex: 1 1 500px;\n}\n.bc-hero-badge {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  background: rgba(0, 223, 255, 0.1);\n  border: 1px solid rgba(0, 223, 255, 0.3);\n  border-radius: 50px;\n  padding: 6px 16px;\n  margin-bottom: 24px;\n  font-size: 14px;\n  color: #00DFFF;\n}\n.bc-badge-icon {\n  font-size: 16px;\n}\n.bc-hero-title {\n  font-size: clamp(28px, 5vw, 48px);\n  color: #FFFFFF;\n  font-weight: 400;\n  line-height: 1.2;\n  margin: 0 0 16px;\n}\n.bc-hero-title b {\n  color: #00DFFF;\n  font-weight: 700;\n}\n.bc-hero-sub {\n  font-size: clamp(16px, 2.5vw, 20px);\n  color: #B0B8CC;\n  margin: 0 0 12px;\n  line-height: 1.5;\n}\n.bc-hero-note {\n  font-size: 14px;\n  color: #6B7280;\n  margin: 0 0 24px;\n}\n.bc-hero-cta {\n  display: inline-block;\n  padding: 16px 40px;\n  background: linear-gradient(135deg, #1D45D8 0%, #00DFFF 100%);\n  color: #fff;\n  font-size: 16px;\n  font-weight: 700;\n  text-transform: uppercase;\n  text-decoration: none;\n  border-radius: 50px;\n  transition: all 0.3s ease;\n  box-shadow: 0 4px 20px rgba(29, 69, 216, 0.4);\n}\n.bc-hero-cta:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 30px rgba(29, 69, 216, 0.6);\n}\n.bc-hero-media {\n  flex: 1 1 400px;\n  position: relative;\n}\n.bc-hero-img {\n  width: 100%;\n  border-radius: 16px;\n  object-fit: cover;\n}\n@media (max-width: 768px) {\n  .bc-hero-inner { flex-direction: column; }\n  .bc-hero-media { order: -1; }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-pain-point-card",
+      "name": "Pain Point Card with Icon",
+      "category": "card",
+      "description": "Dark glassmorphism card with a circular icon (X mark or custom SVG), bold title, and italic quote. Used to present audience pain points with dark backgrounds and cyan accent icons.",
+      "html": "<div class=\"bc-pain-card\">\n  <div class=\"bc-pain-icon\">\n    <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"0 0 49 49\" fill=\"none\">\n      <circle cx=\"24\" cy=\"24\" r=\"23\" stroke=\"#00DFFF\" stroke-width=\"2\" fill=\"none\"/>\n      <path d=\"M16 16L32 32M32 16L16 32\" stroke=\"#00DFFF\" stroke-width=\"2.5\" stroke-linecap=\"round\"/>\n    </svg>\n  </div>\n  <h3 class=\"bc-pain-title\">{{title}}</h3>\n  <p class=\"bc-pain-quote\">\"{{quote}}\"</p>\n</div>",
+      "css": ".bc-pain-card {\n  background: rgba(255, 255, 255, 0.03);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 16px;\n  padding: 32px 24px;\n  text-align: center;\n  transition: all 0.3s ease;\n  max-width: 320px;\n}\n.bc-pain-card:hover {\n  background: rgba(255, 255, 255, 0.06);\n  border-color: rgba(0, 223, 255, 0.2);\n  transform: translateY(-4px);\n}\n.bc-pain-icon {\n  margin-bottom: 16px;\n}\n.bc-pain-title {\n  font-size: 18px;\n  font-weight: 700;\n  color: #FFFFFF;\n  margin: 0 0 12px;\n}\n.bc-pain-quote {\n  font-size: 14px;\n  color: #8B95A8;\n  font-style: italic;\n  margin: 0;\n  line-height: 1.5;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-pain-grid",
+      "name": "Pain Points Grid Layout",
+      "category": "section",
+      "description": "Section with heading + grid of pain-point cards (3 columns desktop, 2 tablet, 1 mobile). Dark background with subtle gradient divider.",
+      "html": "<section class=\"bc-pain-section\">\n  <div class=\"bc-pain-inner\">\n    <h2 class=\"bc-pain-heading\">{{section_title}} <b>{{highlight}}</b></h2>\n    <div class=\"bc-pain-grid\">\n      <div class=\"bc-pain-card\">\n        <div class=\"bc-pain-icon\">{{icon_1}}</div>\n        <h3 class=\"bc-pain-title\">{{title_1}}</h3>\n        <p class=\"bc-pain-quote\">\"{{quote_1}}\"</p>\n      </div>\n      <div class=\"bc-pain-card\">\n        <div class=\"bc-pain-icon\">{{icon_2}}</div>\n        <h3 class=\"bc-pain-title\">{{title_2}}</h3>\n        <p class=\"bc-pain-quote\">\"{{quote_2}}\"</p>\n      </div>\n      <div class=\"bc-pain-card\">\n        <div class=\"bc-pain-icon\">{{icon_3}}</div>\n        <h3 class=\"bc-pain-title\">{{title_3}}</h3>\n        <p class=\"bc-pain-quote\">\"{{quote_3}}\"</p>\n      </div>\n    </div>\n  </div>\n</section>",
+      "css": ".bc-pain-section {\n  background: #0A0A1A;\n  padding: 80px 20px;\n}\n.bc-pain-inner {\n  max-width: 1100px;\n  margin: 0 auto;\n}\n.bc-pain-heading {\n  font-size: clamp(24px, 4vw, 36px);\n  color: #FFFFFF;\n  text-align: center;\n  margin: 0 0 48px;\n  font-weight: 400;\n}\n.bc-pain-heading b {\n  color: #00DFFF;\n  font-weight: 700;\n}\n.bc-pain-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 24px;\n}\n.bc-pain-grid .bc-pain-card {\n  background: rgba(255, 255, 255, 0.03);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 16px;\n  padding: 32px 24px;\n  text-align: center;\n  transition: all 0.3s ease;\n}\n.bc-pain-grid .bc-pain-card:hover {\n  background: rgba(255, 255, 255, 0.06);\n  border-color: rgba(0, 223, 255, 0.2);\n  transform: translateY(-4px);\n}\n.bc-pain-grid .bc-pain-icon {\n  margin-bottom: 16px;\n  color: #00DFFF;\n  font-size: 40px;\n}\n.bc-pain-grid .bc-pain-title {\n  font-size: 18px;\n  font-weight: 700;\n  color: #FFFFFF;\n  margin: 0 0 12px;\n}\n.bc-pain-grid .bc-pain-quote {\n  font-size: 14px;\n  color: #8B95A8;\n  font-style: italic;\n  margin: 0;\n  line-height: 1.5;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-gradient-divider",
+      "name": "Gradient Section Divider",
+      "category": "effect",
+      "description": "Full-width gradient divider bar transitioning from deep blue to cyan. Used between sections to create visual separation with brand colors.",
+      "html": "<div class=\"bc-gradient-divider\"></div>",
+      "css": ".bc-gradient-divider {\n  width: 100%;\n  height: 6px;\n  background: linear-gradient(90deg, #1D45D8 0%, #00DFFF 50%, #1D45D8 100%);\n  border: none;\n  margin: 0;\n  position: relative;\n}\n.bc-gradient-divider::after {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background: inherit;\n  filter: blur(12px);\n  opacity: 0.6;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-vertical-carousel",
+      "name": "Vertical Auto-Scroll Carousel",
+      "category": "effect",
+      "description": "Vertical scrolling image carousel with alternating up/down directions. Multiple columns scroll continuously with CSS-only animation. Used for social proof screenshots.",
+      "html": "<div class=\"bc-vcarousel\">\n  <div class=\"bc-vtrack bc-vup\">\n    <div class=\"bc-vtrack-inner\">\n      <img src=\"{{image_1}}\" alt=\"{{alt_1}}\" />\n      <img src=\"{{image_2}}\" alt=\"{{alt_2}}\" />\n      <img src=\"{{image_3}}\" alt=\"{{alt_3}}\" />\n      <img src=\"{{image_1}}\" alt=\"{{alt_1}}\" />\n      <img src=\"{{image_2}}\" alt=\"{{alt_2}}\" />\n      <img src=\"{{image_3}}\" alt=\"{{alt_3}}\" />\n    </div>\n  </div>\n  <div class=\"bc-vtrack bc-vdown\">\n    <div class=\"bc-vtrack-inner\">\n      <img src=\"{{image_4}}\" alt=\"{{alt_4}}\" />\n      <img src=\"{{image_5}}\" alt=\"{{alt_5}}\" />\n      <img src=\"{{image_6}}\" alt=\"{{alt_6}}\" />\n      <img src=\"{{image_4}}\" alt=\"{{alt_4}}\" />\n      <img src=\"{{image_5}}\" alt=\"{{alt_5}}\" />\n      <img src=\"{{image_6}}\" alt=\"{{alt_6}}\" />\n    </div>\n  </div>\n  <div class=\"bc-vtrack bc-vup\">\n    <div class=\"bc-vtrack-inner\">\n      <img src=\"{{image_7}}\" alt=\"{{alt_7}}\" />\n      <img src=\"{{image_8}}\" alt=\"{{alt_8}}\" />\n      <img src=\"{{image_9}}\" alt=\"{{alt_9}}\" />\n      <img src=\"{{image_7}}\" alt=\"{{alt_7}}\" />\n      <img src=\"{{image_8}}\" alt=\"{{alt_8}}\" />\n      <img src=\"{{image_9}}\" alt=\"{{alt_9}}\" />\n    </div>\n  </div>\n</div>",
+      "css": ".bc-vcarousel {\n  display: flex;\n  width: 100%;\n  height: 500px;\n  overflow: hidden;\n  gap: 10px;\n}\n.bc-vtrack {\n  width: 33.33%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n.bc-vtrack-inner {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n.bc-vtrack img {\n  width: 100%;\n  height: auto;\n  border-radius: 12px;\n}\n.bc-vup .bc-vtrack-inner {\n  animation: bc-scroll-up 20s linear infinite;\n}\n.bc-vdown .bc-vtrack-inner {\n  animation: bc-scroll-down 20s linear infinite;\n}\n@keyframes bc-scroll-up {\n  0% { transform: translateY(0%); }\n  100% { transform: translateY(-50%); }\n}\n@keyframes bc-scroll-down {\n  0% { transform: translateY(-50%); }\n  100% { transform: translateY(0%); }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-social-proof-slider",
+      "name": "Horizontal Auto-Scroll Image Slider",
+      "category": "testimonial",
+      "description": "Horizontal auto-scrolling carousel with continuous loop. Shows social proof screenshots or testimonial images. No controls, infinite smooth scroll.",
+      "html": "<div class=\"bc-hslider\">\n  <div class=\"bc-hslider-track\">\n    <div class=\"bc-hslide\"><img src=\"{{slide_1}}\" alt=\"{{alt_1}}\" /></div>\n    <div class=\"bc-hslide\"><img src=\"{{slide_2}}\" alt=\"{{alt_2}}\" /></div>\n    <div class=\"bc-hslide\"><img src=\"{{slide_3}}\" alt=\"{{alt_3}}\" /></div>\n    <div class=\"bc-hslide\"><img src=\"{{slide_4}}\" alt=\"{{alt_4}}\" /></div>\n    <div class=\"bc-hslide\"><img src=\"{{slide_1}}\" alt=\"{{alt_1}}\" /></div>\n    <div class=\"bc-hslide\"><img src=\"{{slide_2}}\" alt=\"{{alt_2}}\" /></div>\n    <div class=\"bc-hslide\"><img src=\"{{slide_3}}\" alt=\"{{alt_3}}\" /></div>\n    <div class=\"bc-hslide\"><img src=\"{{slide_4}}\" alt=\"{{alt_4}}\" /></div>\n  </div>\n</div>",
+      "css": ".bc-hslider {\n  width: 100%;\n  overflow: hidden;\n  padding: 20px 0;\n}\n.bc-hslider-track {\n  display: flex;\n  gap: 12px;\n  animation: bc-scroll-left 30s linear infinite;\n  width: max-content;\n}\n.bc-hslide {\n  flex-shrink: 0;\n  width: 220px;\n}\n.bc-hslide img {\n  width: 100%;\n  height: auto;\n  border-radius: 12px;\n  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);\n}\n@keyframes bc-scroll-left {\n  0% { transform: translateX(0); }\n  100% { transform: translateX(-50%); }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-feature-checklist",
+      "name": "Feature Checklist with Badge Icons",
+      "category": "section",
+      "description": "Section with checkmark-badge icon list items. Each item has a bold primary benefit and a lighter secondary description. Used for event/product feature highlights.",
+      "html": "<section class=\"bc-checklist-section\">\n  <div class=\"bc-checklist-inner\">\n    <h2 class=\"bc-checklist-heading\">{{section_title}} <b>{{highlight}}</b></h2>\n    <div class=\"bc-checklist-grid\">\n      <div class=\"bc-check-item\">\n        <div class=\"bc-check-icon\">\n          <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\">\n            <path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\" fill=\"#00DFFF\"/>\n          </svg>\n        </div>\n        <div class=\"bc-check-text\">\n          <strong>{{benefit_1}}</strong>\n          <span>{{detail_1}}</span>\n        </div>\n      </div>\n      <div class=\"bc-check-item\">\n        <div class=\"bc-check-icon\">\n          <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\">\n            <path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\" fill=\"#00DFFF\"/>\n          </svg>\n        </div>\n        <div class=\"bc-check-text\">\n          <strong>{{benefit_2}}</strong>\n          <span>{{detail_2}}</span>\n        </div>\n      </div>\n      <div class=\"bc-check-item\">\n        <div class=\"bc-check-icon\">\n          <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\">\n            <path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\" fill=\"#00DFFF\"/>\n          </svg>\n        </div>\n        <div class=\"bc-check-text\">\n          <strong>{{benefit_3}}</strong>\n          <span>{{detail_3}}</span>\n        </div>\n      </div>\n      <div class=\"bc-check-item\">\n        <div class=\"bc-check-icon\">\n          <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\">\n            <path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\" fill=\"#00DFFF\"/>\n          </svg>\n        </div>\n        <div class=\"bc-check-text\">\n          <strong>{{benefit_4}}</strong>\n          <span>{{detail_4}}</span>\n        </div>\n      </div>\n    </div>\n  </div>\n</section>",
+      "css": ".bc-checklist-section {\n  background: #0D0D20;\n  padding: 80px 20px;\n}\n.bc-checklist-inner {\n  max-width: 900px;\n  margin: 0 auto;\n}\n.bc-checklist-heading {\n  font-size: clamp(24px, 4vw, 36px);\n  color: #FFFFFF;\n  text-align: center;\n  margin: 0 0 48px;\n  font-weight: 400;\n}\n.bc-checklist-heading b {\n  color: #00DFFF;\n  font-weight: 700;\n}\n.bc-checklist-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));\n  gap: 24px;\n}\n.bc-check-item {\n  display: flex;\n  align-items: flex-start;\n  gap: 16px;\n  padding: 20px;\n  background: rgba(255, 255, 255, 0.03);\n  border: 1px solid rgba(255, 255, 255, 0.06);\n  border-radius: 12px;\n  transition: all 0.3s ease;\n}\n.bc-check-item:hover {\n  background: rgba(0, 223, 255, 0.05);\n  border-color: rgba(0, 223, 255, 0.15);\n}\n.bc-check-icon {\n  flex-shrink: 0;\n  width: 32px;\n  height: 32px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.bc-check-text {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n.bc-check-text strong {\n  color: #FFFFFF;\n  font-size: 16px;\n  font-weight: 600;\n}\n.bc-check-text span {\n  color: #8B95A8;\n  font-size: 14px;\n  line-height: 1.5;\n}\n@media (max-width: 500px) {\n  .bc-checklist-grid { grid-template-columns: 1fr; }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-attention-banner",
+      "name": "Attention Banner with Icon",
+      "category": "badge",
+      "description": "Highlighted banner block with warning/attention icon, bold heading and descriptive text. Dark background with subtle cyan border. Used for important callouts mid-page.",
+      "html": "<div class=\"bc-attention-banner\">\n  <div class=\"bc-att-icon\">\n    <img src=\"{{icon_url}}\" alt=\"\" class=\"bc-att-img\" />\n  </div>\n  <div class=\"bc-att-content\">\n    <h3 class=\"bc-att-title\">{{title}}</h3>\n    <p class=\"bc-att-desc\">{{description}} <b>{{highlight}}</b></p>\n  </div>\n</div>",
+      "css": ".bc-attention-banner {\n  display: flex;\n  align-items: center;\n  gap: 20px;\n  background: rgba(0, 223, 255, 0.05);\n  border: 1px solid rgba(0, 223, 255, 0.2);\n  border-radius: 16px;\n  padding: 24px 32px;\n  max-width: 800px;\n  margin: 32px auto;\n}\n.bc-att-icon {\n  flex-shrink: 0;\n  width: 60px;\n  height: 60px;\n}\n.bc-att-img {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n}\n.bc-att-title {\n  font-size: 20px;\n  color: #00DFFF;\n  font-weight: 700;\n  margin: 0 0 8px;\n}\n.bc-att-desc {\n  font-size: 16px;\n  color: #B0B8CC;\n  margin: 0;\n  line-height: 1.5;\n}\n.bc-att-desc b {\n  color: #FFFFFF;\n  font-weight: 700;\n}\n@media (max-width: 600px) {\n  .bc-attention-banner {\n    flex-direction: column;\n    text-align: center;\n    padding: 20px;\n  }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-brand-logos-grid",
+      "name": "Brand Logos Trust Grid",
+      "category": "badge",
+      "description": "Grid of brand/partner logos with category labels. Dark cards with subtle borders showing brand icons and category text. Used as social proof for brand partnerships.",
+      "html": "<section class=\"bc-logos-section\">\n  <div class=\"bc-logos-inner\">\n    <h2 class=\"bc-logos-heading\">{{section_title}}</h2>\n    <div class=\"bc-logos-grid\">\n      <div class=\"bc-logo-card\">\n        <div class=\"bc-logo-icons\">\n          <img src=\"{{logo_1}}\" alt=\"{{brand_1}}\" />\n        </div>\n        <h4 class=\"bc-logo-cat\">{{category_1}}</h4>\n        <p class=\"bc-logo-brands\">{{brands_1}}</p>\n      </div>\n      <div class=\"bc-logo-card\">\n        <div class=\"bc-logo-icons\">\n          <img src=\"{{logo_2}}\" alt=\"{{brand_2}}\" />\n        </div>\n        <h4 class=\"bc-logo-cat\">{{category_2}}</h4>\n        <p class=\"bc-logo-brands\">{{brands_2}}</p>\n      </div>\n      <div class=\"bc-logo-card\">\n        <div class=\"bc-logo-icons\">\n          <img src=\"{{logo_3}}\" alt=\"{{brand_3}}\" />\n        </div>\n        <h4 class=\"bc-logo-cat\">{{category_3}}</h4>\n        <p class=\"bc-logo-brands\">{{brands_3}}</p>\n      </div>\n    </div>\n  </div>\n</section>",
+      "css": ".bc-logos-section {\n  background: #0A0A1A;\n  padding: 60px 20px;\n}\n.bc-logos-inner {\n  max-width: 1000px;\n  margin: 0 auto;\n}\n.bc-logos-heading {\n  font-size: clamp(22px, 3.5vw, 32px);\n  color: #FFFFFF;\n  text-align: center;\n  margin: 0 0 40px;\n  font-weight: 600;\n}\n.bc-logos-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 20px;\n}\n.bc-logo-card {\n  background: rgba(255, 255, 255, 0.03);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 16px;\n  padding: 28px 24px;\n  text-align: center;\n  transition: all 0.3s ease;\n}\n.bc-logo-card:hover {\n  border-color: rgba(0, 223, 255, 0.2);\n  background: rgba(0, 223, 255, 0.03);\n}\n.bc-logo-icons {\n  display: flex;\n  justify-content: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.bc-logo-icons img {\n  height: 40px;\n  width: auto;\n  object-fit: contain;\n  filter: brightness(0.9);\n}\n.bc-logo-cat {\n  font-size: 14px;\n  color: #00DFFF;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  margin: 0 0 6px;\n}\n.bc-logo-brands {\n  font-size: 16px;\n  color: #B0B8CC;\n  margin: 0;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-scroll-to-top",
+      "name": "Scroll-to-Top Button",
+      "category": "button",
+      "description": "Fixed-position circular scroll-to-top button with purple-to-pink hover transition. Appears at bottom-right of viewport.",
+      "html": "<button class=\"bc-scroll-top\" onclick=\"window.scrollTo({top:0,behavior:'smooth'})\" aria-label=\"Voltar ao topo\">\n  <svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\">\n    <path d=\"M8 2L2 10h4v4h4v-4h4L8 2z\" fill=\"currentColor\"/>\n  </svg>\n</button>",
+      "css": ".bc-scroll-top {\n  position: fixed;\n  right: 15px;\n  bottom: 15px;\n  z-index: 9999;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 50px;\n  height: 50px;\n  border-radius: 50px;\n  background-color: #5636D1;\n  color: #FFFFFF;\n  border: none;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  box-shadow: 0 4px 12px rgba(86, 54, 209, 0.4);\n}\n.bc-scroll-top:hover {\n  background-color: #E2498A;\n  box-shadow: 0 4px 16px rgba(226, 73, 138, 0.4);\n  transform: translateY(-2px);\n}",
+      "js": "window.addEventListener('scroll', function() {\n  var btn = document.querySelector('.bc-scroll-top');\n  if (btn) btn.style.display = window.scrollY > 300 ? 'flex' : 'none';\n});",
+      "jsType": "inline",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-comparison-flow",
+      "name": "Comparison Flow (Before/After Process)",
+      "category": "section",
+      "description": "Visual comparison flow showing a process with steps connected by arrows. Uses dark cards with icons, contrasting a 'bad' scenario (many inputs, few results) vs the solution. Arrow icons connect the steps.",
+      "html": "<section class=\"bc-compare-section\">\n  <div class=\"bc-compare-inner\">\n    <h2 class=\"bc-compare-title\">{{section_title}}</h2>\n    <div class=\"bc-compare-flow\">\n      <div class=\"bc-flow-step bc-flow-input\">\n        <div class=\"bc-flow-icon\">{{icon_input}}</div>\n        <p class=\"bc-flow-label\">{{label_input}}</p>\n      </div>\n      <div class=\"bc-flow-arrow\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\">\n          <path d=\"M5 12h14M13 5l7 7-7 7\" stroke=\"#00DFFF\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n        </svg>\n      </div>\n      <div class=\"bc-flow-step bc-flow-output\">\n        <div class=\"bc-flow-icon\">{{icon_output}}</div>\n        <p class=\"bc-flow-label\">{{label_output}}</p>\n      </div>\n      <div class=\"bc-flow-arrow\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\">\n          <path d=\"M5 12h14M13 5l7 7-7 7\" stroke=\"#00DFFF\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n        </svg>\n      </div>\n      <div class=\"bc-flow-step bc-flow-result\">\n        <div class=\"bc-flow-icon\">{{icon_result}}</div>\n        <p class=\"bc-flow-label\">{{label_result}}</p>\n      </div>\n    </div>\n    <div class=\"bc-compare-verdict\">\n      <p class=\"bc-verdict-text\">{{verdict_text}}</p>\n      <p class=\"bc-verdict-value\">{{verdict_value}}</p>\n    </div>\n  </div>\n</section>",
+      "css": ".bc-compare-section {\n  background: #0F0F24;\n  padding: 80px 20px;\n}\n.bc-compare-inner {\n  max-width: 900px;\n  margin: 0 auto;\n  text-align: center;\n}\n.bc-compare-title {\n  font-size: clamp(22px, 3.5vw, 32px);\n  color: #FFFFFF;\n  margin: 0 0 48px;\n  font-weight: 600;\n}\n.bc-compare-flow {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 20px;\n  flex-wrap: wrap;\n  margin-bottom: 40px;\n}\n.bc-flow-step {\n  background: rgba(255, 255, 255, 0.04);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 16px;\n  padding: 24px 28px;\n  min-width: 160px;\n  transition: all 0.3s ease;\n}\n.bc-flow-step:hover {\n  border-color: rgba(0, 223, 255, 0.3);\n}\n.bc-flow-icon {\n  font-size: 32px;\n  margin-bottom: 12px;\n  color: #00DFFF;\n}\n.bc-flow-label {\n  font-size: 16px;\n  color: #FFFFFF;\n  font-weight: 600;\n  margin: 0;\n}\n.bc-flow-arrow {\n  color: #00DFFF;\n  flex-shrink: 0;\n}\n.bc-compare-verdict {\n  background: rgba(255, 0, 60, 0.08);\n  border: 1px solid rgba(255, 0, 60, 0.2);\n  border-radius: 16px;\n  padding: 24px;\n  display: inline-block;\n}\n.bc-verdict-text {\n  font-size: 16px;\n  color: #B0B8CC;\n  margin: 0 0 8px;\n}\n.bc-verdict-value {\n  font-size: 32px;\n  color: #FF003C;\n  font-weight: 800;\n  margin: 0;\n}\n@media (max-width: 600px) {\n  .bc-compare-flow { flex-direction: column; }\n  .bc-flow-arrow svg { transform: rotate(90deg); }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-bounce-animation",
+      "name": "Bounce-In Entrance Animation",
+      "category": "effect",
+      "description": "CSS bounce-in animation with elastic easing for elements entering the viewport. Based on HappyAddons animation library used on Brandly page.",
+      "html": "<div class=\"bc-bounce-in\">{{content}}</div>",
+      "css": "@keyframes bc-bounceIn {\n  0%, 20%, 40%, 60%, 80%, 100% {\n    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);\n  }\n  0% { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }\n  20% { transform: scale3d(1.1, 1.1, 1.1); }\n  40% { transform: scale3d(0.9, 0.9, 0.9); }\n  60% { opacity: 1; transform: scale3d(1.03, 1.03, 1.03); }\n  80% { transform: scale3d(0.97, 0.97, 0.97); }\n  100% { opacity: 1; transform: scale3d(1, 1, 1); }\n}\n@keyframes bc-fadeIn {\n  0% { opacity: 0; }\n  100% { opacity: 1; }\n}\n@keyframes bc-zoomIn {\n  0% { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }\n  50% { opacity: 1; }\n  100% { transform: scale3d(1, 1, 1); }\n}\n@keyframes bc-slideInUp {\n  0% { opacity: 0; transform: translate3d(0, 40px, 0); }\n  100% { opacity: 1; transform: translate3d(0, 0, 0); }\n}\n.bc-bounce-in {\n  animation: bc-bounceIn 0.75s both;\n}\n.bc-fade-in {\n  animation: bc-fadeIn 0.6s both;\n}\n.bc-zoom-in {\n  animation: bc-zoomIn 0.5s both;\n}\n.bc-slide-up {\n  animation: bc-slideInUp 0.6s both;\n}",
+      "js": "var bcObserver = new IntersectionObserver(function(entries) {\n  entries.forEach(function(entry) {\n    if (entry.isIntersecting) {\n      entry.target.classList.add('bc-animated');\n      bcObserver.unobserve(entry.target);\n    }\n  });\n}, { threshold: 0.15 });\ndocument.querySelectorAll('[data-bc-animate]').forEach(function(el) {\n  el.style.opacity = '0';\n  bcObserver.observe(el);\n});\n// Add 'data-bc-animate=\"bounce\"' to elements, then CSS:\n// [data-bc-animate].bc-animated { animation-name: bc-bounceIn; animation-duration: 0.75s; animation-fill-mode: both; }",
+      "jsType": "inline",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-icon-feature-card",
+      "name": "Icon Feature Card with SVG",
+      "category": "card",
+      "description": "Feature card with large SVG icon, bold title and supporting text. Used to present audience personas or product features. Dark background with hover lift effect.",
+      "html": "<div class=\"bc-feature-card\">\n  <div class=\"bc-feat-icon\">\n    {{svg_icon}}\n  </div>\n  <h3 class=\"bc-feat-title\">{{title}} <b>{{highlight}}</b></h3>\n  <p class=\"bc-feat-desc\">\"{{description}}\"</p>\n</div>",
+      "css": ".bc-feature-card {\n  background: rgba(255, 255, 255, 0.03);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 20px;\n  padding: 36px 28px;\n  text-align: center;\n  transition: all 0.3s ease;\n  max-width: 320px;\n}\n.bc-feature-card:hover {\n  background: rgba(0, 223, 255, 0.04);\n  border-color: rgba(0, 223, 255, 0.2);\n  transform: translateY(-6px);\n  box-shadow: 0 12px 40px rgba(0, 223, 255, 0.1);\n}\n.bc-feat-icon {\n  width: 72px;\n  height: 72px;\n  margin: 0 auto 20px;\n  color: #00DFFF;\n}\n.bc-feat-icon svg {\n  width: 100%;\n  height: 100%;\n}\n.bc-feat-title {\n  font-size: 20px;\n  color: #FFFFFF;\n  font-weight: 400;\n  margin: 0 0 12px;\n  line-height: 1.3;\n}\n.bc-feat-title b {\n  color: #00DFFF;\n  font-weight: 700;\n}\n.bc-feat-desc {\n  font-size: 14px;\n  color: #8B95A8;\n  font-style: italic;\n  margin: 0;\n  line-height: 1.5;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "brandly-dark-section-boxed",
+      "name": "Dark Boxed Content Section",
+      "category": "section",
+      "description": "Full-width dark section with boxed inner content, centered headings with bold/cyan highlights, and optional background gradient or image overlay. Core layout pattern of the Brandly page.",
+      "html": "<section class=\"bc-dark-section\">\n  <div class=\"bc-section-inner\">\n    <div class=\"bc-section-header\">\n      <h2 class=\"bc-section-title\">{{title_line_1}}</h2>\n      <h2 class=\"bc-section-title bc-title-accent\"><b>{{title_line_2}}</b></h2>\n    </div>\n    <div class=\"bc-section-body\">\n      {{content}}\n    </div>\n  </div>\n</section>",
+      "css": ".bc-dark-section {\n  background: #0A0A1A;\n  padding: 80px 0;\n  position: relative;\n  overflow: hidden;\n}\n.bc-dark-section::before {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 50%;\n  transform: translateX(-50%);\n  width: 600px;\n  height: 600px;\n  background: radial-gradient(circle, rgba(29, 69, 216, 0.08) 0%, transparent 70%);\n  pointer-events: none;\n}\n.bc-section-inner {\n  max-width: 1200px;\n  margin: 0 auto;\n  padding: 0 20px;\n}\n.bc-section-header {\n  text-align: center;\n  margin-bottom: 48px;\n}\n.bc-section-title {\n  font-size: clamp(24px, 4vw, 40px);\n  color: #FFFFFF;\n  font-weight: 400;\n  margin: 0;\n  line-height: 1.2;\n}\n.bc-title-accent b {\n  color: #00DFFF;\n  font-weight: 700;\n}\n.bc-section-body {\n  width: 100%;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "brandly-creator-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-gradient-cta-btn",
+      "name": "Orange Gradient CTA Button with Glow",
+      "category": "button",
+      "description": "Pill-shaped CTA button with orange-to-amber gradient background, dark text, orange glow shadow on idle, and white glow on hover. Grow animation on hover.",
+      "html": "<a class=\"a2b-gradient-btn\" href=\"{{link}}\">\n  <span class=\"a2b-btn-content\">\n    <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg>\n    <span>{{buttonText}}</span>\n  </span>\n</a>",
+      "css": ".a2b-gradient-btn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 14px 32px;\n  background-color: transparent;\n  background-image: linear-gradient(45deg, #FFB765 5%, #FF8B06 100%);\n  color: #000000;\n  font-family: 'Onest', sans-serif;\n  font-size: 0.7em;\n  font-weight: 600;\n  text-transform: uppercase;\n  text-decoration: none;\n  border: none;\n  border-radius: 35px;\n  cursor: pointer;\n  box-shadow: 0px 20px 65px rgba(255, 139, 6, 0.19);\n  transition: all 0.3s ease;\n}\n\n.a2b-gradient-btn:hover {\n  background-image: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);\n  color: #000000;\n  box-shadow: 0px 20px 125px rgba(255, 255, 255, 0.46);\n  transform: scale(1.05);\n}\n\n.a2b-gradient-btn svg {\n  margin-right: 8px;\n  width: 15px;\n  height: 15px;\n}\n\n.a2b-gradient-btn svg path {\n  stroke: #0a0a0a;\n}\n\n.a2b-btn-content {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-hero-video-overlay",
+      "name": "Fullscreen Hero with Video Background & Gradient Fade",
+      "category": "hero",
+      "description": "Full-viewport hero section with looping background video, a bottom-to-top black gradient overlay (90% height), and centered content with glassmorphism nav pill on top.",
+      "html": "<section class=\"a2b-hero\">\n  <video class=\"a2b-hero-video\" autoplay muted playsinline loop>\n    <source src=\"{{videoUrl}}\" type=\"video/mp4\">\n  </video>\n  <div class=\"a2b-hero-content\">\n    <h1 class=\"a2b-hero-title\">{{headline}} <b>{{highlightedWord}}</b></h1>\n    <p class=\"a2b-hero-subtitle\">{{subtitle}}</p>\n    <a class=\"a2b-gradient-btn\" href=\"{{ctaLink}}\">{{ctaText}}</a>\n  </div>\n</section>",
+      "css": ".a2b-hero {\n  position: relative;\n  width: 100%;\n  height: 100vh;\n  overflow: hidden;\n  background-color: #000000;\n  display: flex;\n  align-items: flex-end;\n  justify-content: center;\n}\n\n.a2b-hero::after {\n  content: \"\";\n  width: 100%;\n  height: 90%;\n  position: absolute;\n  left: 0;\n  bottom: 0;\n  background-image: linear-gradient(to bottom, transparent, #000);\n  z-index: 1;\n  pointer-events: none;\n}\n\n.a2b-hero-video {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  z-index: 0;\n}\n\n.a2b-hero-content {\n  position: relative;\n  z-index: 2;\n  text-align: center;\n  padding: 0 20px 80px;\n  max-width: 800px;\n}\n\n.a2b-hero-title {\n  font-family: 'Onest', sans-serif;\n  font-size: 2.5em;\n  font-weight: 500;\n  text-transform: uppercase;\n  line-height: 1.1em;\n  letter-spacing: -1.5px;\n  color: #FFFFFF;\n  margin-bottom: 16px;\n}\n\n.a2b-hero-title b {\n  background: -webkit-linear-gradient(45deg, #FFF5E7, #FFB765);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  background-clip: text;\n  font-weight: 700;\n}\n\n.a2b-hero-subtitle {\n  font-family: 'Onest', sans-serif;\n  font-size: 1.1em;\n  font-weight: 400;\n  line-height: 1.3em;\n  letter-spacing: -1px;\n  color: #FFFFFF;\n  margin-bottom: 24px;\n}\n\n@media (max-width: 768px) {\n  .a2b-hero-title { font-size: 1.9em; }\n  .a2b-hero-subtitle { font-size: 0.9em; }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-gradient-heading",
+      "name": "Gradient Accent Heading with Bold Highlight",
+      "category": "section",
+      "description": "Section heading where bold text gets an orange-to-cream gradient text fill, creating a warm accent highlight against white text. Uses Onest font with tight letter-spacing.",
+      "html": "<div class=\"a2b-heading-wrapper\">\n  <h2 class=\"a2b-gradient-heading\">{{text}} <b>{{highlightedText}}</b></h2>\n</div>",
+      "css": ".a2b-heading-wrapper {\n  max-width: 800px;\n}\n\n.a2b-gradient-heading {\n  font-family: 'Onest', sans-serif;\n  font-size: 2em;\n  font-weight: 300;\n  text-transform: uppercase;\n  line-height: 1.1em;\n  letter-spacing: -1.6px;\n  color: #FFFFFF;\n}\n\n.a2b-gradient-heading b {\n  background: -webkit-linear-gradient(45deg, #FFF5E7, #FFB765);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  background-clip: text;\n  font-weight: 700;\n}\n\n@media (max-width: 768px) {\n  .a2b-gradient-heading { font-size: 1.3em; }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-glassmorphism-nav-pill",
+      "name": "Glassmorphism Navigation Pill",
+      "category": "nav",
+      "description": "Floating navigation bar with frosted glass effect (backdrop-filter blur), semi-transparent background, rounded corners, and subtle border. Works on dark backgrounds.",
+      "html": "<nav class=\"a2b-glass-nav\">\n  <div class=\"a2b-nav-inner\">\n    <a href=\"{{homeLink}}\" class=\"a2b-nav-logo\">\n      <img src=\"{{logoUrl}}\" alt=\"{{brandName}}\">\n    </a>\n    <ul class=\"a2b-nav-links\">\n      <li><a href=\"{{link1Url}}\">{{link1Text}}</a></li>\n      <li><a href=\"{{link2Url}}\">{{link2Text}}</a></li>\n      <li><a href=\"{{link3Url}}\">{{link3Text}}</a></li>\n    </ul>\n    <a class=\"a2b-nav-cta\" href=\"{{ctaLink}}\">{{ctaText}}</a>\n  </div>\n</nav>",
+      "css": ".a2b-glass-nav {\n  position: fixed;\n  top: 16px;\n  left: 50%;\n  transform: translateX(-50%);\n  z-index: 1000;\n  width: 90%;\n  max-width: 900px;\n}\n\n.a2b-nav-inner {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 12px 24px;\n  background-color: rgba(243, 243, 243, 0.06);\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  border-radius: 20px;\n  border: solid 1px rgba(243, 243, 243, 0.125);\n}\n\n.a2b-nav-logo img {\n  height: 28px;\n  width: auto;\n}\n\n.a2b-nav-links {\n  display: flex;\n  list-style: none;\n  gap: 24px;\n  margin: 0;\n  padding: 0;\n}\n\n.a2b-nav-links a {\n  font-family: 'Onest', sans-serif;\n  font-size: 0.85em;\n  font-weight: 400;\n  color: #FFFFFF;\n  text-decoration: none;\n  transition: color 0.3s ease;\n}\n\n.a2b-nav-links a:hover {\n  color: #FFB765;\n}\n\n.a2b-nav-cta {\n  display: inline-flex;\n  padding: 8px 20px;\n  background-image: linear-gradient(45deg, #FFB765 5%, #FF8B06 100%);\n  color: #000;\n  font-family: 'Onest', sans-serif;\n  font-size: 0.7em;\n  font-weight: 600;\n  text-transform: uppercase;\n  text-decoration: none;\n  border-radius: 35px;\n  transition: all 0.3s ease;\n}\n\n.a2b-nav-cta:hover {\n  background-image: linear-gradient(180deg, #FFFFFF, #FFFFFF);\n}\n\n@media (max-width: 768px) {\n  .a2b-nav-links { display: none; }\n  .a2b-glass-nav { width: 95%; top: 8px; }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-feature-icon-box",
+      "name": "Feature Icon Box with Orange Accent",
+      "category": "card",
+      "description": "Feature card with an SVG icon tinted orange (#FFB765), bold title, and description text. Left-aligned layout with Onest font, designed for dark backgrounds.",
+      "html": "<div class=\"a2b-icon-box\">\n  <div class=\"a2b-icon-box-icon\">\n    <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"40\" height=\"40\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"{{iconPath}}\"/></svg>\n  </div>\n  <div class=\"a2b-icon-box-content\">\n    <h3 class=\"a2b-icon-box-title\">{{title}}</h3>\n    <p class=\"a2b-icon-box-desc\">{{description}}</p>\n  </div>\n</div>",
+      "css": ".a2b-icon-box {\n  display: flex;\n  align-items: flex-start;\n  gap: 16px;\n  text-align: left;\n}\n\n.a2b-icon-box-icon {\n  flex-shrink: 0;\n}\n\n.a2b-icon-box-icon svg {\n  color: #FFB765;\n  width: 40px;\n  height: 40px;\n}\n\n.a2b-icon-box-icon svg path {\n  fill: #FFB765;\n  stroke: none;\n}\n\n.a2b-icon-box-title {\n  font-family: 'Onest', sans-serif;\n  font-size: 1em;\n  font-weight: 600;\n  line-height: 1.2em;\n  color: #FFFFFF;\n  margin: 0 0 8px 0;\n}\n\n.a2b-icon-box-desc {\n  font-family: 'Onest', sans-serif;\n  font-size: 0.8em;\n  font-weight: 400;\n  line-height: 1.2em;\n  color: rgba(255, 255, 255, 0.7);\n  margin: 0;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-glass-step-card",
+      "name": "Glassmorphism Step Card with Top Border",
+      "category": "card",
+      "description": "Process step card with frosted glass background, inset white glow shadow, top-only border with semi-transparent white color. Backdrop blur creates depth on dark/image backgrounds.",
+      "html": "<div class=\"a2b-step-card\">\n  <span class=\"a2b-step-number\">{{stepNumber}}</span>\n  <h3 class=\"a2b-step-title\">{{title}}</h3>\n  <p class=\"a2b-step-desc\">{{description}}</p>\n</div>",
+      "css": ".a2b-step-card {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  padding: 24px;\n  background-color: rgba(0, 0, 0, 0.06);\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  border-style: solid;\n  border-width: 1px 0 0 0;\n  border-color: rgba(255, 255, 255, 0.1);\n  box-shadow: 0px -22px 55px 0px rgba(255, 255, 255, 0.1) inset;\n  border-radius: 0;\n  align-self: stretch;\n  flex: 1;\n}\n\n.a2b-step-number {\n  font-family: 'Onest', sans-serif;\n  font-size: 1em;\n  font-weight: 300;\n  text-transform: uppercase;\n  line-height: 1.1em;\n  letter-spacing: -1px;\n  color: #FFFFFF;\n}\n\n.a2b-step-title {\n  font-family: 'Onest', sans-serif;\n  font-size: 1.3em;\n  font-weight: 300;\n  text-transform: uppercase;\n  line-height: 1.1em;\n  letter-spacing: -1.6px;\n  color: #FFFFFF;\n  margin: 0;\n}\n\n.a2b-step-desc {\n  font-family: 'Onest', sans-serif;\n  font-size: 0.65em;\n  font-weight: 300;\n  line-height: 1em;\n  color: rgba(248, 255, 253, 0.79);\n  margin: 0;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-steps-row",
+      "name": "3-Step Process Row Layout",
+      "category": "section",
+      "description": "Horizontal row of 3 glass step cards for showing a process flow. Each card has a step number, title, and description. Uses glassmorphism step cards in a responsive flex layout.",
+      "html": "<section class=\"a2b-steps-section\">\n  <h2 class=\"a2b-gradient-heading\">{{sectionTitle}} <b>{{highlightedText}}</b></h2>\n  <div class=\"a2b-steps-row\">\n    <div class=\"a2b-step-card\">\n      <span class=\"a2b-step-number\">1 - {{step1Label}}</span>\n      <h3 class=\"a2b-step-title\">{{step1Title}}</h3>\n      <p class=\"a2b-step-desc\">{{step1Desc}}</p>\n    </div>\n    <div class=\"a2b-step-card\">\n      <span class=\"a2b-step-number\">2 - {{step2Label}}</span>\n      <h3 class=\"a2b-step-title\">{{step2Title}}</h3>\n      <p class=\"a2b-step-desc\">{{step2Desc}}</p>\n    </div>\n    <div class=\"a2b-step-card\">\n      <span class=\"a2b-step-number\">3 - {{step3Label}}</span>\n      <h3 class=\"a2b-step-title\">{{step3Title}}</h3>\n      <p class=\"a2b-step-desc\">{{step3Desc}}</p>\n    </div>\n  </div>\n</section>",
+      "css": ".a2b-steps-section {\n  padding: 80px 20px;\n  max-width: 1200px;\n  margin: 0 auto;\n}\n\n.a2b-steps-row {\n  display: flex;\n  gap: 0;\n  margin-top: 40px;\n}\n\n.a2b-steps-row .a2b-step-card {\n  flex: 1;\n}\n\n@media (max-width: 768px) {\n  .a2b-steps-row {\n    flex-direction: column;\n  }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-video-portfolio-card",
+      "name": "Portfolio Video Card with Gradient Fade",
+      "category": "card",
+      "description": "Card with a looping background video, a bottom gradient fade to black, and a text overlay with testimonial quote at the bottom. Used in carousel for portfolio/social proof.",
+      "html": "<div class=\"a2b-video-card\">\n  <video class=\"a2b-video-card-bg\" autoplay muted playsinline loop>\n    <source src=\"{{videoUrl}}\" type=\"video/mp4\">\n  </video>\n  <div class=\"a2b-video-card-content\">\n    <p class=\"a2b-video-card-quote\">\"{{testimonialQuote}}\"</p>\n  </div>\n</div>",
+      "css": ".a2b-video-card {\n  position: relative;\n  width: 100%;\n  min-height: 400px;\n  border-radius: 12px;\n  overflow: hidden;\n  background: #000;\n}\n\n.a2b-video-card::after {\n  content: \"\";\n  width: 100%;\n  height: 50%;\n  position: absolute;\n  left: 0;\n  bottom: 0;\n  background-image: linear-gradient(to bottom, transparent, #000);\n  z-index: 1;\n  pointer-events: none;\n}\n\n.a2b-video-card-bg {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n.a2b-video-card-content {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  padding: 24px;\n  z-index: 2;\n}\n\n.a2b-video-card-quote {\n  font-family: 'Onest', sans-serif;\n  font-size: 0.8em;\n  font-weight: 300;\n  line-height: 1.3em;\n  letter-spacing: -0.8px;\n  color: #FFFFFF;\n  margin: 0;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-testimonial-carousel",
+      "name": "Auto-Scrolling Testimonial Video Carousel",
+      "category": "testimonial",
+      "description": "Horizontally scrolling carousel of video testimonial cards with linear continuous auto-scroll animation. Each slide shows a looping video with a quote overlay and gradient fade.",
+      "html": "<section class=\"a2b-carousel-section\">\n  <h2 class=\"a2b-gradient-heading\">{{sectionTitle}} <b>{{highlightedText}}</b></h2>\n  <div class=\"a2b-carousel-track\" id=\"{{carouselId}}\">\n    <div class=\"a2b-carousel-slide\">\n      <div class=\"a2b-video-card\">\n        <video class=\"a2b-video-card-bg\" autoplay muted playsinline loop><source src=\"{{video1Url}}\" type=\"video/mp4\"></video>\n        <div class=\"a2b-video-card-content\"><p class=\"a2b-video-card-quote\">\"{{quote1}}\"</p></div>\n      </div>\n    </div>\n    <div class=\"a2b-carousel-slide\">\n      <div class=\"a2b-video-card\">\n        <video class=\"a2b-video-card-bg\" autoplay muted playsinline loop><source src=\"{{video2Url}}\" type=\"video/mp4\"></video>\n        <div class=\"a2b-video-card-content\"><p class=\"a2b-video-card-quote\">\"{{quote2}}\"</p></div>\n      </div>\n    </div>\n    <div class=\"a2b-carousel-slide\">\n      <div class=\"a2b-video-card\">\n        <video class=\"a2b-video-card-bg\" autoplay muted playsinline loop><source src=\"{{video3Url}}\" type=\"video/mp4\"></video>\n        <div class=\"a2b-video-card-content\"><p class=\"a2b-video-card-quote\">\"{{quote3}}\"</p></div>\n      </div>\n    </div>\n  </div>\n</section>",
+      "css": ".a2b-carousel-section {\n  padding: 80px 20px;\n  overflow: hidden;\n}\n\n.a2b-carousel-track {\n  display: flex;\n  gap: 10px;\n  animation: a2b-scroll 30s linear infinite;\n}\n\n.a2b-carousel-slide {\n  flex: 0 0 600px;\n  max-width: 600px;\n}\n\n@keyframes a2b-scroll {\n  0% { transform: translateX(0); }\n  100% { transform: translateX(calc(-600px * 3 - 30px)); }\n}\n\n.a2b-carousel-track:hover {\n  animation-play-state: paused;\n}\n\n@media (max-width: 768px) {\n  .a2b-carousel-slide {\n    flex: 0 0 85vw;\n    max-width: 85vw;\n  }\n  @keyframes a2b-scroll {\n    0% { transform: translateX(0); }\n    100% { transform: translateX(calc(-85vw * 3 - 30px)); }\n  }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-dark-form",
+      "name": "Dark Mode Multi-Step Form",
+      "category": "section",
+      "description": "Contact form with semi-transparent dark input fields, white labels, Onest font. Submit button starts dark gray and glows orange on hover. Designed for black backgrounds.",
+      "html": "<form class=\"a2b-dark-form\" action=\"{{formAction}}\" method=\"post\">\n  <div class=\"a2b-form-group\">\n    <label for=\"a2b-name\">{{nameLabel}}</label>\n    <input type=\"text\" id=\"a2b-name\" name=\"name\" placeholder=\"{{namePlaceholder}}\" required>\n  </div>\n  <div class=\"a2b-form-group\">\n    <label for=\"a2b-email\">{{emailLabel}}</label>\n    <input type=\"email\" id=\"a2b-email\" name=\"email\" placeholder=\"{{emailPlaceholder}}\" required>\n  </div>\n  <div class=\"a2b-form-group\">\n    <label for=\"a2b-phone\">{{phoneLabel}}</label>\n    <input type=\"tel\" id=\"a2b-phone\" name=\"phone\" placeholder=\"{{phonePlaceholder}}\" required>\n  </div>\n  <div class=\"a2b-form-group\">\n    <label for=\"a2b-message\">{{messageLabel}}</label>\n    <textarea id=\"a2b-message\" name=\"message\" placeholder=\"{{messagePlaceholder}}\" rows=\"4\"></textarea>\n  </div>\n  <button type=\"submit\" class=\"a2b-form-submit\">{{submitText}}</button>\n</form>",
+      "css": ".a2b-dark-form {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n  max-width: 500px;\n  width: 100%;\n}\n\n.a2b-form-group {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n\n.a2b-form-group label {\n  font-family: 'Onest', sans-serif;\n  font-size: 0.9em;\n  font-weight: 500;\n  color: #FFFFFF;\n}\n\n.a2b-form-group input,\n.a2b-form-group textarea,\n.a2b-form-group select {\n  font-family: 'Onest', sans-serif;\n  font-size: 0.8em;\n  font-weight: 400;\n  color: #FFFFFF;\n  background-color: rgba(213, 213, 213, 0.07);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 8px;\n  padding: 12px 16px;\n  outline: none;\n  transition: border-color 0.3s ease;\n}\n\n.a2b-form-group input::placeholder,\n.a2b-form-group textarea::placeholder {\n  color: rgba(255, 255, 255, 0.4);\n}\n\n.a2b-form-group input:focus,\n.a2b-form-group textarea:focus {\n  border-color: #FFB765;\n}\n\n.a2b-form-submit {\n  font-family: 'Onest', sans-serif;\n  font-size: 0.85em;\n  font-weight: 600;\n  padding: 14px 32px;\n  background-color: #363636;\n  color: #ffffff;\n  border: none;\n  border-radius: 8px;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  text-transform: uppercase;\n}\n\n.a2b-form-submit:hover {\n  background-color: #FF941B;\n  color: #ffffff;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-urgency-section",
+      "name": "Dark Urgency/Scarcity CTA Section",
+      "category": "section",
+      "description": "High-contrast urgency section with large bold heading, scarcity message, and CTA button. Features gradient text highlights and a dark semi-transparent background overlay.",
+      "html": "<section class=\"a2b-urgency\">\n  <div class=\"a2b-urgency-inner\">\n    <h2 class=\"a2b-urgency-title\">{{mainMessage}}</h2>\n    <p class=\"a2b-urgency-sub\">{{scarcityMessage}}</p>\n    <p class=\"a2b-urgency-detail\">{{supportingText}}</p>\n    <a class=\"a2b-gradient-btn\" href=\"{{ctaLink}}\">{{ctaText}}</a>\n  </div>\n</section>",
+      "css": ".a2b-urgency {\n  background-color: rgba(0, 0, 0, 0.77);\n  padding: 80px 20px;\n  text-align: center;\n}\n\n.a2b-urgency-inner {\n  max-width: 700px;\n  margin: 0 auto;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 16px;\n}\n\n.a2b-urgency-title {\n  font-family: 'Onest', sans-serif;\n  font-size: 2.3em;\n  font-weight: 300;\n  text-transform: uppercase;\n  line-height: 1.1em;\n  letter-spacing: -1.6px;\n  color: #FFFFFF;\n  margin: 0;\n}\n\n.a2b-urgency-sub {\n  font-family: 'Onest', sans-serif;\n  font-size: 1em;\n  font-weight: 400;\n  line-height: 1.3em;\n  letter-spacing: -1px;\n  color: rgba(255, 255, 255, 0.75);\n  margin: 0;\n}\n\n.a2b-urgency-detail {\n  font-family: 'Onest', sans-serif;\n  font-size: 0.9em;\n  font-weight: 400;\n  line-height: 1.3em;\n  color: rgba(255, 255, 255, 0.75);\n  margin: 0 0 16px;\n}\n\n@media (max-width: 768px) {\n  .a2b-urgency-title { font-size: 1.7em; }\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-bottom-gradient-overlay",
+      "name": "Bottom Gradient Fade Overlay Effect",
+      "category": "effect",
+      "description": "CSS-only gradient overlay that fades content to black from bottom. Applied via ::after pseudo-element. Useful for video containers, image cards, hero sections.",
+      "html": "<div class=\"a2b-fade-container\">\n  <img src=\"{{imageUrl}}\" alt=\"{{altText}}\" class=\"a2b-fade-media\">\n  <div class=\"a2b-fade-content\">\n    <h3>{{overlayTitle}}</h3>\n    <p>{{overlayText}}</p>\n  </div>\n</div>",
+      "css": ".a2b-fade-container {\n  position: relative;\n  overflow: hidden;\n  border-radius: 12px;\n  background: #000;\n}\n\n.a2b-fade-container::after {\n  content: \"\";\n  width: 100%;\n  height: 50%;\n  position: absolute;\n  left: 0;\n  bottom: 0;\n  background-image: linear-gradient(to bottom, transparent, #000);\n  z-index: 1;\n  pointer-events: none;\n}\n\n.a2b-fade-media {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  display: block;\n}\n\n.a2b-fade-content {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  padding: 24px;\n  z-index: 2;\n  color: #FFFFFF;\n  font-family: 'Onest', sans-serif;\n}\n\n.a2b-fade-content h3 {\n  font-size: 1.2em;\n  font-weight: 600;\n  margin: 0 0 8px;\n}\n\n.a2b-fade-content p {\n  font-size: 0.8em;\n  font-weight: 300;\n  margin: 0;\n  opacity: 0.8;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-dark-section-bg-pattern",
+      "name": "Dark Section with Background Pattern Image",
+      "category": "section",
+      "description": "Full-width dark section with a decorative background pattern image overlay, used for content areas. Background positioned with offset for visual interest.",
+      "html": "<section class=\"a2b-pattern-section\">\n  <div class=\"a2b-pattern-section-inner\">\n    {{content}}\n  </div>\n</section>",
+      "css": ".a2b-pattern-section {\n  position: relative;\n  background-color: #000000;\n  padding: 80px 20px;\n  overflow: hidden;\n}\n\n.a2b-pattern-section::before {\n  content: \"\";\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-image: url('{{patternImageUrl}}');\n  background-position: -83px 157px;\n  background-repeat: no-repeat;\n  background-size: contain;\n  opacity: 0.15;\n  pointer-events: none;\n}\n\n.a2b-pattern-section-inner {\n  position: relative;\n  z-index: 1;\n  max-width: 1200px;\n  margin: 0 auto;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-entrance-animations",
+      "name": "Scroll Entrance Animation Set",
+      "category": "effect",
+      "description": "Collection of CSS entrance animations (fadeIn, zoomIn, slideInUp, bounce, flipInX) with utility classes. Apply data-animation attribute and trigger via IntersectionObserver.",
+      "html": "<div class=\"a2b-animate\" data-animation=\"fadeIn\">{{content}}</div>\n<div class=\"a2b-animate\" data-animation=\"zoomIn\">{{content}}</div>\n<div class=\"a2b-animate\" data-animation=\"slideInUp\">{{content}}</div>\n<div class=\"a2b-animate\" data-animation=\"bounce\">{{content}}</div>",
+      "css": ".a2b-animate {\n  opacity: 0;\n}\n\n.a2b-animate.a2b-visible {\n  animation-duration: 0.8s;\n  animation-fill-mode: both;\n}\n\n.a2b-animate.a2b-visible[data-animation=\"fadeIn\"] {\n  animation-name: a2b-fadeIn;\n}\n\n.a2b-animate.a2b-visible[data-animation=\"zoomIn\"] {\n  animation-name: a2b-zoomIn;\n}\n\n.a2b-animate.a2b-visible[data-animation=\"slideInUp\"] {\n  animation-name: a2b-slideInUp;\n}\n\n.a2b-animate.a2b-visible[data-animation=\"bounce\"] {\n  animation-name: a2b-bounce;\n}\n\n.a2b-animate.a2b-visible[data-animation=\"flipInX\"] {\n  animation-name: a2b-flipInX;\n}\n\n@keyframes a2b-fadeIn {\n  0% { opacity: 0; }\n  100% { opacity: 1; }\n}\n\n@keyframes a2b-zoomIn {\n  0% { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }\n  50% { opacity: 1; }\n  100% { transform: scale3d(1, 1, 1); }\n}\n\n@keyframes a2b-slideInUp {\n  0% { visibility: visible; transform: translate3d(0, 100%, 0); opacity: 0; }\n  100% { transform: translate3d(0, 0, 0); opacity: 1; }\n}\n\n@keyframes a2b-bounce {\n  0%, 20%, 53%, 100% { animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); transform: translate3d(0, 0, 0); }\n  40%, 43% { animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06); transform: translate3d(0, -30px, 0) scaleY(1.1); }\n  70% { animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06); transform: translate3d(0, -15px, 0) scaleY(1.05); }\n  80% { transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); transform: translate3d(0, 0, 0) scaleY(0.95); }\n  90% { transform: translate3d(0, -4px, 0) scaleY(1.02); }\n}\n\n@keyframes a2b-flipInX {\n  0% { opacity: 0; transform: perspective(400px) rotate3d(1, 0, 0, 90deg); }\n  40% { transform: perspective(400px) rotate3d(1, 0, 0, -20deg); }\n  60% { opacity: 1; transform: perspective(400px) rotate3d(1, 0, 0, 10deg); }\n  80% { transform: perspective(400px) rotate3d(1, 0, 0, -5deg); }\n  100% { transform: perspective(400px); }\n}",
+      "js": "const observer = new IntersectionObserver((entries) => {\n  entries.forEach(entry => {\n    if (entry.isIntersecting) {\n      entry.target.classList.add('a2b-visible');\n      observer.unobserve(entry.target);\n    }\n  });\n}, { threshold: 0.1 });\n\ndocument.querySelectorAll('.a2b-animate').forEach(el => observer.observe(el));",
+      "jsType": "inline",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
+    },
+    {
+      "id": "a2b-footer-minimal",
+      "name": "Minimal Dark Footer with Copyright",
+      "category": "section",
+      "description": "Simple dark footer with copyright text, subtle muted color, and clean typography. Designed as a minimal closer for dark-themed pages.",
+      "html": "<footer class=\"a2b-footer\">\n  <p class=\"a2b-footer-text\">{{copyrightText}}</p>\n</footer>",
+      "css": ".a2b-footer {\n  padding: 32px 20px;\n  text-align: center;\n  background-color: #000000;\n}\n\n.a2b-footer-text {\n  font-family: 'Rubik', sans-serif;\n  font-size: 0.6em;\n  font-weight: 400;\n  text-transform: uppercase;\n  color: #A2A2A2;\n  margin: 0;\n}",
+      "js": "",
+      "jsType": "",
+      "source": "a2b-aceleradora-ref",
+      "premium": true
     }
   ]
 }
