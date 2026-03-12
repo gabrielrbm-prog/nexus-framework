@@ -323,7 +323,7 @@
       background: var(--card-bg-stat);
       border: 1px solid var(--border); border-radius: 16px;
       padding: 32px 24px; text-align: center; position: relative;
-      overflow: hidden; backdrop-filter: blur(10px);
+      overflow: hidden;
       box-shadow: var(--card-shadow);
     }
     .stat-card::before {
@@ -597,8 +597,12 @@
     .section:nth-child(odd) { background: rgba(255,255,255,0.8); }
     .hero-section { background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important; }
     .cta-section { background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%) !important; }
+    .cta-section .gradient-text { filter: saturate(1.5) brightness(0.75); }
+    .cta-section .section-desc { color: var(--text); }
     .stat-number { text-shadow: none; color: var(--blue); font-weight: 900; }
     .stat-label { color: var(--text); font-weight: 600; }
+    .stat-shimmer { display: none; }
+    .stat-card { background: #ffffff !important; }
     .gradient-text {
       background: linear-gradient(135deg, var(--blue), var(--purple), var(--blue));
       background-size: 300% 100%;
@@ -615,6 +619,9 @@
     }
     .nav-glass { box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .nav-glass.scrolled { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .nav-link { color: #475569; }
+    .nav-link:hover { color: #0f172a; }
+    .nav-logo { color: var(--text-bright); }
     .stat-card, .card-3d, .testimonial-card, .pricing-card {
       box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
       border: 1px solid rgba(0,0,0,0.06) !important;
@@ -626,6 +633,14 @@
     .testimonial-card {
       border: 1px solid rgba(0,0,0,0.06);
     }
+    .card-3d { background: #ffffff !important; }
+    .card-3d h3 { color: var(--text-bright); }
+    .card-3d p { color: var(--text); }
+    .card-3d-tag { border: 1px solid currentColor; }
+    .pricing-card { background: #ffffff !important; }
+    .pricing-name { color: var(--text-bright); }
+    .pricing-amount { color: var(--text-bright); }
+    .pricing-features li { color: var(--text); }
     .star { background: var(--blue); }
     .star { animation-name: starGlowLight; }
     @keyframes starGlowLight {
@@ -635,6 +650,10 @@
     .floating-particle { opacity: 0.4; }
     .footer { background: rgba(248,250,252,0.95); border-top: 1px solid rgba(0,0,0,0.06); }
     .pricing-card.featured { border: 2px solid var(--blue) !important; }
+    .testimonial-card { background: #ffffff !important; }
+    .testimonial-text { color: var(--text) !important; }
+    .testimonial-name { color: var(--text-bright) !important; }
+    .testimonial-stars { color: #f59e0b !important; }
     .section-label { background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15); }
     .hero-badge { background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.1); }
     
@@ -1308,9 +1327,9 @@
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
         <defs>
           <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.1)"/>
-            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(0,0,0,0.1)"/>
+            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.2)"/>
+            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.15)"/>
+            <stop offset="100%" style="stop-color:rgba(0,0,0,0.2)"/>
           </linearGradient>
         </defs>
         <path fill="url(#waveGrad1)">
@@ -1359,9 +1378,9 @@
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
         <defs>
           <linearGradient id="waveGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.1)"/>
-            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(0,0,0,0.1)"/>
+            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.2)"/>
+            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.15)"/>
+            <stop offset="100%" style="stop-color:rgba(0,0,0,0.2)"/>
           </linearGradient>
         </defs>
         <path fill="url(#waveGrad2)">
@@ -1417,9 +1436,9 @@
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
         <defs>
           <linearGradient id="waveGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.1)"/>
-            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(0,0,0,0.1)"/>
+            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.2)"/>
+            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.15)"/>
+            <stop offset="100%" style="stop-color:rgba(0,0,0,0.2)"/>
           </linearGradient>
         </defs>
         <path fill="url(#waveGrad3)">
@@ -1490,9 +1509,9 @@
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
         <defs>
           <linearGradient id="waveGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.1)"/>
-            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(0,0,0,0.1)"/>
+            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.2)"/>
+            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.15)"/>
+            <stop offset="100%" style="stop-color:rgba(0,0,0,0.2)"/>
           </linearGradient>
         </defs>
         <path fill="url(#waveGrad4)">
@@ -1578,9 +1597,9 @@
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
         <defs>
           <linearGradient id="waveGrad5" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.1)"/>
-            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.08)"/>
-            <stop offset="100%" style="stop-color:rgba(0,0,0,0.1)"/>
+            <stop offset="0%"   style="stop-color:rgba(255,0,0,0.2)"/>
+            <stop offset="50%"  style="stop-color:rgba(255,255,255,0.15)"/>
+            <stop offset="100%" style="stop-color:rgba(0,0,0,0.2)"/>
           </linearGradient>
         </defs>
         <path fill="url(#waveGrad5)">

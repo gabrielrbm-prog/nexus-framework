@@ -226,7 +226,10 @@ class NexusCodeAgentV3 {
     }
     console.log(`  context-dna.json loaded — ${this.contextDna.businessName || 'unnamed'}`);
 
-    const dsPath = path.join(this.projectDir, 'design-system.json');
+    // Try project design-system subdir first, then root
+    const dsPath = fs.existsSync(path.join(this.projectDir, 'design-system', 'design-system.json'))
+      ? path.join(this.projectDir, 'design-system', 'design-system.json')
+      : path.join(this.projectDir, 'design-system.json');
     this.designSystem = this._readJSON(dsPath) || {};
     if (Object.keys(this.designSystem).length) {
       console.log('  design-system.json loaded');
@@ -323,21 +326,87 @@ class NexusCodeAgentV3 {
     const ds      = this.designSystem;
     const palette = ds.colorPalette || ds.colors || {};
 
-    if (palette.primary)    this.colors['--blue']     = palette.primary;
-    if (palette.secondary)  this.colors['--cyan']      = palette.secondary;
-    if (palette.accent)     this.colors['--purple']    = palette.accent;
-    if (palette.highlight)  this.colors['--pink']      = palette.highlight;
-    if (palette.background) this.colors['--bg']        = palette.background;
-    if (palette.surface)    this.colors['--bg-card']   = palette.surface;
-    if (palette.text)       this.colors['--text']      = palette.text;
-    if (palette.textDim)    this.colors['--text-dim']  = palette.textDim;
+    // Support v2 design system (colors.primary.base) and v1 (colors.primary = string)
+    const getColor = (obj) => {
+      if (!obj) return null;
+      if (typeof obj === 'string') return obj;
+      if (obj.base) return obj.base;
+      if (obj['500']) return obj['500'];
+      return null;
+    };
+
+    const primary   = getColor(palette.primary);
+    const secondary = getColor(palette.secondary);
+    const accent    = getColor(palette.accent);
+    const highlight = getColor(palette.highlight);
+
+    if (primary)              this.colors['--blue']        = primary;
+    if (secondary)            this.colors['--cyan']        = secondary;
+    if (accent)               this.colors['--purple']      = accent;
+    if (highlight)            this.colors['--pink']        = highlight;
+    if (palette.background)   this.colors['--bg']          = palette.background;
+    if (palette.surface)      this.colors['--bg-card']     = palette.surface;
+    if (palette.text)         this.colors['--text']        = palette.text;
+    if (palette.textDim)      this.colors['--text-dim']    = palette.textDim;
+    if (palette.darkMode === false) {
+      // Light mode: invert defaults
+      if (!palette.background) this.colors['--bg']         = '#ffffff';
+      if (!palette.surface)    this.colors['--bg-card']    = '#f8fafc';
+      if (!palette.text)       this.colors['--text']       = '#1e293b';
+      if (!palette.textDim)    this.colors['--text-dim']   = '#64748b';
+      this.colors['--border'] = 'rgba(0,0,0,0.08)';
+      this.colors['--text-bright'] = '#0f172a';
+      this.colors['--bg-card-hover'] = '#f1f5f9';
+    }
+
+    // Store font info for use in buildPage
+    const typo = ds.typography || {};
+    this._fontFamily  = typo.fontFamily  || 'Inter';
+    this._headingFont = typo.headingFamily || typo.fontFamily || 'Inter';
+    this._headingWeight = typo.headingWeight || '800';
+    this._darkMode = palette.darkMode !== false;
+
+    // Store primary/secondary for glow effects
+    if (primary) {
+      const hex = primary.replace('#', '');
+      const r = parseInt(hex.substr(0,2),16);
+      const g = parseInt(hex.substr(2,2),16);
+      const b = parseInt(hex.substr(4,2),16);
+      this.colors['--glow-blue']   = `0 0 30px rgba(${r},${g},${b},0.3)`;
+    }
+    if (secondary) {
+      const hex = secondary.replace('#', '');
+      const r = parseInt(hex.substr(0,2),16);
+      const g = parseInt(hex.substr(2,2),16);
+      const b = parseInt(hex.substr(4,2),16);
+      this.colors['--glow-cyan']   = `0 0 30px rgba(${r},${g},${b},0.3)`;
+    }
+    if (accent) {
+      const hex = accent.replace('#', '');
+      const r = parseInt(hex.substr(0,2),16);
+      const g = parseInt(hex.substr(2,2),16);
+      const b = parseInt(hex.substr(4,2),16);
+      this.colors['--glow-purple'] = `0 0 30px rgba(${r},${g},${b},0.3)`;
+    }
   }
 
   // Build the full variable → value context for template resolution
   _buildResolutionContext() {
     const dna  = this.contextDna;
     const ds   = this.designSystem;
-    const pal  = ds.colorPalette || ds.colors || {};
+    const rawPal = ds.colorPalette || ds.colors || {};
+    // Normalize palette to flat hex strings
+    const getC = (obj) => { if (!obj) return null; if (typeof obj === 'string') return obj; return obj.base || obj['500'] || null; };
+    const pal = {
+      primary:   getC(rawPal.primary),
+      secondary: getC(rawPal.secondary),
+      accent:    getC(rawPal.accent),
+      highlight: getC(rawPal.highlight),
+      background: rawPal.background,
+      surface:   rawPal.surface,
+      text:      rawPal.text,
+      textDim:   rawPal.textDim
+    };
     const c    = this.colors;
 
     // Convert hex color (#3b82f6) to numeric hex (0x3b82f6) for Three.js
@@ -583,15 +652,15 @@ class NexusCodeAgentV3 {
     const mc  = cd.metaContent || {};
     const hero = sc.hero || {};
 
-    const businessName    = this._txt('businessName', this._txt('projectName', 'Business'));
-    const tagline         = hl.primary || this._txt('tagline', this._txt('headline', 'Transform Your Business'));
-    const subtitle        = hero.subheadline || this._txt('subtitle', this._txt('subheadline', 'Premium solutions for modern professionals'));
+    const businessName    = this._txt('businessName', this._txt('projectName', (this.contextDna.brand && this.contextDna.brand.name) || 'Business'));
+    const tagline         = hl.primary || this._txt('tagline', this._txt('headline', (this.contextDna.brand && this.contextDna.brand.tagline) || 'Seu Negócio Premium'));
+    const subtitle        = hero.subheadline || this._txt('subtitle', this._txt('subheadline', ''));
     const ctaText         = ct.primary || this._txt('ctaPrimary', this._txt('cta', 'Get Started'));
     const ctaUrl          = this._txt('ctaUrl', '#pricing');
     const ctaSecondary    = ct.secondary || this._txt('ctaSecondary', 'Learn More');
     const ctaSecondaryUrl = this._txt('ctaSecondaryUrl', '#method');
-    const description     = mc.description || this._txt('description', this._txt('metaDescription', subtitle));
-    const pageTitle       = mc.title || '';
+    const description     = mc.description || (mc.seo && mc.seo.description) || this._txt('description', this._txt('metaDescription', subtitle));
+    const pageTitle       = mc.title || (mc.seo && mc.seo.title) || '';
     const language        = this._txt('language', 'pt-BR');
     const ogImage         = this._txt('ogImage', '');
     const socialProof     = hero.social_proof || this._txt('socialProof', '');
@@ -668,9 +737,11 @@ class NexusCodeAgentV3 {
     const waveDivider = () => {
       waveIdx++;
       // Use resolved wave colors if available
-      const wc1 = this.colors['--blue']   ? `rgba(${this._hexToRgb(this.colors['--blue'])},0.1)`   : 'rgba(59,130,246,0.1)';
-      const wc2 = this.colors['--purple'] ? `rgba(${this._hexToRgb(this.colors['--purple'])},0.08)`: 'rgba(139,92,246,0.08)';
-      const wc3 = this.colors['--cyan']   ? `rgba(${this._hexToRgb(this.colors['--cyan'])},0.1)`   : 'rgba(34,211,238,0.1)';
+      const waveOp = this._darkMode ? 0.1 : 0.2;
+      const waveOp2 = this._darkMode ? 0.08 : 0.15;
+      const wc1 = this.colors['--blue']   ? `rgba(${this._hexToRgb(this.colors['--blue'])},${waveOp})`   : 'rgba(59,130,246,0.15)';
+      const wc2 = this.colors['--purple'] ? `rgba(${this._hexToRgb(this.colors['--purple'])},${waveOp2})`: 'rgba(139,92,246,0.12)';
+      const wc3 = this.colors['--cyan']   ? `rgba(${this._hexToRgb(this.colors['--cyan'])},${waveOp})`   : 'rgba(34,211,238,0.15)';
       return `
     <div class="wave-divider">
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
@@ -1032,7 +1103,7 @@ class NexusCodeAgentV3 {
   <\/script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=${this._fontFamily || 'Inter'}:wght@300;400;500;600;700;800;900&family=${this._headingFont && this._headingFont !== (this._fontFamily || 'Inter') ? this._headingFont + ':wght@400;500;600;700;800;900&' : ''}display=swap" rel="stylesheet">
   <style>
     /* ═══════════════════════════════════════════════════════
        CSS VARIABLES
@@ -1052,6 +1123,24 @@ class NexusCodeAgentV3 {
       --glow-blue:      ${c['--glow-blue']};
       --glow-cyan:      ${c['--glow-cyan']};
       --glow-purple:    ${c['--glow-purple']};
+      /* Adaptive theme vars */
+      --nav-bg:         ${this._darkMode ? 'rgba(10,10,15,0.7)' : 'rgba(255,255,255,0.75)'};
+      --nav-bg-scroll:  ${this._darkMode ? 'rgba(10,10,15,0.92)' : 'rgba(255,255,255,0.95)'};
+      --card-bg:        ${this._darkMode ? 'linear-gradient(145deg, rgba(18,18,26,0.95), rgba(10,10,15,0.95))' : 'linear-gradient(145deg, rgba(255,255,255,1), rgba(248,250,252,1))'};
+      --card-bg-stat:   ${this._darkMode ? 'linear-gradient(135deg, rgba(18,18,26,0.9), rgba(26,26,46,0.6))' : 'linear-gradient(135deg, rgba(255,255,255,1), rgba(241,245,249,1))'};
+      --card-shadow:    ${this._darkMode ? '0 4px 24px rgba(0,0,0,0.3)' : '0 4px 24px rgba(0,0,0,0.08)'};
+      --card-shadow-hover: ${this._darkMode ? '0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(59,130,246,0.1)' : '0 20px 60px rgba(0,0,0,0.12), 0 0 30px rgba(59,130,246,0.08)'};
+      --btn-secondary-bg: ${this._darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'};
+      --btn-secondary-border: ${this._darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+      --btn-secondary-hover: ${this._darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'};
+      --shimmer-color:  ${this._darkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'};
+      --moving-border-bg: ${this._darkMode ? 'linear-gradient(145deg, rgba(18,18,26,0.98), rgba(10,10,15,0.98))' : 'linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.98))'};
+      --meteor-color:   ${this._darkMode ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.15)'};
+      --meteor-head:    ${this._darkMode ? 'white' : 'rgba(0,0,0,0.3)'};
+      --three-opacity:  ${this._darkMode ? '0.12' : '0.06'};
+      --particle-opacity: ${this._darkMode ? '0.6' : '0.3'};
+      --section-alt-bg: ${this._darkMode ? 'transparent' : 'rgba(248,250,252,0.5)'};
+      --glass-shine:    ${this._darkMode ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.6)'};
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -1060,7 +1149,7 @@ class NexusCodeAgentV3 {
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: '${this._fontFamily || 'Inter'}', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -1083,13 +1172,13 @@ class NexusCodeAgentV3 {
     ═══════════════════════════════════════════════════════ */
     .nav-glass {
       position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(10,10,15,0.7);
+      background: var(--nav-bg);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
       border-bottom: 1px solid var(--border);
       transition: all 0.3s ease;
     }
-    .nav-glass.scrolled { background: rgba(10,10,15,0.92); }
+    .nav-glass.scrolled { background: var(--nav-bg-scroll); }
     .nav-inner {
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 24px; max-width: 1200px; margin: 0 auto;
@@ -1153,7 +1242,7 @@ class NexusCodeAgentV3 {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 8px 20px; border-radius: 50px; font-size: 14px;
       font-weight: 500; color: var(--text-dim);
-      background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15);
+      background: ${this._darkMode ? 'rgba(59,130,246,0.08)' : 'rgba(59,130,246,0.06)'}; border: 1px solid ${this._darkMode ? 'rgba(59,130,246,0.15)' : 'rgba(59,130,246,0.12)'};
       margin-bottom: 32px;
     }
     .hero-badge-dot {
@@ -1218,14 +1307,14 @@ class NexusCodeAgentV3 {
     .meteors-container { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
     .meteor {
       position: absolute; width: 150px; height: 1px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.6), transparent);
+      background: linear-gradient(90deg, var(--meteor-color), transparent);
       transform: rotate(-45deg); animation: meteorFall linear infinite;
-      opacity: 0; filter: drop-shadow(0 0 4px rgba(255,255,255,0.4));
+      opacity: 0; filter: drop-shadow(0 0 4px var(--meteor-color));
     }
     .meteor::before {
       content: ''; position: absolute; left: 0; top: -1px;
-      width: 4px; height: 3px; border-radius: 50%; background: white;
-      box-shadow: 0 0 8px 2px rgba(255,255,255,0.4);
+      width: 4px; height: 3px; border-radius: 50%; background: var(--meteor-head);
+      box-shadow: 0 0 8px 2px var(--meteor-color);
     }
     @keyframes meteorFall {
       0%   { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 0; }
@@ -1269,13 +1358,13 @@ class NexusCodeAgentV3 {
     ═══════════════════════════════════════════════════════ */
     .glass-btn {
       position: relative; display: inline-flex; align-items: center; gap: 10px;
-      padding: 16px 36px; border-radius: 50px; font-family: 'Inter', sans-serif;
+      padding: 16px 36px; border-radius: 50px; font-family: '${this._fontFamily || 'Inter'}', sans-serif;
       font-size: 16px; font-weight: 600; text-decoration: none; cursor: pointer;
       border: none; overflow: hidden;
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     .glass-btn-primary {
-      background: linear-gradient(135deg, rgba(59,130,246,0.8), rgba(34,211,238,0.6));
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
       color: white;
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -1288,20 +1377,20 @@ class NexusCodeAgentV3 {
       transform: translateY(-2px);
     }
     .glass-btn-secondary {
-      background: rgba(255,255,255,0.05); color: var(--text);
+      background: var(--btn-secondary-bg); color: var(--text);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid var(--btn-secondary-border);
     }
     .glass-btn-secondary:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.2);
+      background: var(--btn-secondary-hover);
+      border-color: var(--border);
       transform: translateY(-2px);
     }
     .glass-btn::after {
       content: ''; position: absolute; top: 0; left: -100%;
       width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      background: linear-gradient(90deg, transparent, var(--glass-shine), transparent);
       transition: left 0.5s ease;
     }
     .glass-btn:hover::after { left: 100%; }
@@ -1312,10 +1401,11 @@ class NexusCodeAgentV3 {
     ═══════════════════════════════════════════════════════ */
     .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
     .stat-card {
-      background: linear-gradient(135deg, rgba(18,18,26,0.9), rgba(26,26,46,0.6));
+      background: var(--card-bg-stat);
       border: 1px solid var(--border); border-radius: 16px;
       padding: 32px 24px; text-align: center; position: relative;
-      overflow: hidden; backdrop-filter: blur(10px);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
     }
     .stat-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -1329,7 +1419,7 @@ class NexusCodeAgentV3 {
     .stat-label { font-size: 14px; color: var(--text-dim); font-weight: 500; }
     .stat-shimmer {
       position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.03) 50%, transparent 75%);
+      background: linear-gradient(90deg, transparent 25%, var(--shimmer-color) 50%, transparent 75%);
       background-size: 200% 100%; animation: shimmer 2s infinite;
     }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
@@ -1343,14 +1433,15 @@ class NexusCodeAgentV3 {
     }
     .card-3d-wrapper { perspective: 1000px; cursor: pointer; }
     .card-3d {
-      background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(10,10,15,0.95));
+      background: var(--card-bg);
       border: 1px solid var(--border); border-radius: 20px;
       padding: 40px 32px; position: relative; overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       transform-style: preserve-3d; will-change: transform;
+      box-shadow: var(--card-shadow);
     }
     .card-3d:hover {
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(59,130,246,0.1);
+      box-shadow: var(--card-shadow-hover);
     }
     .card-3d-glow {
       position: absolute; width: 300px; height: 300px; border-radius: 50%;
@@ -1394,7 +1485,7 @@ class NexusCodeAgentV3 {
     @keyframes rotateBorder { to { transform: rotate(360deg); } }
     .moving-border::after {
       content: ''; position: absolute; inset: 2px;
-      background: linear-gradient(145deg, rgba(18,18,26,0.98), rgba(10,10,15,0.98));
+      background: var(--moving-border-bg);
       border-radius: 20px;
     }
 
@@ -1422,8 +1513,9 @@ class NexusCodeAgentV3 {
     .testimonial-card-outer { z-index: 1; }
     .testimonial-card {
       position: relative; z-index: 1;
-      background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(10,10,15,0.95));
+      background: var(--card-bg);
       border-radius: 20px; padding: 32px;
+      box-shadow: var(--card-shadow);
     }
     .testimonial-stars { color: #fbbf24; font-size: 18px; margin-bottom: 16px; letter-spacing: 2px; }
     .testimonial-text {
@@ -1448,10 +1540,11 @@ class NexusCodeAgentV3 {
       gap: 24px; align-items: start;
     }
     .pricing-card {
-      background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(10,10,15,0.95));
+      background: var(--card-bg);
       border: 1px solid var(--border); border-radius: 20px;
       padding: 40px 32px; position: relative; overflow: hidden;
       transition: all 0.3s ease;
+      box-shadow: var(--card-shadow);
     }
     .pricing-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
@@ -1487,17 +1580,17 @@ class NexusCodeAgentV3 {
       display: block; width: 100%; padding: 14px; border-radius: 50px;
       text-align: center; font-size: 15px; font-weight: 600;
       text-decoration: none; transition: all 0.3s ease; cursor: pointer;
-      border: none; font-family: 'Inter', sans-serif;
+      border: none; font-family: '${this._fontFamily || 'Inter'}', sans-serif;
     }
     .pricing-btn-outline {
       background: transparent; color: var(--text);
       border: 1px solid var(--border);
     }
     .pricing-btn-outline:hover {
-      background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15);
+      background: var(--btn-secondary-bg); border-color: var(--border);
     }
     .pricing-btn-primary {
-      background: linear-gradient(135deg, var(--blue), rgba(59,130,246,0.8));
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
       color: white; box-shadow: 0 4px 20px rgba(59,130,246,0.3);
     }
     .pricing-btn-primary:hover {
@@ -1559,7 +1652,7 @@ class NexusCodeAgentV3 {
       .nav-links.open {
         display: flex; flex-direction: column; position: absolute;
         top: 100%; left: 0; right: 0;
-        background: rgba(10,10,15,0.95);
+        background: var(--nav-bg-scroll);
         backdrop-filter: blur(20px);
         padding: 20px; gap: 16px;
         border-bottom: 1px solid var(--border);
@@ -1577,6 +1670,76 @@ class NexusCodeAgentV3 {
     }
 
     /* ═══════════════════════════════════════════════════════
+       LIGHT MODE ENHANCEMENTS
+    ═══════════════════════════════════════════════════════ */
+    ${!this._darkMode ? `
+    body { background: #f8fafc; }
+    .section:nth-child(even) { background: rgba(241,245,249,0.5); }
+    .section:nth-child(odd) { background: rgba(255,255,255,0.8); }
+    .hero-section { background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important; }
+    .cta-section { background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%) !important; }
+    .cta-section .gradient-text { filter: saturate(1.5) brightness(0.75); }
+    .cta-section .section-desc { color: var(--text); }
+    .stat-number { text-shadow: none; color: var(--blue); font-weight: 900; }
+    .stat-label { color: var(--text); font-weight: 600; }
+    .stat-shimmer { display: none; }
+    .stat-card { background: #ffffff !important; }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--blue), var(--purple), var(--blue));
+      background-size: 300% 100%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: saturate(1.3) brightness(0.85);
+    }
+    .glass-btn-primary {
+      box-shadow: 0 8px 32px rgba(59,130,246,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .glass-btn-primary:hover {
+      box-shadow: 0 8px 40px rgba(59,130,246,0.35), 0 0 20px rgba(59,130,246,0.15),
+                  inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .nav-glass { box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .nav-glass.scrolled { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .nav-link { color: #475569; }
+    .nav-link:hover { color: #0f172a; }
+    .nav-logo { color: var(--text-bright); }
+    .stat-card, .card-3d, .testimonial-card, .pricing-card {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.06) !important;
+    }
+    .stat-card:hover, .card-3d:hover, .pricing-card:hover {
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08);
+      border-color: rgba(0,0,0,0.08) !important;
+    }
+    .testimonial-card {
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .card-3d { background: #ffffff !important; }
+    .card-3d h3 { color: var(--text-bright); }
+    .card-3d p { color: var(--text); }
+    .card-3d-tag { border: 1px solid currentColor; }
+    .pricing-card { background: #ffffff !important; }
+    .pricing-name { color: var(--text-bright); }
+    .pricing-amount { color: var(--text-bright); }
+    .pricing-features li { color: var(--text); }
+    .star { background: var(--blue); }
+    .star { animation-name: starGlowLight; }
+    @keyframes starGlowLight {
+      0%, 100% { opacity: 0.15; box-shadow: 0 0 4px rgba(59,130,246,0.2); }
+      50%       { opacity: 0.5; box-shadow: 0 0 12px rgba(59,130,246,0.4); }
+    }
+    .floating-particle { opacity: 0.4; }
+    .footer { background: rgba(248,250,252,0.95); border-top: 1px solid rgba(0,0,0,0.06); }
+    .pricing-card.featured { border: 2px solid var(--blue) !important; }
+    .testimonial-card { background: #ffffff !important; }
+    .testimonial-text { color: var(--text) !important; }
+    .testimonial-name { color: var(--text-bright) !important; }
+    .testimonial-stars { color: #f59e0b !important; }
+    .section-label { background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15); }
+    .hero-badge { background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.1); }
+    ` : ''}
+
+        /* ═══════════════════════════════════════════════════════
        PREMIUM COMPONENT CSS (from library, resolved)
     ═══════════════════════════════════════════════════════ */
     ${premiumCssBlocks}
@@ -1815,7 +1978,7 @@ class NexusCodeAgentV3 {
     // Wireframe torus knot
     const torusGeo = new THREE.TorusKnotGeometry(1.2, 0.35, 128, 32);
     const torusMat = new THREE.MeshBasicMaterial({
-      color: ${threeColor1}, wireframe: true, transparent: true, opacity: 0.12
+      color: ${threeColor1}, wireframe: true, transparent: true, opacity: ${this._darkMode ? 0.12 : 0.05}
     });
     const torusKnot = new THREE.Mesh(torusGeo, torusMat);
     scene.add(torusKnot);
@@ -1842,7 +2005,7 @@ class NexusCodeAgentV3 {
     particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     particleGeo.setAttribute('color',    new THREE.BufferAttribute(colors,    3));
     const particleMat = new THREE.PointsMaterial({
-      size: 0.025, vertexColors: true, transparent: true, opacity: 0.6, sizeAttenuation: true
+      size: 0.025, vertexColors: true, transparent: true, opacity: ${this._darkMode ? 0.6 : 0.25}, sizeAttenuation: true
     });
     const particleMesh = new THREE.Points(particleGeo, particleMat);
     scene.add(particleMesh);
