@@ -1,107 +1,698 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS Framework — Pages</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: #0a0a0f;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .container {
-            max-width: 640px;
-            width: 100%;
-            padding: 2rem;
-        }
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #00f5ff, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-        .subtitle {
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 2.5rem;
-            font-size: 1rem;
-        }
-        .pages {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        a.card {
-            display: block;
-            padding: 1.25rem 1.5rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            color: #fff;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        a.card:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: #00f5ff;
-            transform: translateY(-2px);
-        }
-        .card-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
-        }
-        .card-desc {
-            color: rgba(255,255,255,0.5);
-            font-size: 0.875rem;
-        }
-        .card-path {
-            color: #00f5ff;
-            font-size: 0.75rem;
-            font-family: monospace;
-            margin-top: 0.5rem;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS Framework — Landing Pages Premium com IA</title>
+<meta name="description" content="Framework de 8 agentes de IA que gera landing pages premium automaticamente. Three.js, GSAP, 721 componentes. Do briefing ao deploy em segundos.">
+<meta property="og:title" content="NEXUS Framework — Landing Pages Premium com IA">
+<meta property="og:description" content="8 agentes de IA. 721 componentes. Do zero ao deploy em 2 segundos.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050510;--surface:#0a0a1a;--surface2:#111128;--border:#1a1a3a;
+  --text:#e8e8f0;--text-dim:#8888aa;--text-bright:#ffffff;
+  --accent:#6366f1;--accent2:#8b5cf6;--accent3:#a78bfa;
+  --gradient:linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa);
+  --glow:0 0 40px rgba(99,102,241,.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+
+/* ===== THREE.JS CANVAS ===== */
+#hero-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.4}
+
+/* ===== NAVIGATION ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(5,5,16,.6);border-bottom:1px solid rgba(255,255,255,.05);transition:all .3s}
+.nav.scrolled{background:rgba(5,5,16,.9);padding:.75rem 2rem}
+.nav-logo{font-size:1.25rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.02em}
+.nav-logo span{font-weight:400;opacity:.6;-webkit-text-fill-color:var(--text-dim)}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{font-size:.875rem;color:var(--text-dim);transition:color .3s;font-weight:500}
+.nav-links a:hover{color:var(--text-bright)}
+.nav-cta{padding:.5rem 1.25rem;border-radius:8px;background:var(--gradient);color:#fff!important;font-weight:600;font-size:.875rem;transition:transform .2s,box-shadow .2s}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(99,102,241,.4)}
+
+/* ===== HERO ===== */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;border-radius:100px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);font-size:.8rem;color:var(--accent3);margin-bottom:2rem;font-weight:500}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:1.5rem;max-width:900px}
+.hero h1 .gradient{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(1rem,2vw,1.25rem);color:var(--text-dim);max-width:600px;margin-bottom:3rem;line-height:1.7}
+.hero-sub strong{color:var(--text)}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn-primary{display:inline-flex;align-items:center;gap:.5rem;padding:.875rem 2rem;border-radius:12px;background:var(--gradient);color:#fff;font-weight:700;font-size:1rem;transition:all .3s;border:none;cursor:pointer;position:relative;overflow:hidden}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.4)}
+.btn-primary::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s}
+.btn-primary:hover::after{left:100%}
+.btn-secondary{display:inline-flex;align-items:center;gap:.5rem;padding:.875rem 2rem;border-radius:12px;background:transparent;color:var(--text);font-weight:600;font-size:1rem;border:1px solid var(--border);transition:all .3s;cursor:pointer}
+.btn-secondary:hover{border-color:var(--accent);background:rgba(99,102,241,.05)}
+.hero-stats{display:flex;gap:3rem;margin-top:4rem;padding-top:3rem;border-top:1px solid var(--border)}
+.hero-stat{text-align:center}
+.hero-stat .num{font-size:2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stat .label{font-size:.8rem;color:var(--text-dim);margin-top:.25rem;text-transform:uppercase;letter-spacing:.05em}
+
+/* ===== FLIP WORDS ===== */
+.flip-container{display:inline-block;position:relative;height:1.2em;overflow:hidden;vertical-align:bottom}
+.flip-word{position:absolute;left:0;width:100%;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;transition:all .4s cubic-bezier(.4,0,.2,1);white-space:nowrap}
+.flip-word.active{transform:translateY(0);opacity:1}
+.flip-word.above{transform:translateY(-110%);opacity:0}
+.flip-word.below{transform:translateY(110%);opacity:0}
+
+/* ===== SECTIONS ===== */
+section{position:relative;z-index:1;padding:6rem 2rem}
+.container{max-width:1200px;margin:0 auto}
+.section-label{display:inline-block;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent3);margin-bottom:.75rem;padding:.25rem .75rem;border-radius:4px;background:rgba(99,102,241,.08)}
+.section-title{font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;letter-spacing:-.02em;margin-bottom:1rem;line-height:1.15}
+.section-desc{font-size:1.05rem;color:var(--text-dim);max-width:600px;line-height:1.7}
+
+/* ===== PIPELINE ===== */
+.pipeline-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:3rem}
+.pipeline-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.75rem;transition:all .4s;position:relative;overflow:hidden}
+.pipeline-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:var(--glow)}
+.pipeline-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient);opacity:0;transition:opacity .3s}
+.pipeline-card:hover::before{opacity:1}
+.pipeline-num{font-size:.7rem;font-weight:700;color:var(--accent);background:rgba(99,102,241,.1);padding:.2rem .6rem;border-radius:4px;display:inline-block;margin-bottom:.75rem}
+.pipeline-card h3{font-size:1.1rem;font-weight:700;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.pipeline-card p{font-size:.875rem;color:var(--text-dim);line-height:1.6}
+.pipeline-card .output{margin-top:.75rem;font-size:.75rem;color:var(--accent3);font-family:'JetBrains Mono',monospace;background:rgba(99,102,241,.05);padding:.35rem .6rem;border-radius:6px;display:inline-block}
+
+/* ===== TECH STACK ===== */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:3rem}
+.tech-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center;transition:all .4s}
+.tech-card:hover{border-color:var(--accent);box-shadow:var(--glow)}
+.tech-icon{font-size:2rem;margin-bottom:.75rem}
+.tech-card h4{font-size:.95rem;font-weight:700;margin-bottom:.25rem}
+.tech-card p{font-size:.8rem;color:var(--text-dim)}
+
+/* ===== NUMBERS ===== */
+.numbers-section{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.numbers-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;margin-top:3rem}
+.number-card{text-align:center;padding:2rem 1rem}
+.number-card .value{font-size:clamp(2.5rem,5vw,3.5rem);font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.number-card .unit{font-size:1rem;color:var(--accent3);font-weight:600}
+.number-card .desc{font-size:.875rem;color:var(--text-dim);margin-top:.5rem}
+
+/* ===== DEMO / TERMINAL ===== */
+.terminal{background:#0c0c1c;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:3rem;max-width:800px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.terminal-bar{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border)}
+.terminal-dot{width:10px;height:10px;border-radius:50%}
+.terminal-dot.r{background:#ff5f57}.terminal-dot.y{background:#ffbd2e}.terminal-dot.g{background:#28ca42}
+.terminal-bar span{font-size:.75rem;color:var(--text-dim);margin-left:.5rem;font-family:'JetBrains Mono',monospace}
+.terminal-body{padding:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:2;color:var(--text-dim);overflow-x:auto}
+.terminal-body .prompt{color:#22c55e}
+.terminal-body .cmd{color:var(--text-bright)}
+.terminal-body .flag{color:var(--accent3)}
+.terminal-body .ok{color:#22c55e}
+.terminal-body .stage{color:var(--accent)}
+.terminal-body .time{color:#fbbf24}
+.terminal-body .url{color:#38bdf8;text-decoration:underline}
+
+/* ===== COMPONENTS SHOWCASE ===== */
+.components-preview{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem}
+.comp-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all .4s}
+.comp-card:hover{border-color:var(--accent);transform:scale(1.02)}
+.comp-card h4{font-size:1rem;font-weight:700;margin-bottom:.25rem}
+.comp-card .lib{font-size:.75rem;color:var(--accent3);margin-bottom:.75rem;font-weight:500}
+.comp-card .preview{height:120px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+
+/* Meteor effect */
+.meteor-container{position:relative;width:100%;height:100%}
+.meteor{position:absolute;width:2px;height:40px;background:linear-gradient(to bottom,rgba(99,102,241,.8),transparent);border-radius:100px;animation:meteor-fall linear infinite}
+@keyframes meteor-fall{0%{transform:translateY(-60px) translateX(0) rotate(-35deg);opacity:1}70%{opacity:1}100%{transform:translateY(180px) translateX(-80px) rotate(-35deg);opacity:0}}
+
+/* Glow stars */
+.star{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--accent3);animation:twinkle ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+
+/* Moving border */
+.moving-border{position:relative;border-radius:12px;padding:1rem;background:var(--surface2);overflow:hidden}
+.moving-border::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,var(--accent),transparent 30%);animation:rotate-border 3s linear infinite}
+@keyframes rotate-border{to{transform:rotate(360deg)}}
+.moving-border-inner{position:relative;z-index:1;background:var(--surface2);border-radius:8px;padding:1rem;text-align:center;font-size:.85rem;color:var(--text-dim)}
+
+/* Particles */
+.particle{position:absolute;border-radius:50%;background:var(--accent);opacity:.3;animation:float-particle ease-in-out infinite}
+@keyframes float-particle{0%,100%{transform:translateY(0) translateX(0)}25%{transform:translateY(-15px) translateX(10px)}50%{transform:translateY(-5px) translateX(-8px)}75%{transform:translateY(-20px) translateX(5px)}}
+
+/* Border beam */
+.border-beam-demo{position:relative;border-radius:12px;width:100%;height:100%;background:var(--surface2);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.border-beam-demo::after{content:'';position:absolute;width:60px;height:3px;background:var(--gradient);border-radius:2px;animation:beam-slide 2.5s linear infinite}
+@keyframes beam-slide{0%{top:0;left:-60px}25%{top:0;left:calc(100%)}25.01%{top:0;left:100%;transform:rotate(90deg);transform-origin:left}50%{top:calc(100%);left:100%;transform:rotate(90deg)}50.01%{top:100%;left:calc(100% + 60px);transform:rotate(180deg)}75%{top:100%;left:-60px;transform:rotate(180deg)}75.01%{top:100%;left:0;transform:rotate(270deg);transform-origin:right}100%{top:0;left:0;transform:rotate(270deg)}}
+
+/* ===== PROJECTS GALLERY ===== */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem}
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .4s;cursor:pointer}
+.project-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:var(--glow)}
+.project-thumb{height:180px;background:var(--surface2);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.project-thumb .placeholder{font-size:3rem;opacity:.3}
+.project-card-body{padding:1.25rem}
+.project-card-body h4{font-size:1rem;font-weight:700;margin-bottom:.25rem}
+.project-card-body .niche-tag{font-size:.7rem;color:var(--accent3);background:rgba(99,102,241,.1);padding:.15rem .5rem;border-radius:4px;display:inline-block;margin-bottom:.5rem}
+.project-card-body p{font-size:.8rem;color:var(--text-dim);line-height:1.5}
+.project-card-body .score{margin-top:.75rem;font-size:.8rem;font-weight:600;color:#22c55e}
+
+/* ===== CTA SECTION ===== */
+.cta-section{text-align:center;padding:8rem 2rem;position:relative}
+.cta-section::before{content:'';position:absolute;top:50%;left:50%;width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,.08),transparent 70%);transform:translate(-50%,-50%);pointer-events:none}
+.cta-section h2{font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:1rem;letter-spacing:-.02em}
+.cta-section p{font-size:1.1rem;color:var(--text-dim);margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto}
+
+/* ===== FOOTER ===== */
+.footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center}
+.footer p{font-size:.85rem;color:var(--text-dim)}
+.footer-links{display:flex;justify-content:center;gap:2rem;margin-top:1rem}
+.footer-links a{font-size:.85rem;color:var(--text-dim);transition:color .3s}
+.footer-links a:hover{color:var(--accent3)}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hero-stats{flex-direction:column;gap:1.5rem}
+  .hero h1{font-size:2.25rem}
+  .pipeline-grid{grid-template-columns:1fr}
+  .hero-actions{flex-direction:column;align-items:center}
+  section{padding:4rem 1.25rem}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>NEXUS</h1>
-        <p class="subtitle">Framework de multi-agentes IA — Pages</p>
-        <div class="pages">
-            <a class="card" href="generated-site/index.html">
-                <div class="card-title">ETF Trading School</div>
-                <div class="card-desc">Landing page gerada pelo pipeline completo — Fintech / Prop Trading</div>
-                <div class="card-path">generated-site/</div>
-            </a>
-            <a class="card" href="templates/immersive-landing/index.html">
-                <div class="card-title">Immersive Landing</div>
-                <div class="card-desc">Template 3D cinematografico com Three.js + GSAP + ScrollTrigger</div>
-                <div class="card-path">templates/immersive-landing/</div>
-            </a>
-            <a class="card" href="templates/flowpilot-enhanced/index.html">
-                <div class="card-title">FlowPilot Enhanced</div>
-                <div class="card-desc">Template premium para SaaS — design system completo</div>
-                <div class="card-path">templates/flowpilot-enhanced/</div>
-            </a>
-            <a class="card" href="templates/premium-showcase/index.html">
-                <div class="card-title">Premium Showcase</div>
-                <div class="card-desc">Template showcase premium para apresentacao de produtos</div>
-                <div class="card-path">templates/premium-showcase/</div>
-            </a>
-            <a class="card" href="demo-visual-test.html">
-                <div class="card-title">Demo Visual Test</div>
-                <div class="card-desc">Teste visual dos componentes e design system</div>
-                <div class="card-path">demo-visual-test.html</div>
-            </a>
-        </div>
+
+<!-- THREE.JS Background -->
+<canvas id="hero-canvas"></canvas>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">NEXUS <span>Framework</span></div>
+  <div class="nav-links">
+    <a href="#pipeline">Pipeline</a>
+    <a href="#tech">Tecnologia</a>
+    <a href="#components">Componentes</a>
+    <a href="#demo">Demo</a>
+    <a href="#projects">Projetos</a>
+    <a href="https://github.com/gabrielrbm-prog/nexus-framework" target="_blank" class="nav-cta">GitHub</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span> Framework ativo em producao</div>
+  <h1>
+    Landing Pages<br>
+    <span class="gradient">
+      <span class="flip-container" id="flip">
+        <span class="flip-word active">Premium</span>
+        <span class="flip-word below">Automaticas</span>
+        <span class="flip-word below">Inteligentes</span>
+        <span class="flip-word below">em Segundos</span>
+      </span>
+    </span>
+    com IA
+  </h1>
+  <p class="hero-sub">
+    <strong>8 agentes especializados</strong> que pesquisam, criam design, escrevem copy e geram codigo production-ready com efeitos 3D e animacoes. Do zero ao deploy em <strong>2 segundos</strong>.
+  </p>
+  <div class="hero-actions">
+    <a href="#demo" class="btn-primary">Ver em Acao &#8594;</a>
+    <a href="https://github.com/gabrielrbm-prog/nexus-framework" target="_blank" class="btn-secondary">&#9733; GitHub</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num" data-count="721">0</div>
+      <div class="label">Componentes</div>
     </div>
+    <div class="hero-stat">
+      <div class="num" data-count="8">0</div>
+      <div class="label">Agentes IA</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num" data-count="18500">0</div>
+      <div class="label">Linhas de Codigo</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num" data-count="96">0</div>
+      <div class="label">Score Medio</div>
+    </div>
+  </div>
+</section>
+
+<!-- Pipeline -->
+<section id="pipeline">
+  <div class="container">
+    <span class="section-label reveal">Como Funciona</span>
+    <h2 class="section-title reveal">Pipeline de 8 Agentes</h2>
+    <p class="section-desc reveal">Cada agente e especialista em uma etapa. O Orchestrator coordena tudo automaticamente, passando dados via Blackboard Pattern.</p>
+    <div class="pipeline-grid">
+      <div class="pipeline-card reveal reveal-delay-1">
+        <span class="pipeline-num">01</span>
+        <h3>&#128269; Discovery</h3>
+        <p>Pesquisa a empresa na web, YouTube, redes sociais. Coleta informacoes reais do negocio.</p>
+        <span class="output">company-profile.json</span>
+      </div>
+      <div class="pipeline-card reveal reveal-delay-2">
+        <span class="pipeline-num">02</span>
+        <h3>&#128203; Briefing</h3>
+        <p>Gera perguntas adaptativas e cria um brief criativo personalizado para o projeto.</p>
+        <span class="output">creative-brief.json</span>
+      </div>
+      <div class="pipeline-card reveal reveal-delay-3">
+        <span class="pipeline-num">03</span>
+        <h3>&#129504; Context DNA</h3>
+        <p>Analisa tudo e extrai o DNA do projeto: tom de voz, psicologia, audiencia, objetivos.</p>
+        <span class="output">context-dna.json</span>
+      </div>
+      <div class="pipeline-card reveal reveal-delay-4">
+        <span class="pipeline-num">04</span>
+        <h3>&#127912; Design System</h3>
+        <p>Gera paleta de cores, tipografia e tokens visuais otimizados para o nicho e audiencia.</p>
+        <span class="output">design-system.json</span>
+      </div>
+      <div class="pipeline-card reveal reveal-delay-1">
+        <span class="pipeline-num">05</span>
+        <h3>&#9999;&#65039; Content</h3>
+        <p>Escreve headlines, CTAs, secoes, SEO, microcopy e variantes A/B — tudo contextual.</p>
+        <span class="output">all-content.json</span>
+      </div>
+      <div class="pipeline-card reveal reveal-delay-2">
+        <span class="pipeline-num">06</span>
+        <h3>&#128187; Code v3</h3>
+        <p>Monta a pagina com 16 efeitos premium + 705 componentes extraidos. Template resolution em tempo real.</p>
+        <span class="output">index.html (85-95KB)</span>
+      </div>
+      <div class="pipeline-card reveal reveal-delay-3">
+        <span class="pipeline-num">07</span>
+        <h3>&#9989; Quality</h3>
+        <p>Audit completo: performance, SEO, acessibilidade, seguranca, mobile. Score < 70 refaz automaticamente.</p>
+        <span class="output">quality-report.md</span>
+      </div>
+      <div class="pipeline-card reveal reveal-delay-4">
+        <span class="pipeline-num">08</span>
+        <h3>&#128640; Deploy</h3>
+        <p>Git commit + push automatico para GitHub Pages. URL publica em segundos.</p>
+        <span class="output">github.io/nexus-framework/</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tech Stack -->
+<section id="tech">
+  <div class="container">
+    <span class="section-label reveal">Tecnologia</span>
+    <h2 class="section-title reveal">Stack Premium</h2>
+    <p class="section-desc reveal">Zero dependencias npm. Tudo em Node.js puro com bibliotecas visuais de alto nivel embutidas nos componentes.</p>
+    <div class="tech-grid">
+      <div class="tech-card reveal">
+        <div class="tech-icon">&#9653;</div>
+        <h4>Three.js</h4>
+        <p>Backgrounds 3D animados com wireframes e particulas</p>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">&#9889;</div>
+        <h4>GSAP</h4>
+        <p>Scroll animations, counters, typewriter effects</p>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">&#10024;</div>
+        <h4>Aceternity UI</h4>
+        <p>Flip words, meteors, 3D cards, glowing stars</p>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">&#127756;</div>
+        <h4>MagicUI</h4>
+        <p>Particles, wave dividers, gradient text, border beam</p>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">&#127823;</div>
+        <h4>Apple Glass</h4>
+        <p>Glassmorphism buttons e cards com blur contextual</p>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">&#128200;</div>
+        <h4>Node.js Puro</h4>
+        <p>18 agentes, 18.500 linhas, zero npm install</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Numbers -->
+<section class="numbers-section" id="numbers">
+  <div class="container">
+    <span class="section-label reveal">Numeros</span>
+    <h2 class="section-title reveal">Framework em Escala</h2>
+    <div class="numbers-grid">
+      <div class="number-card reveal">
+        <div class="value"><span data-count="721">0</span></div>
+        <div class="desc">Componentes na biblioteca</div>
+      </div>
+      <div class="number-card reveal">
+        <div class="value"><span data-count="16">0</span></div>
+        <div class="desc">Efeitos premium ativos</div>
+      </div>
+      <div class="number-card reveal">
+        <div class="value"><span data-count="31">0</span></div>
+        <div class="desc">Sites de referencia em 7 nichos</div>
+      </div>
+      <div class="number-card reveal">
+        <div class="value"><span data-count="23">0</span></div>
+        <div class="desc">Projetos ja gerados</div>
+      </div>
+      <div class="number-card reveal">
+        <div class="value"><span data-count="2">0</span><span class="unit">s</span></div>
+        <div class="desc">Tempo de geracao (modo fast)</div>
+      </div>
+      <div class="number-card reveal">
+        <div class="value"><span data-count="96">0</span><span class="unit">/100</span></div>
+        <div class="desc">Score medio de qualidade</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Components Showcase -->
+<section id="components">
+  <div class="container">
+    <span class="section-label reveal">Biblioteca</span>
+    <h2 class="section-title reveal">16 Componentes Premium</h2>
+    <p class="section-desc reveal">Cada componente usa bibliotecas reais — Three.js, GSAP, Aceternity, MagicUI. Templates com variaveis resolvidas em tempo de geracao.</p>
+    <div class="components-preview">
+
+      <div class="comp-card reveal">
+        <h4>Aceternity Meteors</h4>
+        <div class="lib">Aceternity UI</div>
+        <div class="preview">
+          <div class="meteor-container" id="meteor-demo">
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-card reveal">
+        <h4>Moving Borders</h4>
+        <div class="lib">Aceternity UI</div>
+        <div class="preview">
+          <div class="moving-border">
+            <div class="moving-border-inner">Borda animada com conic-gradient</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-card reveal">
+        <h4>Border Beam</h4>
+        <div class="lib">MagicUI</div>
+        <div class="preview">
+          <div class="border-beam-demo">
+            <span style="font-size:.8rem;color:var(--text-dim);z-index:1">Feixe de luz percorrendo a borda</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-card reveal">
+        <h4>Floating Particles</h4>
+        <div class="lib">MagicUI</div>
+        <div class="preview" id="particles-demo" style="position:relative">
+        </div>
+      </div>
+
+      <div class="comp-card reveal">
+        <h4>Glowing Stars</h4>
+        <div class="lib">Aceternity UI</div>
+        <div class="preview" id="stars-demo" style="position:relative">
+        </div>
+      </div>
+
+      <div class="comp-card reveal">
+        <h4>Three.js Wireframe</h4>
+        <div class="lib">Three.js r128</div>
+        <div class="preview" style="background:transparent">
+          <span style="font-size:.75rem;color:var(--text-dim)">&#9653; Background 3D ativo nesta pagina</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Demo Terminal -->
+<section id="demo">
+  <div class="container">
+    <span class="section-label reveal">Demo</span>
+    <h2 class="section-title reveal">Uma Linha, Um Site Premium</h2>
+    <p class="section-desc reveal">Basta um comando. O pipeline faz o resto.</p>
+    <div class="terminal reveal" id="terminal">
+      <div class="terminal-bar">
+        <span class="terminal-dot r"></span>
+        <span class="terminal-dot y"></span>
+        <span class="terminal-dot g"></span>
+        <span>nexus-project</span>
+      </div>
+      <div class="terminal-body" id="terminal-body">
+        <div><span class="prompt">$</span> <span class="cmd">node agents/nexus-orchestrator-v2.js</span> <span class="flag">bella-vida</span></div>
+        <div>&nbsp;&nbsp;<span class="flag">--company</span> <span class="cmd">"Bella Vida Estetica"</span> <span class="flag">--niche</span> <span class="cmd">healthcare</span></div>
+        <div>&nbsp;&nbsp;<span class="flag">--demo --fast --deploy</span></div>
+        <div id="term-output"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Projects Gallery -->
+<section id="projects">
+  <div class="container">
+    <span class="section-label reveal">Portfolio</span>
+    <h2 class="section-title reveal">Projetos Gerados</h2>
+    <p class="section-desc reveal">Cada projeto e unico — conteudo, design e componentes adaptados ao nicho.</p>
+    <div class="projects-grid">
+      <a href="generated-site/clinica-estetica/" class="project-card reveal" target="_blank">
+        <div class="project-thumb"><span class="placeholder">&#127973;</span></div>
+        <div class="project-card-body">
+          <span class="niche-tag">healthcare</span>
+          <h4>Clinica Estetica Premium</h4>
+          <p>Landing page para clinica de estetica com design contextual de saude.</p>
+          <div class="score">&#9989; 96/100</div>
+        </div>
+      </a>
+      <a href="generated-site/teste-deploy/" class="project-card reveal" target="_blank">
+        <div class="project-thumb"><span class="placeholder">&#128640;</span></div>
+        <div class="project-card-body">
+          <span class="niche-tag">demo</span>
+          <h4>Teste Deploy</h4>
+          <p>Primeiro teste do pipeline completo com deploy automatico.</p>
+          <div class="score">&#9989; 96/100</div>
+        </div>
+      </a>
+      <div class="project-card reveal" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:280px;cursor:default">
+        <div style="text-align:center;padding:2rem">
+          <div style="font-size:2.5rem;opacity:.3;margin-bottom:1rem">+</div>
+          <p style="color:var(--text-dim);font-size:.9rem">Seu proximo projeto aqui.<br>Basta rodar o pipeline.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2 class="reveal">Pronto para <span class="gradient" style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent">criar</span>?</h2>
+    <p class="reveal">Clone o repo, rode o comando, tenha um site premium em segundos.</p>
+    <div class="reveal" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="https://github.com/gabrielrbm-prog/nexus-framework" target="_blank" class="btn-primary">Acessar Repositorio &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>NEXUS Framework &mdash; Desenvolvido por Gabriel Rubim</p>
+  <div class="footer-links">
+    <a href="https://github.com/gabrielrbm-prog/nexus-framework" target="_blank">GitHub</a>
+    <a href="generated-site/">Projetos</a>
+  </div>
+</footer>
+
+<script>
+// ===== THREE.JS BACKGROUND =====
+(function(){
+  const canvas = document.getElementById('hero-canvas');
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.z = 30;
+  // Wireframe sphere
+  const geo = new THREE.IcosahedronGeometry(12, 2);
+  const mat = new THREE.MeshBasicMaterial({color:0x6366f1, wireframe:true, transparent:true, opacity:0.12});
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+  // Particles
+  const pGeo = new THREE.BufferGeometry();
+  const pCount = 300;
+  const positions = new Float32Array(pCount*3);
+  for(let i=0;i<pCount*3;i++) positions[i]=(Math.random()-.5)*60;
+  pGeo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+  const pMat = new THREE.PointsMaterial({color:0x8b5cf6, size:0.08, transparent:true, opacity:0.5});
+  scene.add(new THREE.Points(pGeo, pMat));
+  let mouseX=0, mouseY=0;
+  document.addEventListener('mousemove', e=>{mouseX=(e.clientX/window.innerWidth-.5)*2;mouseY=(e.clientY/window.innerHeight-.5)*2});
+  function animate(){
+    requestAnimationFrame(animate);
+    mesh.rotation.x+=0.001;mesh.rotation.y+=0.002;
+    camera.position.x+=(mouseX*2-camera.position.x)*0.02;
+    camera.position.y+=(-mouseY*2-camera.position.y)*0.02;
+    camera.lookAt(scene.position);
+    renderer.render(scene,camera);
+  }
+  animate();
+  window.addEventListener('resize',()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+})();
+
+// ===== GSAP SCROLL ANIMATIONS =====
+gsap.registerPlugin(ScrollTrigger);
+document.querySelectorAll('.reveal').forEach(el=>{
+  ScrollTrigger.create({
+    trigger:el,start:'top 88%',
+    onEnter:()=>el.classList.add('visible'),
+    once:true
+  });
+});
+
+// ===== COUNTER ANIMATION =====
+document.querySelectorAll('[data-count]').forEach(el=>{
+  const target=parseInt(el.dataset.count);
+  ScrollTrigger.create({
+    trigger:el,start:'top 90%',once:true,
+    onEnter:()=>{
+      gsap.to({v:0},{v:target,duration:2,ease:'power2.out',
+        onUpdate:function(){
+          const v=Math.round(this.targets()[0].v);
+          el.textContent=v>=1000?(v/1000).toFixed(v>=10000?1:1)+'k':v;
+        }
+      });
+    }
+  });
+});
+
+// ===== FLIP WORDS =====
+(function(){
+  const words=document.querySelectorAll('.flip-word');
+  let idx=0;
+  setInterval(()=>{
+    words[idx].classList.remove('active');words[idx].classList.add('above');
+    idx=(idx+1)%words.length;
+    words.forEach((w,i)=>{if(i!==idx)w.classList.add('below');w.classList.remove('active','above')});
+    words[idx].classList.remove('below');words[idx].classList.add('active');
+  },2200);
+})();
+
+// ===== NAV SCROLL =====
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50);
+});
+
+// ===== METEOR DEMO =====
+(function(){
+  const c=document.getElementById('meteor-demo');
+  for(let i=0;i<6;i++){
+    const m=document.createElement('div');m.classList.add('meteor');
+    m.style.left=Math.random()*100+'%';m.style.top='-10px';
+    m.style.animationDuration=(1+Math.random()*1.5)+'s';
+    m.style.animationDelay=(Math.random()*3)+'s';
+    c.appendChild(m);
+  }
+})();
+
+// ===== PARTICLES DEMO =====
+(function(){
+  const c=document.getElementById('particles-demo');
+  for(let i=0;i<12;i++){
+    const p=document.createElement('div');p.classList.add('particle');
+    const s=2+Math.random()*4;
+    p.style.width=s+'px';p.style.height=s+'px';
+    p.style.left=Math.random()*90+'%';p.style.top=Math.random()*90+'%';
+    p.style.animationDuration=(2+Math.random()*3)+'s';
+    p.style.animationDelay=(Math.random()*2)+'s';
+    c.appendChild(p);
+  }
+})();
+
+// ===== STARS DEMO =====
+(function(){
+  const c=document.getElementById('stars-demo');
+  for(let i=0;i<15;i++){
+    const s=document.createElement('div');s.classList.add('star');
+    s.style.left=Math.random()*95+'%';s.style.top=Math.random()*95+'%';
+    s.style.animationDuration=(1.5+Math.random()*2)+'s';
+    s.style.animationDelay=(Math.random()*2)+'s';
+    c.appendChild(s);
+  }
+})();
+
+// ===== TERMINAL TYPING =====
+(function(){
+  const lines=[
+    {text:'\n&#128270; DISCOVERY — Pesquisando empresa...', cls:'stage', delay:800},
+    {text:'&#9989; discovery completo em 0.9s', cls:'ok', delay:600},
+    {text:'&#128203; BRIEFING — Gerando brief criativo...', cls:'stage', delay:400},
+    {text:'&#9989; briefing completo', cls:'ok', delay:300},
+    {text:'&#129504; CONTEXT — Analisando DNA do projeto...', cls:'stage', delay:400},
+    {text:'   &#127991;&#65039; Business type: healthcare', cls:'', delay:200},
+    {text:'&#9989; context completo', cls:'ok', delay:300},
+    {text:'&#127912; DESIGN — Gerando design system...', cls:'stage', delay:400},
+    {text:'   Cores: 10 primary + neutros', cls:'', delay:200},
+    {text:'&#9989; design completo', cls:'ok', delay:300},
+    {text:'&#9999;&#65039; CONTENT — Gerando copy contextual...', cls:'stage', delay:400},
+    {text:'&#9989; content completo', cls:'ok', delay:300},
+    {text:'&#128187; CODE v3 — Library-Driven Generation...', cls:'stage', delay:500},
+    {text:'   721 componentes | 12 ativos | 86.5KB', cls:'', delay:300},
+    {text:'&#9989; code completo em 0.05s', cls:'ok', delay:400},
+    {text:'&#9989; QUALITY — Score: <span class="ok">96/100</span> &#127942;', cls:'stage', delay:500},
+    {text:'&#128640; DEPLOY — Push para GitHub Pages...', cls:'stage', delay:500},
+    {text:'&#9989; deploy completo', cls:'ok', delay:300},
+    {text:'\n&#9200; Tempo total: <span class="time">2.1s</span>', cls:'', delay:200},
+    {text:'&#127760; <span class="url">gabrielrbm-prog.github.io/nexus-framework/generated-site/bella-vida/</span>', cls:'', delay:0},
+  ];
+  const out=document.getElementById('term-output');
+  let started=false;
+  ScrollTrigger.create({
+    trigger:'#terminal',start:'top 75%',once:true,
+    onEnter:()=>{
+      if(started)return;started=true;
+      let total=0;
+      lines.forEach((l)=>{
+        total+=l.delay;
+        setTimeout(()=>{
+          const div=document.createElement('div');
+          div.innerHTML=(l.cls?'<span class="'+l.cls+'">':'')+l.text+(l.cls?'</span>':'');
+          out.appendChild(div);
+          out.scrollTop=out.scrollHeight;
+        },total);
+      });
+    }
+  });
+})();
+</script>
 </body>
 </html>
