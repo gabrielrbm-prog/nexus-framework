@@ -1020,6 +1020,16 @@ class NexusCodeAgentV3 {
   <meta property="og:type"        content="website">
   ${ogImage ? `<meta property="og:image" content="${this._escAttr(ogImage)}">` : ''}
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="#">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "${this._escAttr(businessName)}",
+    "description": "${this._escAttr(description)}",
+    "publisher": { "@type": "Organization", "name": "${this._escAttr(businessName)}" }
+  }
+  <\/script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
