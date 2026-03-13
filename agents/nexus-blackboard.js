@@ -37,8 +37,13 @@ class NexusBlackboard {
     this.lockFile = path.join(projectDir, '.state.lock');
 
     if (fs.existsSync(this.statePath) && !opts.reset) {
-      this.state = JSON.parse(fs.readFileSync(this.statePath, 'utf-8'));
-      this.state.meta.lastAccess = new Date().toISOString();
+      try {
+        this.state = JSON.parse(fs.readFileSync(this.statePath, 'utf-8'));
+        this.state.meta.lastAccess = new Date().toISOString();
+      } catch (e) {
+        console.warn(`  ⚠️ Corrupt project-state.json, reinitializing: ${e.message}`);
+        this.state = this._createInitialState(projectName, opts);
+      }
     } else {
       this.state = this._createInitialState(projectName, opts);
     }
@@ -315,8 +320,64 @@ class NexusBlackboard {
 
   // ========== PERSISTENCE ==========
 
+  _acquireLock(maxWait = 5000) {
+    const start = Date.now();
+    while (fs.existsSync(this.lockFile)) {
+      // Check for stale lock (older than 30s)
+      try {
+        const lockAge = Date.now() - fs.statSync(this.lockFile).mtimeMs;
+        if (lockAge > 30000) { fs.unlinkSync(this.lockFile); break; }
+      } catch { break; }
+      if (Date.now() - start > maxWait) {
+        console.warn('  ⚠️ Blackboard lock timeout, forcing write');
+        try { fs.unlinkSync(this.lockFile); } catch {}
+        break;
+      }
+      // Busy wait with small delay (sync context)
+      const waitUntil = Date.now() + 50;
+      while (Date.now() < waitUntil) {}
+    }
+    try { fs.writeFileSync(this.lockFile, String(process.pid)); } catch {}
+  }
+
+  _releaseLock() {
+    try { fs.unlinkSync(this.lockFile); } catch {}
+  }
+
   _save() {
-    fs.writeFileSync(this.statePath, JSON.stringify(this.state, null, 2));
+    this._acquireLock();
+    try {
+      // Re-read state from disk to merge any changes from parallel agents
+      if (fs.existsSync(this.statePath)) {
+        try {
+          const diskState = JSON.parse(fs.readFileSync(this.statePath, 'utf-8'));
+          // Merge: our in-memory changes take priority, but preserve other agents' data
+          for (const key of Object.keys(diskState)) {
+            if (key === 'meta' || key === 'pipeline' || key === 'errors' || key === 'checkpoints') continue;
+            if (this.state[key] === null || this.state[key] === undefined) {
+              this.state[key] = diskState[key];
+            } else if (typeof this.state[key] === 'object' && typeof diskState[key] === 'object' && !Array.isArray(this.state[key])) {
+              // Merge object: keep our values, add disk values we don't have
+              for (const subKey of Object.keys(diskState[key])) {
+                if (this.state[key][subKey] === null || this.state[key][subKey] === undefined) {
+                  this.state[key][subKey] = diskState[key][subKey];
+                }
+              }
+            }
+          }
+          // Merge errors array (append unique)
+          if (diskState.errors && diskState.errors.length > this.state.errors.length) {
+            const existingTimes = new Set(this.state.errors.map(e => e.at));
+            for (const err of diskState.errors) {
+              if (!existingTimes.has(err.at)) this.state.errors.push(err);
+            }
+          }
+        } catch {}
+      }
+      fs.writeFileSync(this.statePath, JSON.stringify(this.state, null, 2));
+    } finally {
+      this._releaseLock();
+    }
   }
 
   load(projectName) {

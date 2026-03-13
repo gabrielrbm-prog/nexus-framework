@@ -402,7 +402,8 @@ class NexusImageAgent {
    * Organiza e salva as imagens geradas
    */
   organizeImageAssets(generatedImages, contextDNA) {
-    const projectPath = path.dirname(path.dirname(contextDNA.filePath || ''));
+    const filePath = contextDNA.filePath || contextDNA._sourcePath || '';
+    const projectPath = filePath ? path.dirname(path.dirname(filePath)) : path.join(process.cwd(), 'projects', (contextDNA.project?.name || 'default'));
     const assetsPath = path.join(projectPath, 'assets', 'images');
     
     // Cria diretório de assets

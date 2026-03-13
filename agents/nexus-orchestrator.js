@@ -276,6 +276,11 @@ class NexusOrchestrator {
       }
 
       if (result.success) {
+        // Validate expected outputs exist
+        const validation = this._validateStageOutput(step.stage, projectName);
+        if (!validation.valid) {
+          console.log(`  ⚠️ ${step.stage} output validation: ${validation.warnings.join('; ')}`);
+        }
         board.transition(step.stage, 'complete');
         const elapsed = ((Date.now() - start) / 1000).toFixed(1);
         console.log(`✅ ${step.stage} completo em ${elapsed}s`);
@@ -471,6 +476,49 @@ ${links}
     } catch (err) {
       console.log('   [warn] Site index update failed:', err.message);
     }
+  }
+
+  // ========== OUTPUT VALIDATION ==========
+
+  _validateStageOutput(stage, projectName) {
+    const projectDir = path.join(WORKSPACE, 'projects', projectName);
+    const warnings = [];
+
+    const expectedFiles = {
+      discovery: ['discovery-data.json'],
+      briefing:  ['creative-brief.json'],
+      context:   ['context-dna.json'],
+      design:    ['design-system/design-system.json'],
+      content:   ['content/all-content.json', 'all-content.json', 'content-assets/all-content.json'],
+      code:      ['output/index.html'],
+      quality:   ['quality-report.md', 'quality-report.json'],
+    };
+
+    const files = expectedFiles[stage];
+    if (!files) return { valid: true, warnings: [] };
+
+    // For stages with multiple possible locations, at least one must exist
+    const found = files.some(f => fs.existsSync(path.join(projectDir, f)));
+    if (!found) {
+      warnings.push(`Missing output: expected one of [${files.join(', ')}]`);
+    }
+
+    // Validate JSON files are parseable
+    for (const f of files) {
+      const fp = path.join(projectDir, f);
+      if (fs.existsSync(fp) && f.endsWith('.json')) {
+        try {
+          const data = JSON.parse(fs.readFileSync(fp, 'utf-8'));
+          if (!data || (typeof data === 'object' && Object.keys(data).length === 0)) {
+            warnings.push(`${f} is empty`);
+          }
+        } catch (e) {
+          warnings.push(`${f} is invalid JSON: ${e.message}`);
+        }
+      }
+    }
+
+    return { valid: warnings.length === 0, warnings };
   }
 
   // ========== REFERENCES ==========

@@ -66,7 +66,9 @@ class NexusBridge {
   collectContext() {
     const dnaPath = path.join(this.projectDir, 'context-dna.json');
     if (fs.existsSync(dnaPath)) {
-      const dna = JSON.parse(fs.readFileSync(dnaPath, 'utf-8'));
+      let dna;
+      try { dna = JSON.parse(fs.readFileSync(dnaPath, 'utf-8')); }
+      catch (e) { console.error(`   ❌ JSON parse error in context-dna.json: ${e.message}`); return false; }
       // Map niche to businessType if context agent defaulted to 'general'
       const niche = board.get('references.niche');
       if (niche && (!dna.project || !dna.project.businessType || dna.project.businessType === 'general')) {
@@ -107,7 +109,9 @@ class NexusBridge {
     ];
     for (const designFile of locations) {
       if (fs.existsSync(designFile)) {
-        const ds = JSON.parse(fs.readFileSync(designFile, 'utf-8'));
+        let ds;
+        try { ds = JSON.parse(fs.readFileSync(designFile, 'utf-8')); }
+        catch (e) { console.error(`   ❌ JSON parse error in design-system.json: ${e.message}`); continue; }
         board.set('design.system', ds);
         board.set('design.palette', ds.colors || []);
         board.set('design.typography', ds.typography || null);
@@ -141,7 +145,9 @@ class NexusBridge {
     const file = searchPaths.find(p => fs.existsSync(p));
 
     if (file) {
-      const content = JSON.parse(fs.readFileSync(file, 'utf-8'));
+      let content;
+      try { content = JSON.parse(fs.readFileSync(file, 'utf-8')); }
+      catch (e) { console.error(`   ❌ JSON parse error in all-content.json: ${e.message}`); return false; }
       board.set('content.hero', content.hero || null);
       board.set('content.sections', content.sections || []);
       board.set('content.cta', content.ctas || content.cta || []);
@@ -195,7 +201,9 @@ class NexusBridge {
       if (!fs.existsSync(reportPath)) continue;
 
       if (reportPath.endsWith('.json')) {
-        const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+        let report;
+        try { report = JSON.parse(fs.readFileSync(reportPath, 'utf-8')); }
+        catch (e) { console.error(`   ❌ JSON parse error in quality-report.json: ${e.message}`); continue; }
         board.set('quality.score', report.score || 0);
         board.set('quality.issues', report.issues || []);
         board.set('quality.passed', (report.score || 0) >= 70);
@@ -232,27 +240,33 @@ class NexusBridge {
       context: () => {
         const briefing = this.prepareContext();
         const niche = board.get('references.niche') || '';
-        const companyName = board.get('briefing.brief.projectName') || this.projectName;
-        const nicheFlag = niche ? ' --niche "' + niche + '"' : '';
-        const companyFlag = companyName ? ' --company "' + companyName + '"' : '';
-        const cmd = `node ${path.join(AGENTS_DIR, 'nexus-context-agent.js')} "${briefing}" "${this.projectName}"${nicheFlag}${companyFlag}`;
+        const brief = board.get('briefing.brief');
+        const companyName = (brief && brief.projectName) || this.projectName;
+        const safeBriefing = briefing.replace(/[`$"\\]/g, '');
+        const safeCompany = companyName.replace(/[`$"\\]/g, '');
+        const nicheFlag = niche ? ` --niche "${niche.replace(/[`$"\\]/g, '')}"` : '';
+        const companyFlag = safeCompany ? ` --company "${safeCompany}"` : '';
+        const cmd = `node ${path.join(AGENTS_DIR, 'nexus-context-agent.js')} "${safeBriefing}" "${this.projectName}"${nicheFlag}${companyFlag}`;
         execSync(cmd, { cwd: WORKSPACE, timeout: 120000, stdio: 'inherit' });
         return this.collectContext();
       },
       design: () => {
         const dnaPath = path.join(this.projectDir, 'context-dna.json');
+        if (!fs.existsSync(dnaPath)) { console.log('   ❌ No context-dna.json found for design'); return false; }
         const cmd = `node ${path.join(AGENTS_DIR, 'nexus-design-agent.js')} "${dnaPath}"`;
         execSync(cmd, { cwd: WORKSPACE, timeout: 120000, stdio: 'inherit' });
         return this.collectDesign();
       },
       content: () => {
         const dnaPath = path.join(this.projectDir, 'context-dna.json');
+        if (!fs.existsSync(dnaPath)) { console.log('   ❌ No context-dna.json found for content'); return false; }
         const cmd = `node ${path.join(AGENTS_DIR, 'nexus-content-agent.js')} "${dnaPath}"`;
         execSync(cmd, { cwd: WORKSPACE, timeout: 120000, stdio: 'inherit' });
         return this.collectContent();
       },
       code: () => {
         const dnaPath = path.join(this.projectDir, 'context-dna.json');
+        if (!fs.existsSync(dnaPath)) { console.log('   ❌ No context-dna.json found for code'); return false; }
         const cmd = `node ${path.join(AGENTS_DIR, 'nexus-code-agent.js')} "${dnaPath}"`;
         execSync(cmd, { cwd: WORKSPACE, timeout: 180000, stdio: 'inherit' });
         return this.collectCode();
@@ -285,10 +299,13 @@ class NexusBridge {
       context: () => {
         const briefing = this.prepareContext();
         const niche = board.get('references.niche') || '';
-        const companyName = board.get('briefing.brief.projectName') || this.projectName;
-        const nicheFlag = niche ? ` --niche "${niche}"` : '';
-        const companyFlag = companyName ? ` --company "${companyName}"` : '';
-        return `node ${path.join(AGENTS_DIR, 'nexus-context-agent.js')} "${briefing}" "${this.projectName}"${nicheFlag}${companyFlag}`;
+        const brief = board.get('briefing.brief');
+        const companyName = (brief && brief.projectName) || this.projectName;
+        const safeBriefing = briefing.replace(/[`$"\\]/g, '');
+        const safeCompany = companyName.replace(/[`$"\\]/g, '');
+        const nicheFlag = niche ? ` --niche "${niche.replace(/[`$"\\]/g, '')}"` : '';
+        const companyFlag = safeCompany ? ` --company "${safeCompany}"` : '';
+        return `node ${path.join(AGENTS_DIR, 'nexus-context-agent.js')} "${safeBriefing}" "${this.projectName}"${nicheFlag}${companyFlag}`;
       },
       design: () => {
         const dnaPath = path.join(this.projectDir, 'context-dna.json');

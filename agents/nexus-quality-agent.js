@@ -34,7 +34,9 @@ class NexusQualityAgent {
     console.log(`🔄 ${this.name} iniciando audit completo...`);
     
     // Lê o Context DNA para contexto
-    const contextDNA = JSON.parse(fs.readFileSync(contextDNAPath, 'utf8'));
+    let contextDNA;
+    try { contextDNA = JSON.parse(fs.readFileSync(contextDNAPath, 'utf8')); }
+    catch (e) { throw new Error(`Failed to parse context-dna.json: ${e.message}`); }
     
     // Valida se o site existe
     if (!fs.existsSync(siteDirectory)) {
@@ -987,7 +989,8 @@ class NexusQualityAgent {
    * Organiza relatório final
    */
   organizeQualityReport(auditData, contextDNA, siteStructure) {
-    const projectPath = path.dirname(contextDNA.filePath || '');
+    const filePath = contextDNA.filePath || contextDNA._sourcePath || '';
+    const projectPath = filePath ? path.dirname(filePath) : siteStructure.basePath;
     const qualityPath = path.join(projectPath, 'quality-report.md');
     
     const report = this.generateQualityReport(auditData, contextDNA, siteStructure);
@@ -1080,8 +1083,8 @@ ${this.getScoreDescription(auditData.overallScore)}
 ---
 
 ## 🎯 **Resumo do Projeto**
-- **Business Type:** ${contextDNA.project.businessType}
-- **Target Audience:** ${contextDNA.audience.primaryAge}
+- **Business Type:** ${contextDNA.project?.businessType || 'N/A'}
+- **Target Audience:** ${contextDNA.audience?.primaryAge || 'N/A'}
 - **Site Size:** ${Math.round(siteStructure.totalSize / 1024)}KB
 - **Files:** ${siteStructure.fileCount} arquivos
 - **Audit Date:** ${auditData.generated}
