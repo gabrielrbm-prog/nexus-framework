@@ -242,6 +242,15 @@ const EXTERNAL_FONT_SOURCES = {
   'Geist Mono': 'https://vercel.com/font',
 };
 
+// Google Fonts substitutes for external fonts (visually similar, always loadable)
+const GOOGLE_FONT_SUBSTITUTES = {
+  'Cabinet Grotesk': { family: 'Space Grotesk', weights: [400, 500, 600, 700], variable: true },
+  'Clash Display':   { family: 'Sora', weights: [400, 500, 600, 700, 800], variable: true },
+  'Satoshi':         { family: 'DM Sans', weights: [400, 500, 700], variable: true },
+  'Geist':           { family: 'Inter Tight', weights: [400, 500, 600, 700, 800], variable: true },
+  'Geist Mono':      { family: 'JetBrains Mono', weights: [400, 700], variable: true },
+};
+
 function buildGoogleFontsUrl(fonts) {
   // fonts: array of { family, weights, variable }
   const googleFonts = fonts.filter(f => GOOGLE_FONTS_REGISTRY.has(f.family));
@@ -338,6 +347,14 @@ class NexusTypographyEngine {
     const strategy = { ...base };
     if (useAlt && strategy.displayAlt) {
       strategy.display = strategy.displayAlt;
+    }
+
+    // Substitute external fonts with Google Fonts alternatives so they always load
+    for (const role of ['display', 'body', 'accent']) {
+      if (strategy[role] && GOOGLE_FONT_SUBSTITUTES[strategy[role].family]) {
+        const sub = GOOGLE_FONT_SUBSTITUTES[strategy[role].family];
+        strategy[role] = { ...strategy[role], family: sub.family, weights: sub.weights, variable: sub.variable };
+      }
     }
     return strategy;
   }

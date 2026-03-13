@@ -106,12 +106,19 @@ class NexusOrchestrator {
 
       if (activeSteps.length === 0) continue;
 
+      // Snapshot state before wave execution (for rollback on failure)
+      const snapshotLabel = `wave-${waveNum}`;
+      board.createSnapshot(snapshotLabel);
+
       // Execute wave
       if (activeSteps.length === 1) {
         // Single stage — run directly
         const step = activeSteps[0];
         const success = await this._executeStage(step, projectName, opts);
         if (!success && step.required) {
+          // Rollback state to pre-wave snapshot
+          board.rollback(snapshotLabel);
+          console.log(`\n🔄 State rolled back to before wave ${waveNum}`);
           console.log(`\n❌ Pipeline parado em: ${step.stage}`);
           console.log(`   Use: node nexus-orchestrator.js ${projectName} --from ${step.stage}\n`);
           break;
@@ -139,10 +146,16 @@ class NexusOrchestrator {
           const failed = activeSteps.filter((s, i) =>
             s.required && (results[i].status === 'rejected' || !results[i].value)
           );
+          // Rollback state to pre-wave snapshot
+          board.rollback(snapshotLabel);
+          console.log(`\n🔄 State rolled back to before wave ${waveNum}`);
           console.log(`\n❌ Pipeline parado na wave ${waveNum}: ${failed.map(s => s.stage).join(', ')} falharam`);
           break;
         }
       }
+
+      // Wave succeeded — discard old snapshots to free memory
+      board.discardSnapshots();
 
       // Feedback loop: if quality score < 70, re-run code + quality (max 1 retry)
       const qualityStep = activeSteps.find(s => s.stage === 'quality');

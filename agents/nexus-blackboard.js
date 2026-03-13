@@ -24,6 +24,8 @@ class NexusBlackboard {
     this.statePath = null;
     this.state = null;
     this.lockFile = null;
+    this._snapshots = [];
+    this._forceOverwrite = false;
   }
 
   // ========== CORE ==========
@@ -257,6 +259,53 @@ class NexusBlackboard {
     );
   }
 
+  // ========== SNAPSHOTS (State Rollback) ==========
+
+  createSnapshot(label) {
+    const snapshot = {
+      label,
+      createdAt: new Date().toISOString(),
+      data: JSON.parse(JSON.stringify(this.state))
+    };
+    if (!this._snapshots) this._snapshots = [];
+    this._snapshots.push(snapshot);
+    return snapshot;
+  }
+
+  rollback(label) {
+    if (!this._snapshots || this._snapshots.length === 0) return false;
+    const idx = label
+      ? this._snapshots.findLastIndex(s => s.label === label)
+      : this._snapshots.length - 1;
+    if (idx === -1) return false;
+
+    const snapshot = this._snapshots[idx];
+    // Restore state but keep errors/history for debugging
+    const currentErrors = [...this.state.errors];
+    const currentHistory = [...this.state.pipeline.history];
+
+    this.state = JSON.parse(JSON.stringify(snapshot.data));
+    this.state.errors = currentErrors;
+    this.state.pipeline.history = currentHistory;
+    this.state.pipeline.history.push({
+      stage: '*rollback*',
+      from: label || 'latest',
+      to: 'rolled-back',
+      at: new Date().toISOString()
+    });
+
+    // Discard snapshots after the one we rolled back to
+    this._snapshots = this._snapshots.slice(0, idx);
+    this._forceOverwrite = true;
+    this._save();
+    this._forceOverwrite = false;
+    return true;
+  }
+
+  discardSnapshots() {
+    this._snapshots = [];
+  }
+
   // ========== ERRORS ==========
 
   addError(stage, error) {
@@ -348,7 +397,8 @@ class NexusBlackboard {
     this._acquireLock();
     try {
       // Re-read state from disk to merge any changes from parallel agents
-      if (fs.existsSync(this.statePath)) {
+      // Skip merge on rollback — rollback state must fully overwrite disk
+      if (!this._forceOverwrite && fs.existsSync(this.statePath)) {
         try {
           const diskState = JSON.parse(fs.readFileSync(this.statePath, 'utf-8'));
           // Merge: our in-memory changes take priority, but preserve other agents' data

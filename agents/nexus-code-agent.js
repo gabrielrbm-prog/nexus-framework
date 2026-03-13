@@ -253,7 +253,7 @@ class SlotResolver {
     const usedKeyframes = new Set();
 
     for (const { comp } of items) {
-      const clean = CssClassExtractor.extractUsableCss(comp.css, 3000);
+      const clean = CssClassExtractor.extractUsableCss(comp.css, 6000);
       if (clean.length < 30) continue;
 
       // Deduplicate keyframes
@@ -1701,11 +1701,6 @@ class NexusCodeAgentV4 {
        PREMIUM COMPONENT CSS (from library)
     ═══════════════════════════════════════════════════════ */
     ${premiumCssParts.join('\n\n    ')}
-
-    /* ═══════════════════════════════════════════════════════
-       SLOT-ENRICHED CSS (from 771 component library)
-    ═══════════════════════════════════════════════════════ */
-    ${allSlotCss}
 
     /* Visibility fallback */
     .gsap-reveal { will-change: opacity, transform; }
