@@ -39,7 +39,7 @@ const MODEL_SMART = 'anthropic/claude-sonnet-4-20250514'; // Smart — complex a
  * @param {object} opts - { system, model, maxTokens, temperature, json }
  * @returns {Promise<string>} The LLM response text
  */
-function call(prompt, opts = {}) {
+function _callOnce(prompt, opts = {}) {
   return new Promise((resolve, reject) => {
     if (!API_KEY) {
       return reject(new Error('No OpenRouter API key found'));
@@ -75,7 +75,12 @@ function call(prompt, opts = {}) {
         try {
           const parsed = JSON.parse(data);
           if (parsed.error) {
-            return reject(new Error(`LLM Error: ${parsed.error.message || JSON.stringify(parsed.error)}`));
+            const errMsg = parsed.error.message || JSON.stringify(parsed.error);
+            // Rate limit — retryable
+            if (res.statusCode === 429 || res.statusCode === 503) {
+              return reject(Object.assign(new Error(`LLM Error (${res.statusCode}): ${errMsg}`), { retryable: true }));
+            }
+            return reject(new Error(`LLM Error: ${errMsg}`));
           }
           const content = parsed.choices?.[0]?.message?.content || '';
           resolve(content);
@@ -85,14 +90,34 @@ function call(prompt, opts = {}) {
       });
     });
 
-    req.on('error', reject);
+    req.on('error', (err) => reject(Object.assign(err, { retryable: true })));
     req.setTimeout(opts.timeout || 30000, () => {
       req.destroy();
-      reject(new Error('LLM request timeout'));
+      reject(Object.assign(new Error('LLM request timeout'), { retryable: true }));
     });
     req.write(body);
     req.end();
   });
+}
+
+/**
+ * Call LLM with exponential backoff retry (up to 3 attempts).
+ */
+async function call(prompt, opts = {}) {
+  const maxRetries = opts.retries ?? 3;
+  let lastError;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await _callOnce(prompt, opts);
+    } catch (err) {
+      lastError = err;
+      if (!err.retryable || attempt >= maxRetries - 1) throw err;
+      const delay = Math.min(1000 * Math.pow(2, attempt), 10000);
+      console.log(`  ⏳ LLM retry ${attempt + 1}/${maxRetries} in ${delay}ms (${err.message})`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw lastError;
 }
 
 /**

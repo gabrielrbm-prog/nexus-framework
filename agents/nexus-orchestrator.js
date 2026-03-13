@@ -130,6 +130,7 @@ class NexusOrchestrator {
         results.forEach((result, idx) => {
           const step = activeSteps[idx];
           if (result.status === 'rejected' || !result.value) {
+            console.log(`  ⚠️ ${step.stage}: ${result.status === 'rejected' ? result.reason?.message || 'rejected' : 'no output'}`);
             if (step.required) waveFailed = true;
           }
         });
