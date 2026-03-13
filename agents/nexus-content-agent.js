@@ -9,6 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const llm = require('./nexus-llm');
+const NexusSquadKnowledge = require('./nexus-squad-knowledge');
 
 const WORKSPACE = path.join(__dirname, '..');
 
@@ -121,6 +122,7 @@ class NexusContentAgentV2 {
 ## Layout (seções esperadas)
 ${(technical.prioritySections || ['hero', 'features', 'testimonials', 'pricing', 'cta']).join(' → ')}
 ${discovery ? `\n## Dados reais coletados:\n${JSON.stringify(discovery, null, 2).slice(0, 1000)}` : ''}
+${this._buildSquadSection(dna)}
 
 ## Formato de saída (JSON):
 
@@ -247,10 +249,44 @@ REGRAS:
       system: `Você é um copywriter brasileiro especialista em landing pages de alta conversão.
 Escreva conteúdo persuasivo, emocional e específico para o negócio.
 Use técnicas de copywriting: AIDA, PAS, storytelling, gatilhos mentais.
-Responda APENAS com JSON válido.`,
+Responda APENAS com JSON válido.
+
+FRAMEWORKS OBRIGATÓRIOS:
+1. SCHWARTZ: Calibre headlines e copy ao nível de consciência do público (unaware→most_aware).
+   Se solution_aware: lidere com resultado desejado. Se problem_aware: lidere com empatia.
+2. HORMOZI: Pricing deve usar Value Equation — maximize Dream Outcome e Likelihood, minimize Time e Effort.
+   Cada objeção do público DEVE ser abordada dentro dos planos ou FAQ.
+   Nunca dê desconto — adicione valor (bônus, garantia).
+3. ARQUÉTIPO: O tom de voz "${brand.voiceTone || 'profissional'}" deve ser consistente em TODOS os textos.`,
       maxTokens: 4096,
       temperature: 0.75
     });
+  }
+
+  _buildSquadSection(dna) {
+    try {
+      const sk = new NexusSquadKnowledge();
+      const strategy = sk.enrichContentStrategy(dna);
+      const aw = strategy.copy.config;
+      const offer = strategy.offer;
+      let s = `\n\n## Frameworks de Especialistas (OBRIGATÓRIO SEGUIR)`;
+      s += `\n### Schwartz — Nível de Consciência: ${strategy.copy.awarenessLevel}`;
+      s += `\n- Headline: ${aw.headline_strategy}`;
+      s += `\n- Hero style: ${aw.hero_style}`;
+      s += `\n- Copy approach: ${aw.copy_approach} (${aw.copy_length})`;
+      s += `\n- CTA urgency: ${aw.cta_urgency}`;
+      s += `\n### Hormozi — Value Equation`;
+      s += `\n- Garantia recomendada: ${offer.guarantee.type.label} — "${offer.guarantee.type.description}"`;
+      s += `\n- Pricing: ${offer.pricingPsychology.anchor}. ${offer.pricingPsychology.rule}`;
+      if (offer.objectionKillers.length > 0) {
+        s += `\n- Objeções para resolver no pricing/FAQ:`;
+        offer.objectionKillers.forEach(o => { s += `\n  • "${o.objection}"`; });
+      }
+      s += `\n### Arquétipo: ${strategy.archetype.key}`;
+      s += `\n- Voz: ${strategy.voiceTone}`;
+      console.log(`  🧠 Squad Knowledge: awareness=${strategy.copy.awarenessLevel}, guarantee=${offer.guarantee.recommended}`);
+      return s;
+    } catch(e) { return ''; }
   }
 
   _fallbackContent(dna) {

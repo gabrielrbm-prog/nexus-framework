@@ -15,6 +15,10 @@
 
 const fs   = require('fs');
 const path = require('path');
+const NexusTypographyEngine = require('./nexus-typography-engine');
+const NexusAnimationEngine  = require('./nexus-animation-engine');
+const Nexus3DSceneEngine    = require('./nexus-3d-scene-engine');
+const NexusSquadKnowledge   = require('./nexus-squad-knowledge');
 
 // ─────────────────────────────────────────────────────────────
 // SLOT DEFINITIONS — maps page sections to library categories
@@ -318,6 +322,10 @@ class NexusCodeAgentV4 {
     this._fontFamily     = 'Inter';
     this._headingFont    = 'Inter';
     this._headingWeight  = '800';
+    this._typographyEngine = null;  // Typography Engine output
+    this._animationEngine  = null;  // Animation Engine output
+    this._3dScene          = null;  // 3D Scene Engine output
+    this._squadStrategy    = null;  // Squad Knowledge (Schwartz + Hormozi + Archetypes)
   }
 
   // ─── File I/O helpers ──────────────────────────────────────
@@ -521,6 +529,76 @@ class NexusCodeAgentV4 {
         jsType: comp.js_type || 'inline',
         deps:   comp.dependencies || []
       };
+    }
+
+    // Generate Typography Engine output
+    try {
+      const archetype = (this.contextDna.brand?.brandArchetype || this.contextDna.brand?.archetype || 'creator').toLowerCase();
+      const typoEngine = new NexusTypographyEngine();
+      this._typographyEngine = typoEngine.generate({
+        archetype,
+        brandName: this.contextDna.brand?.name || this.contextDna.project?.name || '',
+        businessType: this.contextDna.project?.businessType || '',
+      });
+      // Override fonts with engine's curated selections
+      const displayFamily = this._typographyEngine.fontFamilies.display.split(',')[0].replace(/"/g, '').trim();
+      const bodyFamily = this._typographyEngine.fontFamilies.body.split(',')[0].replace(/"/g, '').trim();
+      this._fontFamily = bodyFamily;
+      this._headingFont = displayFamily;
+      console.log(`  Typography Engine: ${archetype} → ${displayFamily} / ${bodyFamily}`);
+    } catch (e) {
+      console.log(`  Typography Engine fallback: ${e.message}`);
+    }
+
+    // Generate Animation Engine output
+    try {
+      const animEngine = new NexusAnimationEngine();
+      const sections = ['hero', 'stats', 'features', 'testimonials', 'pricing', 'cta'];
+      this._animationEngine = animEngine.generate(sections);
+      console.log(`  Animation Engine: ${sections.length} section choreographies loaded`);
+    } catch (e) {
+      console.log(`  Animation Engine fallback: ${e.message}`);
+    }
+
+    // Generate 3D Scene based on business type
+    try {
+      const sceneEngine = new Nexus3DSceneEngine();
+      const businessType = (this.contextDna.project?.businessType || 'default').toLowerCase();
+      this._3dScene = sceneEngine.generate({
+        businessType,
+        colors: {
+          primary: this.colors['--blue'] || '#3b82f6',
+          secondary: this.colors['--cyan'] || '#22d3ee',
+          accent: this.colors['--purple'] || '#8b5cf6',
+        },
+        darkMode: this._darkMode,
+        performanceLevel: 'high',
+      });
+      console.log(`  3D Scene Engine: ${businessType} scene loaded (${this._3dScene.js.length} chars)`);
+    } catch (e) {
+      console.log(`  3D Scene Engine fallback: ${e.message}`);
+    }
+
+    // Squad Knowledge: enrich content strategy with Schwartz + Hormozi + Archetypes
+    try {
+      const squadKnowledge = new NexusSquadKnowledge();
+      this._squadStrategy = squadKnowledge.enrichContentStrategy(this.contextDna);
+      const arch = this._squadStrategy.archetype.key;
+      const awareness = this._squadStrategy.copy.awarenessLevel;
+      const guarantee = this._squadStrategy.offer.guarantee.recommended;
+      console.log(`  Squad Knowledge: archetype=${arch}, awareness=${awareness}, guarantee=${guarantee}`);
+
+      // Validate palette against archetype
+      const paletteCheck = squadKnowledge.validatePalette(arch, {
+        primary: this.colors['--blue'],
+        secondary: this.colors['--cyan'],
+        accent: this.colors['--purple'],
+      });
+      if (!paletteCheck.aligned) {
+        console.log(`  ⚠️ Palette alert: ${paletteCheck.suggestions.join('; ')}`);
+      }
+    } catch (e) {
+      console.log(`  Squad Knowledge fallback: ${e.message}`);
     }
 
     console.log(`  Colors resolved (${this._darkMode ? 'dark' : 'light'} mode)`);
@@ -871,6 +949,10 @@ class NexusCodeAgentV4 {
 
     // PRICING
     const pricingCardClass = pick(pricingClasses, ['pricing', 'plan', 'card', 'tier'], 'pricing-card');
+    // Hormozi: value anchoring subtitle
+    const pricingSubtitle = this._squadStrategy
+      ? this._txt('pricingSubtitle', 'Invista no resultado, não no custo')
+      : '';
     const pricingHtml = pricingPlans.length > 0 ? `
     <!-- PRICING (slot: ${pricingClasses.length} classes) -->
     <section id="pricing" class="section">
@@ -878,6 +960,7 @@ class NexusCodeAgentV4 {
         <div class="section-header gsap-reveal">
           <span class="section-label">Precos</span>
           <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('pricingTitle', 'Escolha Seu Plano'))}</span></h2>
+          ${pricingSubtitle ? `<p class="section-desc">${this._escHtml(pricingSubtitle)}</p>` : ''}
         </div>
         <div class="pricing-grid">
           ${pricingPlans.slice(0, 3).map((p, i) => {
@@ -900,6 +983,31 @@ class NexusCodeAgentV4 {
         </div>
       </div>
     </section>` : '';
+
+    // GUARANTEE SECTION (Hormozi Value Equation)
+    let guaranteeHtml = '';
+    if (this._squadStrategy && this._squadStrategy.offer) {
+      const gConfig = this._squadStrategy.offer.guarantee;
+      const gType = gConfig.type;
+      if (gType) {
+        const guaranteeText = this._txt('guaranteeText', gType.copy_template
+          .replace('{dias}', '30')
+          .replace('{requisito}', 'o programa completo')
+          .replace('{resultado}', 'o resultado prometido')
+          .replace('{prazo}', '90 dias'));
+        guaranteeHtml = `
+    <!-- GUARANTEE (Hormozi) -->
+    <section id="guarantee" class="section">
+      <div class="container" style="text-align:center;max-width:700px;">
+        <div class="gsap-reveal">
+          <div class="guarantee-badge">&#128170; Garantia ${this._escHtml(gType.label)}</div>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('guaranteeTitle', 'Zero Risco Para Você'))}</span></h2>
+          <p class="section-desc" style="font-size:1.1rem;line-height:1.7;margin-top:1rem;">${this._escHtml(guaranteeText)}</p>
+        </div>
+      </div>
+    </section>`;
+      }
+    }
 
     // CTA SECTION
     const ctaHtml = `
@@ -965,10 +1073,10 @@ class NexusCodeAgentV4 {
   <meta property="og:title" content="${this._escAttr(pageTitle || businessName)}">
   <meta property="og:description" content="${this._escAttr(description)}">
   <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  ${this._typographyEngine ? this._typographyEngine.imports : `<link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(this._fontFamily)}:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  ${this._headingFont !== this._fontFamily ? `<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(this._headingFont)}:wght@700;800;900&display=swap" rel="stylesheet">` : ''}
+  ${this._headingFont !== this._fontFamily ? `<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(this._headingFont)}:wght@700;800;900&display=swap" rel="stylesheet">` : ''}`}
 
   <style>
     /* ═══════════════════════════════════════════════════════
@@ -980,6 +1088,11 @@ class NexusCodeAgentV4 {
       --font-heading: '${this._headingFont}', system-ui, sans-serif;
       --heading-weight: ${this._headingWeight};
     }
+
+    /* ═══════════════════════════════════════════════════════
+       TYPOGRAPHY ENGINE (fluid scale + archetype tokens)
+    ═══════════════════════════════════════════════════════ */
+    ${this._typographyEngine ? this._typographyEngine.css : ''}
 
     /* ═══════════════════════════════════════════════════════
        BASE STYLES
@@ -1219,6 +1332,17 @@ class NexusCodeAgentV4 {
     .pricing-btn { width: 100%; justify-content: center; }
 
     /* ═══════════════════════════════════════════════════════
+       GUARANTEE (Hormozi)
+    ═══════════════════════════════════════════════════════ */
+    .guarantee-badge {
+      display: inline-block; padding: 0.5rem 1.25rem; border-radius: 100px;
+      font-size: 0.9rem; font-weight: 600; margin-bottom: 1.5rem;
+      background: rgba(${this._hexToRgb(c['--blue'])}, 0.1);
+      border: 1px solid rgba(${this._hexToRgb(c['--blue'])}, 0.25);
+      color: var(--blue);
+    }
+
+    /* ═══════════════════════════════════════════════════════
        CTA SECTION
     ═══════════════════════════════════════════════════════ */
     .cta-section {
@@ -1282,6 +1406,11 @@ class NexusCodeAgentV4 {
 
     /* Visibility fallback */
     .gsap-reveal { will-change: opacity, transform; }
+
+    /* ═══════════════════════════════════════════════════════
+       ANIMATION ENGINE (micro-interactions + reduced motion)
+    ═══════════════════════════════════════════════════════ */
+    ${this._animationEngine ? this._animationEngine.css : ''}
   </style>
 </head>
 <body>
@@ -1296,6 +1425,8 @@ class NexusCodeAgentV4 {
   ${testimonialsHtml}
   ${waveDivider()}
   ${pricingHtml}
+  ${guaranteeHtml ? waveDivider() : ''}
+  ${guaranteeHtml}
   ${waveDivider()}
   ${ctaHtml}
   ${footerHtml}
@@ -1393,9 +1524,9 @@ class NexusCodeAgentV4 {
     })();
 
     /* ═══════════════════════════════════════════════════════
-       GSAP SCROLL REVEAL
+       GSAP SCROLL CHOREOGRAPHY (Animation Engine)
     ═══════════════════════════════════════════════════════ */
-    gsap.registerPlugin(ScrollTrigger);
+    ${this._animationEngine ? this._animationEngine.js : `gsap.registerPlugin(ScrollTrigger);
 
     gsap.utils.toArray('.gsap-reveal').forEach(el => {
       gsap.from(el, {
@@ -1409,7 +1540,7 @@ class NexusCodeAgentV4 {
         scrollTrigger: { trigger: grid, start: 'top 90%', toggleActions: 'play none none none' },
         opacity: 0, y: 30, stagger: 0.15, duration: 0.8, ease: 'power2.out'
       });
-    });
+    });`}
 
     setTimeout(() => {
       ScrollTrigger.refresh();
@@ -1469,74 +1600,33 @@ class NexusCodeAgentV4 {
     ${inlineJsFromLib}
   <\/script>
 
-  <!-- THREE.JS MODULE -->
+  <!-- THREE.JS 3D SCENE (${this._3dScene ? 'Scene Engine' : 'Fallback'}) -->
   <script type="module">
-    import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
-
+    ${this._3dScene ? this._3dScene.js : `import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
     const canvas = document.getElementById('three-canvas');
     if (canvas) {
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.z = 5;
+      const geo = new THREE.TorusKnotGeometry(1.2, 0.35, 128, 32);
+      const mat = new THREE.MeshBasicMaterial({ color: ${threeColor1}, wireframe: true, transparent: true, opacity: 0.12 });
+      const mesh = new THREE.Mesh(geo, mat);
+      scene.add(mesh);
+      const pCount = 2500, pos = new Float32Array(pCount*3), cols = new Float32Array(pCount*3);
+      const c1 = new THREE.Color(${threeColor1}), c2 = new THREE.Color(${threeColor2});
+      for (let i = 0; i < pCount; i++) { pos[i*3]=(Math.random()-.5)*20; pos[i*3+1]=(Math.random()-.5)*20; pos[i*3+2]=(Math.random()-.5)*20; const t=Math.random(); const c=c1.clone().lerp(c2,t); cols[i*3]=c.r; cols[i*3+1]=c.g; cols[i*3+2]=c.b; }
+      const pg = new THREE.BufferGeometry(); pg.setAttribute('position',new THREE.BufferAttribute(pos,3)); pg.setAttribute('color',new THREE.BufferAttribute(cols,3));
+      const pm = new THREE.PointsMaterial({size:0.025,vertexColors:true,transparent:true,opacity:0.6,sizeAttenuation:true});
+      const pts = new THREE.Points(pg,pm); scene.add(pts);
+      let mx=0,my=0; document.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-.5)*2;my=(e.clientY/window.innerHeight-.5)*2;});
+      (function anim(){requestAnimationFrame(anim);mesh.rotation.x+=.003;mesh.rotation.y+=.005;pts.rotation.y+=.0003;camera.position.x+=(mx*.3-camera.position.x)*.01;camera.position.y+=(-my*.3-camera.position.y)*.01;camera.lookAt(scene.position);renderer.render(scene,camera);})();
+      window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
+    }`}
 
-      const torusGeo = new THREE.TorusKnotGeometry(1.2, 0.35, 128, 32);
-      const torusMat = new THREE.MeshBasicMaterial({ color: ${threeColor1}, wireframe: true, transparent: true, opacity: ${this._darkMode ? 0.12 : 0.05} });
-      const torusKnot = new THREE.Mesh(torusGeo, torusMat);
-      scene.add(torusKnot);
-
-      const particleCount = 2500;
-      const positions = new Float32Array(particleCount * 3);
-      const colors = new Float32Array(particleCount * 3);
-      const c1 = new THREE.Color(${threeColor1});
-      const c2 = new THREE.Color(${threeColor2});
-
-      for (let i = 0; i < particleCount; i++) {
-        positions[i*3] = (Math.random()-0.5)*20;
-        positions[i*3+1] = (Math.random()-0.5)*20;
-        positions[i*3+2] = (Math.random()-0.5)*20;
-        const t = Math.random();
-        const col = c1.clone().lerp(c2, t);
-        colors[i*3] = col.r; colors[i*3+1] = col.g; colors[i*3+2] = col.b;
-      }
-
-      const particleGeo = new THREE.BufferGeometry();
-      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-      const particleMat = new THREE.PointsMaterial({ size: 0.025, vertexColors: true, transparent: true, opacity: ${this._darkMode ? 0.6 : 0.25}, sizeAttenuation: true });
-      const particleMesh = new THREE.Points(particleGeo, particleMat);
-      scene.add(particleMesh);
-
-      let mouseX = 0, mouseY = 0;
-      document.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-      });
-
-      function animate() {
-        requestAnimationFrame(animate);
-        torusKnot.rotation.x += 0.003; torusKnot.rotation.y += 0.005;
-        torusKnot.position.x += (mouseX * 0.5 - torusKnot.position.x) * 0.02;
-        torusKnot.position.y += (-mouseY * 0.5 - torusKnot.position.y) * 0.02;
-        particleMesh.rotation.y += 0.0003; particleMesh.rotation.x += 0.0001;
-        camera.position.x += (mouseX * 0.3 - camera.position.x) * 0.01;
-        camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.01;
-        camera.lookAt(scene.position);
-        renderer.render(scene, camera);
-      }
-      animate();
-
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-
-      ${moduleJsFromLib}
-    }
+    ${moduleJsFromLib}
   <\/script>
 </body>
 </html>`;
@@ -1585,6 +1675,19 @@ class NexusCodeAgentV4 {
     lines.push('## Premium Effects\n');
     for (const id of Object.keys(this.resolvedPremium)) {
       lines.push(`- ${id}`);
+    }
+
+    // Squad Knowledge report
+    if (this._squadStrategy) {
+      lines.push('\n## Squad Knowledge\n');
+      lines.push(`- **Archetype:** ${this._squadStrategy.archetype.key}`);
+      lines.push(`- **Voice Tone:** ${this._squadStrategy.voiceTone}`);
+      lines.push(`- **Awareness Level (Schwartz):** ${this._squadStrategy.copy.awarenessLevel}`);
+      lines.push(`- **Hero Style:** ${this._squadStrategy.copy.config.hero_style}`);
+      lines.push(`- **CTA Urgency:** ${this._squadStrategy.copy.config.cta_urgency}`);
+      lines.push(`- **Copy Approach:** ${this._squadStrategy.copy.config.copy_approach}`);
+      lines.push(`- **Guarantee (Hormozi):** ${this._squadStrategy.offer.guarantee.recommended} — ${this._squadStrategy.offer.guarantee.type.description}`);
+      lines.push(`- **Value Equation:** ${this._squadStrategy.offer.valueEquation.formula}`);
     }
 
     return lines.join('\n');

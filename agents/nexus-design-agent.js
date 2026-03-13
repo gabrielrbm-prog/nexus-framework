@@ -8,6 +8,8 @@
 const fs = require('fs');
 const path = require('path');
 const llm = require('./nexus-llm');
+const NexusTypographyEngine = require('./nexus-typography-engine');
+const NexusSquadKnowledge = require('./nexus-squad-knowledge');
 
 const WORKSPACE = path.join(__dirname, '..');
 
@@ -33,6 +35,45 @@ class NexusDesignAgentV2 {
     // Build full design system from AI decisions + real color math
     const designSystem = this._buildDesignSystem(designDecisions, dna);
 
+    // Validate palette against brand archetype (Squad Knowledge)
+    try {
+      const sk = new NexusSquadKnowledge();
+      const archetype = (dna.brand?.brandArchetype || dna.brand?.archetype || 'creator').toLowerCase();
+      const check = sk.validatePalette(archetype, {
+        primary: designDecisions.colors?.primary,
+        secondary: designDecisions.colors?.secondary,
+        accent: designDecisions.colors?.accent,
+      });
+      if (!check.aligned) {
+        console.log(`   ⚠️ Palette x Archetype: ${check.suggestions.join('; ')}`);
+        console.log(`   🎨 Sugestão do arquétipo: ${check.colorDescription}`);
+      } else {
+        console.log(`   ✅ Palette alinhada com arquétipo ${archetype}`);
+      }
+    } catch(e) { /* silent */ }
+
+    // Generate typography system via Typography Engine
+    const archetype = (dna.brand?.brandArchetype || dna.brand?.archetype || 'creator').toLowerCase();
+    const typoEngine = new NexusTypographyEngine();
+    let typography = null;
+    try {
+      typography = typoEngine.generate({
+        archetype,
+        brandName: dna.brand?.name || dna.project?.name || '',
+        businessType: dna.project?.businessType || '',
+      });
+      // Override design system typography with engine output
+      const displayFamily = typography.fontFamilies.display.split(',')[0].replace(/"/g, '').trim();
+      const bodyFamily = typography.fontFamilies.body.split(',')[0].replace(/"/g, '').trim();
+      designSystem.typography.fontFamily = bodyFamily;
+      designSystem.typography.headingFamily = displayFamily;
+      designSystem.typography.engineTokens = typography.tokens;
+      designSystem.typography.engineFontFamilies = typography.fontFamilies;
+      console.log(`   🔤 Typography Engine: ${archetype} → ${displayFamily} / ${bodyFamily}`);
+    } catch (e) {
+      console.log(`   ⚠️ Typography Engine falhou (${e.message}), usando fontes do LLM`);
+    }
+
     // Save outputs
     const dsDir = path.join(projectDir, 'design-system');
     if (!fs.existsSync(dsDir)) fs.mkdirSync(dsDir, { recursive: true });
@@ -40,6 +81,10 @@ class NexusDesignAgentV2 {
     fs.writeFileSync(path.join(dsDir, 'design-system.json'), JSON.stringify(designSystem, null, 2));
     fs.writeFileSync(path.join(dsDir, 'variables.css'), this._generateCSS(designSystem));
     fs.writeFileSync(path.join(dsDir, 'design-system.css'), this._generateUtilityCSS(designSystem));
+    if (typography) {
+      fs.writeFileSync(path.join(dsDir, 'typography.css'), typography.css);
+      fs.writeFileSync(path.join(dsDir, 'typography-imports.html'), typography.imports);
+    }
 
     // Also write to workspace design-system for backward compat
     const wsDir = path.join(WORKSPACE, 'design-system');
@@ -47,6 +92,10 @@ class NexusDesignAgentV2 {
     fs.writeFileSync(path.join(wsDir, 'design-system.json'), JSON.stringify(designSystem, null, 2));
     fs.writeFileSync(path.join(wsDir, 'variables.css'), this._generateCSS(designSystem));
     fs.writeFileSync(path.join(wsDir, 'design-system.css'), this._generateUtilityCSS(designSystem));
+    if (typography) {
+      fs.writeFileSync(path.join(wsDir, 'typography.css'), typography.css);
+      fs.writeFileSync(path.join(wsDir, 'typography-imports.html'), typography.imports);
+    }
 
     // Report
     const report = this._generateReport(designSystem, dna);

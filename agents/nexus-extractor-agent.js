@@ -1882,6 +1882,44 @@ async function main() {
     const maxScore = Math.max(...scores);
     const minScore = Math.min(...scores);
     log(`\nQuality: avg=${avgScore} min=${minScore} max=${maxScore}`);
+
+    // Sync to Google Sheets (if credentials configured)
+    try {
+      const NexusSheetsSync = require('./nexus-sheets-sync');
+      const sheetsSync = new NexusSheetsSync();
+
+      const targetUrl = args.url || (args.source ? SOURCE_CATALOGS[args.source]?.baseUrl : null);
+      if (targetUrl) {
+        const siteUrl = new URL(targetUrl);
+        const companyName = siteUrl.hostname.replace(/^www\./, '').split('.')[0];
+        const companyTitle = companyName.charAt(0).toUpperCase() + companyName.slice(1);
+
+        // Collect unique categories, tags, and colors from extracted components
+        const categories = [...new Set(components.map(c => c.category))];
+        const allTags = [...new Set(components.flatMap(c => c.tags || []))];
+        const effects = allTags.filter(t => ['gradient', 'animation', 'glassmorphism', 'parallax', 'hover-effect', '3d', 'blur', 'glow', 'particles', 'scroll'].includes(t));
+
+        await sheetsSync.addReference({
+          companyName: companyTitle,
+          url: targetUrl,
+          sector: args.sector || categories[0] || 'General',
+          designScore: parseFloat(avgScore),
+          techStack: categories.slice(0, 5),
+          colors: [],
+          fonts: [],
+          effects: effects.slice(0, 8),
+          componentsExtracted: components.length,
+          extractedAt: new Date().toISOString().split('T')[0],
+          notes: `${added} new components. Categories: ${categories.join(', ')}`
+        });
+        log(`\n📊 Google Sheets: reference synced for ${companyTitle}`);
+      }
+    } catch (e) {
+      // Silently skip if sheets not configured
+      if (e.code !== 'MODULE_NOT_FOUND' && !e.message.includes('credentials')) {
+        log(`\n⚠️ Google Sheets sync skipped: ${e.message}`);
+      }
+    }
   } else {
     log('\nNo components were extracted.');
 

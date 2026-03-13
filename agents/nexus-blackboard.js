@@ -103,7 +103,10 @@ class NexusBlackboard {
         keywords: [],
         tone: null,
         audience: null,
-        competitors: []
+        competitors: [],
+        archetype: null,
+        awarenessLevel: null,
+        guaranteeType: null
       },
       // Design Agent output
       design: {

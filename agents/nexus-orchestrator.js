@@ -34,6 +34,9 @@ class NexusOrchestrator {
       // Wave 3: Analysis
       { wave: 3, stage: 'context',    required: true,  timeout: 60000,
         description: 'Analisa briefing e gera Context DNA' },
+      // Wave 3.5: Competitor research + extraction (parallel with nothing — runs after context)
+      { wave: 3.5, stage: 'references', required: false, timeout: 120000,
+        description: 'Pesquisa concorrentes, extrai componentes e sincroniza referências' },
       // Wave 4: PARALLEL — Design + Content + Image + Video all depend on Context only
       { wave: 4, stage: 'design',     required: true,  timeout: 90000,
         description: 'Gera design system contextual' },
@@ -243,6 +246,9 @@ class NexusOrchestrator {
           break;
         case 'context':
           result = await this._runViaBridge(projectName, 'context');
+          break;
+        case 'references':
+          result = await this._runReferenceHunter(projectName, opts);
           break;
         case 'design':
           result = await this._runViaBridge(projectName, 'design');
@@ -468,6 +474,28 @@ ${links}
   }
 
   // ========== REFERENCES ==========
+
+  async _runReferenceHunter(projectName, opts) {
+    try {
+      const NexusReferenceHunter = require('./nexus-reference-hunter');
+      const hunter = new NexusReferenceHunter(projectName, {
+        niche: opts.niche || board.get('references.niche') || board.get('discovery.sector'),
+        max: opts.maxRefs || 5,
+      });
+      const result = await hunter.run();
+
+      if (result.success && result.analysis) {
+        board.set('references.competitorAnalysis', result.analysis);
+        board.set('references.commonPatterns', result.analysis.commonPatterns);
+        board.set('references.sitesAnalyzed', result.analysis.competitorsAnalyzed);
+        board.set('references.componentsExtracted', result.analysis.totalComponentsExtracted);
+      }
+
+      return { success: result.success, error: result.error || null };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
 
   _loadReferences(niche) {
     const nicheFile = path.join(WORKSPACE, 'references-db', 'niches', `${niche}.json`);

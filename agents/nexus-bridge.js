@@ -89,6 +89,10 @@ class NexusBridge {
       board.set('context.keywords', dna.seo?.keywords || []);
       board.set('context.tone', dna.psychology?.primary || null);
       board.set('context.audience', dna.audience || null);
+      // Persist Squad Knowledge decisions
+      board.set('context.archetype', dna.brand?.brandArchetype || dna.brand?.archetype || null);
+      board.set('context.awarenessLevel', dna.copyStrategy?.awarenessLevel || null);
+      board.set('context.guaranteeType', dna.offerStrategy?.guaranteeType || null);
       return true;
     }
     return false;

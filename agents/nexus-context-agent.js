@@ -9,6 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const llm = require('./nexus-llm');
+const NexusSquadKnowledge = require('./nexus-squad-knowledge');
 
 const WORKSPACE = path.join(__dirname, '..');
 
@@ -37,7 +38,15 @@ class NexusContextAgentV2 {
 Analise o briefing e dados fornecidos para criar um Context DNA completo e detalhado.
 Responda APENAS com JSON válido, sem texto adicional.
 Seja específico para o negócio — nunca use conteúdo genérico.
-Adapte tudo ao mercado brasileiro (LGPD, não GDPR; cultura local).`,
+Adapte tudo ao mercado brasileiro (LGPD, não GDPR; cultura local).
+
+FRAMEWORKS OBRIGATÓRIOS:
+1. ARQUÉTIPOS DE MARCA (Jung/Margaret Mark): O brandArchetype DEVE influenciar cores, voz e visual.
+   Não use roxo para clínicas médicas (caregiver→azul/verde), não use vermelho para marcas sage/trustworthy.
+2. SCHWARTZ (5 Níveis de Consciência): Adapte headlines e copy ao nível de awareness do público.
+   Solution_aware = lidere com resultado. Problem_aware = lidere com empatia pelo problema.
+3. HORMOZI (Value Equation): Pain points devem mapear para "antes/durante/depois" da solução.
+   Objeções devem ser resolvidas DENTRO da oferta, não ignoradas.`,
         maxTokens: 4096,
         temperature: 0.6
       });
@@ -75,6 +84,7 @@ Adapte tudo ao mercado brasileiro (LGPD, não GDPR; cultura local).`,
   }
 
   _buildPrompt(briefing, projectName, discovery, brief, nicheRefs, opts) {
+    const projectDir = path.join(WORKSPACE, 'projects', projectName);
     let prompt = `Analise este projeto e gere um Context DNA completo em JSON.
 
 ## Projeto: ${projectName}
@@ -95,6 +105,34 @@ Adapte tudo ao mercado brasileiro (LGPD, não GDPR; cultura local).`,
     if (nicheRefs) {
       prompt += `\n\n## Referências do nicho ${opts.niche}:\n- Sites: ${(nicheRefs.sites || []).map(s => s.name || s.url).join(', ')}`;
       prompt += `\n- Padrões comuns: ${(nicheRefs.topComponents || []).slice(0, 5).map(c => c.pattern || c).join(', ')}`;
+      if (nicheRefs.common_colors) {
+        prompt += `\n- Cores mais usadas: ${JSON.stringify(nicheRefs.common_colors)}`;
+      }
+      if (nicheRefs.common_fonts) {
+        prompt += `\n- Fontes mais usadas: ${nicheRefs.common_fonts.join(', ')}`;
+      }
+    }
+
+    // Squad Knowledge: archetype-driven guidance for LLM
+    try {
+      const squadKnowledge = new NexusSquadKnowledge();
+      const archetype = opts.archetype || brief?.brandArchetype || discovery?.archetype || '';
+      if (archetype) {
+        prompt += squadKnowledge.buildContextPromptSection(archetype, opts.niche || '');
+        console.log(`  🎭 Squad Knowledge: arquétipo "${archetype}" injetado no prompt`);
+      }
+    } catch(e) { /* silent */ }
+
+    // Load competitor analysis if Reference Hunter already ran
+    const compAnalysis = this._loadJSON(path.join(projectDir, 'competitor-analysis.json'));
+    if (compAnalysis && compAnalysis.sites) {
+      prompt += `\n\n## Análise de Concorrentes (${compAnalysis.competitorsAnalyzed} sites analisados):`;
+      prompt += `\n- Scores médios: Design ${compAnalysis.averageScore?.design}/10, Conversão ${compAnalysis.averageScore?.conversion}/10`;
+      prompt += `\n- Efeitos populares: ${(compAnalysis.commonPatterns?.effects || []).slice(0, 5).map(e => e.value).join(', ')}`;
+      prompt += `\n- Fontes populares: ${(compAnalysis.commonPatterns?.fonts || []).slice(0, 4).map(f => f.value).join(', ')}`;
+      prompt += `\n- Seções mais comuns: ${(compAnalysis.commonPatterns?.sections || []).slice(0, 6).map(s => s.value).join(', ')}`;
+      prompt += `\n- Dark mode: ${(compAnalysis.darkModePrevalence * 100).toFixed(0)}% dos concorrentes`;
+      prompt += `\n- CTAs populares: ${(compAnalysis.commonPatterns?.ctaTexts || []).slice(0, 3).map(c => `"${c.value}"`).join(', ')}`;
     }
 
     prompt += `
@@ -167,6 +205,17 @@ Adapte tudo ao mercado brasileiro (LGPD, não GDPR; cultura local).`,
     "directCompetitors": ["concorrente real 1", "concorrente real 2"],
     "differentiators": ["diferencial real 1 deste negócio", "diferencial 2"],
     "marketPosition": "posicionamento em 1 frase"
+  },
+  "copyStrategy": {
+    "awarenessLevel": "most_aware|product_aware|solution_aware|problem_aware|unaware (nível de consciência do público sobre este tipo de solução)",
+    "sophisticationStage": 1-5,
+    "headlineApproach": "como a headline deve funcionar para este nível",
+    "heroStyle": "estilo do hero section baseado no awareness level"
+  },
+  "offerStrategy": {
+    "guaranteeType": "unconditional|conditional|performance|reverse_risk",
+    "valueProposition": "proposta de valor em 1 frase usando Value Equation de Hormozi",
+    "objectionHandling": ["como abordar objeção 1 na oferta", "objeção 2"]
   }
 }
 
