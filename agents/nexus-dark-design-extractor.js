@@ -80,7 +80,12 @@ class NexusDarkDesignExtractor {
       fs.writeFileSync(REFS_FILE, JSON.stringify(defaults, null, 2));
       return defaults;
     }
-    return JSON.parse(fs.readFileSync(REFS_FILE, 'utf-8'));
+    const data = JSON.parse(fs.readFileSync(REFS_FILE, 'utf-8'));
+    // Support both flat `sites` array and nested `curated_sites` format
+    if (!data.sites && data.curated_sites) {
+      data.sites = Object.values(data.curated_sites).flat();
+    }
+    return data;
   }
 
   _defaultReferences() {
