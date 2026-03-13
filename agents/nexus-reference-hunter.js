@@ -57,6 +57,22 @@ const NICHE_COMPETITORS = {
   realestate: ['zillow.com', 'realtor.com', 'redfin.com', 'trulia.com', 'compass.com'],
 };
 
+// Category mapping for premium references → niche matching
+const CATEGORY_MAP = {
+  fitness: ['fitness', 'personal', 'agency'],
+  healthcare: ['software', 'personal'],
+  fintech: ['fintech', 'software'],
+  trading: ['fintech', 'software'],
+  saas: ['software', 'ai'],
+  ecommerce: ['commerce', 'software'],
+  restaurant: ['personal', 'agency'],
+  education: ['education', 'software'],
+  agency: ['agency', 'personal'],
+  luxury: ['agency', 'personal', 'commerce'],
+  tech: ['software', 'ai'],
+  default: ['software', 'agency'],
+};
+
 // ─────────────────────────────────────────────────────────────
 // HTTP FETCHER
 // ─────────────────────────────────────────────────────────────
@@ -450,6 +466,37 @@ class NexusReferenceHunter {
     return { success: true, analysis, extractions };
   }
 
+  // ─── Premium References Loader ────────────────────────────
+
+  _loadPremiumReferences() {
+    const premiumPath = path.join(WORKSPACE, 'references-db', 'premium-dark-references.json');
+    if (!fs.existsSync(premiumPath)) return [];
+
+    try {
+      const data = JSON.parse(fs.readFileSync(premiumPath, 'utf-8'));
+      const categories = CATEGORY_MAP[this.niche] || CATEGORY_MAP.default;
+
+      // Flatten all curated_sites groups into a single array
+      const allSites = Object.values(data.curated_sites || {}).flat();
+
+      // Filter sites matching the project's niche categories
+      const matched = allSites.filter(site => categories.includes(site.category));
+
+      // Shuffle and pick up to 3
+      const shuffled = matched.sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, 3);
+
+      if (selected.length > 0) {
+        console.log(`  From Premium References: ${selected.length} curated dark-mode sites (categories: ${categories.join(', ')})`);
+      }
+
+      return selected.map(s => s.url);
+    } catch (e) {
+      console.log(`  ⚠️ Could not load premium references: ${e.message}`);
+      return [];
+    }
+  }
+
   // ─── Step 1: Discover competitors ─────────────────────────
 
   async _discoverCompetitors() {
@@ -500,14 +547,23 @@ class NexusReferenceHunter {
       }
     }
 
-    // Source 3: Hardcoded niche competitors
+    // Source 3: Premium dark-mode references (highest quality, analyzed first)
+    if (this.niche) {
+      const premiumUrls = this._loadPremiumReferences();
+      if (premiumUrls.length > 0) {
+        // Prepend premium sites so they are analyzed first
+        urls = [...new Set([...premiumUrls, ...urls])];
+      }
+    }
+
+    // Source 4: Hardcoded niche competitors
     if (this.niche && NICHE_COMPETITORS[this.niche]) {
       const nicheUrls = NICHE_COMPETITORS[this.niche];
       urls = [...new Set([...urls, ...nicheUrls])];
       console.log(`  From built-in DB: ${nicheUrls.length} known competitors`);
     }
 
-    // Source 4: Discovery data (company competitors)
+    // Source 5: Discovery data (company competitors)
     const discoveryPath = path.join(this.projectDir, 'company-profile.json');
     if (fs.existsSync(discoveryPath)) {
       try {

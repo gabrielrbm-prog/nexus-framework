@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "source": "dark.design + direct branding scrapes",
+    "extractedAt": "2026-03-12",
+    "totalSites": 40,
+    "version": "1.0"
+  },
+  "curated_sites": {
+    "software": [
+      { "name": "Linear", "url": "https://linear.app/homepage", "category": "software" },
+      { "name": "Better Stack", "url": "https://betterstack.com", "category": "software" },
+      { "name": "Trigger.dev", "url": "https://trigger.dev", "category": "software" },
+      { "name": "Cursor", "url": "https://www.cursor.com", "category": "ai" },
+      { "name": "Warp", "url": "https://www.warp.dev", "category": "software" },
+      { "name": "Height", "url": "https://height.app", "category": "software" },
+      { "name": "HEX", "url": "https://hex.tech", "category": "software" },
+      { "name": "Retool", "url": "https://retool.com", "category": "software" },
+      { "name": "Toolbar", "url": "https://usetool.bar", "category": "software" },
+      { "name": "Fey", "url": "https://fey.com", "category": "fintech" },
+      { "name": "Slash", "url": "https://www.slash.com", "category": "fintech" },
+      { "name": "AntiMetal", "url": "https://antimetal.com", "category": "software" },
+      { "name": "Orbi", "url": "https://heyorbi.com", "category": "software" },
+      { "name": "Modal", "url": "https://modal.com", "category": "ai" },
+      { "name": "Shareio", "url": "https://www.shareio.app", "category": "software" },
+      { "name": "Lapz", "url": "https://www.lapz.io", "category": "software" },
+      { "name": "GoPidge", "url": "https://www.gopidge.com", "category": "software" },
+      { "name": "Shuttle", "url": "https://shuttle.zip", "category": "software" },
+      { "name": "Onmi", "url": "https://onmi.io", "category": "software" }
+    ],
+    "agency": [
+      { "name": "13g", "url": "https://www.13g.fr", "category": "agency" },
+      { "name": "Deeo Studio", "url": "https://deeo.studio", "category": "agency" },
+      { "name": "Framer Studio", "url": "https://framer.studio", "category": "agency" },
+      { "name": "Hyperstudio", "url": "https://www.hyperstudio.org", "category": "agency" },
+      { "name": "Playlist Studio", "url": "https://playlist.studio", "category": "agency" },
+      { "name": "Ultra", "url": "https://www.studioultra.co", "category": "agency" }
+    ],
+    "personal": [
+      { "name": "Blocks", "url": "https://blocks.shawnlukas.com", "category": "personal" },
+      { "name": "Gokul Krishnan", "url": "https://gokulkrishnan.com", "category": "personal" },
+      { "name": "Jin Su Park", "url": "https://jinsupark.com", "category": "personal" },
+      { "name": "Hey Valentin", "url": "https://www.heyvalentin.club", "category": "personal" }
+    ],
+    "other": [
+      { "name": "Grok", "url": "https://x.ai", "category": "ai" },
+      { "name": "Tiempo", "url": "https://www.tiempo.fitness", "category": "fitness" },
+      { "name": "Osmo", "url": "https://www.osmo.supply", "category": "education" },
+      { "name": "Blok", "url": "https://blok.so", "category": "hardware" },
+      { "name": "Festina", "url": "https://festina.vc", "category": "finance" },
+      { "name": "ZBS Capital", "url": "https://www.zbs.capital", "category": "web3" },
+      { "name": "Kino", "url": "https://www.shotwithkino.com", "category": "software" },
+      { "name": "Droppable", "url": "https://www.pixelwrld.co/droppable", "category": "software" },
+      { "name": "Time Drift", "url": "https://www.timedrift.live", "category": "software" },
+      { "name": "TYPO72TYPO", "url": "https://www.t72t.com", "category": "software" }
+    ]
+  },
+  "branding_profiles": {
+    "linear": {
+      "colorScheme": "dark",
+      "background": "#08090A",
+      "textPrimary": "#F7F8F8",
+      "accent": "#5E6AD2",
+      "fonts": { "heading": "SF Pro Display", "body": "Inter" },
+      "fontSizes": { "h1": "64px", "h2": "48px", "body": "15px" },
+      "borderRadius": "2px",
+      "buttonPrimary": { "bg": "#E6E6E6", "text": "#08090A", "radius": "4px" },
+      "buttonSecondary": { "bg": "#28282C", "text": "#F7F8F8", "border": "#3E3E44", "radius": "4px" },
+      "personality": { "tone": "professional", "energy": "medium" }
+    },
+    "betterstack": {
+      "colorScheme": "dark",
+      "background": "#0B0C14",
+      "textPrimary": "#C9D3EE",
+      "accent": "#939DB8",
+      "fonts": { "heading": "Helvetica Now Display", "body": "Helvetica Now Text" },
+      "fontSizes": { "h1": "53px", "h2": "40px", "body": "20px" },
+      "borderRadius": "12px",
+      "buttonPrimary": { "bg": "transparent", "text": "#FFFFFF", "border": "#2D2E35", "radius": "10px", "shadow": "rgba(255,255,255,0.25) 0px 1px 3px 0px inset" },
+      "buttonSecondary": { "bg": "#171926", "text": "#C9D3EE", "radius": "9999px" },
+      "personality": { "tone": "professional", "energy": "medium" },
+      "framework": "tailwind"
+    },
+    "antimetal": {
+      "colorScheme": "light",
+      "background": "#F8F9FC",
+      "textPrimary": "#1B2540",
+      "accent": "#D0F100",
+      "fonts": { "heading": "ivarTextFont", "body": "abcdFont" },
+      "fontSizes": { "h1": "46px", "h2": "46px", "body": "20px" },
+      "borderRadius": "0px",
+      "buttonPrimary": { "bg": "#D0F100", "text": "#1B2540", "radius": "9999px", "shadow": "multi-inset-glow" },
+      "buttonSecondary": { "bg": "#001033", "text": "#FAFEFF", "radius": "9999px", "shadow": "multi-layer" },
+      "personality": { "tone": "modern", "energy": "high" },
+      "framework": "tailwind"
+    },
+    "trigger": {
+      "colorScheme": "dark",
+      "background": "#121317",
+      "textPrimary": "#D7D9DD",
+      "accent": "#41FF54",
+      "accentGradient": ["#41FF54", "#E7FF52"],
+      "fonts": { "heading": "Satoshi-Variable", "body": "Geist-Regular" },
+      "fontSizes": { "h1": "60px", "h2": "20px", "body": "14px" },
+      "borderRadius": "4px",
+      "buttonPrimary": { "bg": "#15171A", "text": "#D7D9DD", "border": "#1C1E21", "radius": "4px" },
+      "personality": { "tone": "modern", "energy": "medium" },
+      "framework": "tailwind"
+    },
+    "warp": {
+      "colorScheme": "dark",
+      "background": "#121212",
+      "textPrimary": "#FFFFFF",
+      "accent": "#BD9F65",
+      "fonts": { "heading": "Matter Medium", "body": "Matter Regular", "mono": "Geist Mono" },
+      "fontSizes": { "h1": "80px", "h2": "48px", "body": "16px" },
+      "borderRadius": "6px",
+      "buttonPrimary": { "bg": "#FAF9F6", "text": "#0000EE", "radius": "6px", "shadow": "rgba(18,18,18,0.2) 0px 0px 16px 0px" },
+      "buttonSecondary": { "bg": "#1E1E1D", "text": "#0000EE", "radius": "5px" },
+      "personality": { "tone": "modern", "energy": "medium" }
+    }
+  },
+  "common_patterns": {
+    "dark_backgrounds": ["#08090A", "#0B0C14", "#121212", "#121317", "#0F0F0F", "#0A0A0B"],
+    "dark_cards": ["#28282C", "#171926", "#15171A", "#1E1E1D", "#151722"],
+    "dark_borders": ["#3E3E44", "#2D2E35", "#1C1E21", "#202330", "#262935"],
+    "text_bright": ["#F7F8F8", "#FFFFFF", "#D7D9DD", "#FAF9F6", "#C9D3EE", "#E6E6E6"],
+    "text_dim": ["#878C99", "#939DB8", "#5F6570", "#646E87"],
+    "accent_colors": {
+      "purple_violet": ["#5E6AD2", "#A855F7", "#6c47ff", "#7c6ef0"],
+      "green_lime": ["#41FF54", "#E7FF52", "#D0F100", "#00d4aa"],
+      "gold_warm": ["#BD9F65", "#FBBF24", "#ffcc00"],
+      "blue_cyan": ["#2563EB", "#0000EE", "#5856d6"]
+    },
+    "premium_fonts": {
+      "headings": ["SF Pro Display", "Matter Medium", "Satoshi-Variable", "Helvetica Now Display", "Cabinet Grotesk", "ivarTextFont"],
+      "body": ["Inter", "Geist-Regular", "Matter Regular", "Helvetica Now Text", "abcdFont"]
+    },
+    "border_radius_trends": {
+      "sharp": ["2px", "4px"],
+      "medium": ["6px", "10px", "12px"],
+      "pill": ["9999px", "100px"]
+    },
+    "button_patterns": {
+      "inset_shadow": "rgba(255,255,255,0.25) 0px 1px 3px 0px inset",
+      "multi_layer_shadow": "rgba(24,37,66,0.32) 0px 1px 3px, rgba(219,247,255,0.48) 0px 0.5px 0.5px inset",
+      "glass_border": "1px solid rgba(255,255,255,0.08)"
+    }
+  },
+  "dribbble_tags": [
+    "dark-theme-ui", "black-website", "black-gold-ui", "ui-2025",
+    "grid-landing-page", "elegant-dark", "2025-design", "premium-plan-banner"
+  ]
+}

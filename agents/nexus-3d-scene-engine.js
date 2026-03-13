@@ -1,13 +1,15 @@
 /**
- * Nexus 3D Scene Engine
+ * Nexus 3D Scene Engine v2.0
  *
- * Generates UNIQUE Three.js scenes per business type/niche.
+ * Generates IMPRESSIVE Three.js scenes per business type/niche.
  * Each scene is a complete, self-contained ES module with:
- *   - requestAnimationFrame loop
- *   - Resize handling
- *   - Mouse parallax
- *   - Scroll reactivity
- *   - Mobile optimization
+ *   - Post-processing (EffectComposer + UnrealBloomPass)
+ *   - Custom shaders (vertex displacement, chromatic aberration)
+ *   - Dense particle systems (BufferGeometry)
+ *   - Multi-light setups with color variation
+ *   - Smooth camera orbit/drift
+ *   - Mouse parallax + scroll reactivity
+ *   - Mobile optimization (reduced particles, no bloom)
  *
  * Supported scenes: fintech, trading, saas, healthcare, ecommerce,
  *   fitness, education, restaurant, agency, luxury, tech, default
@@ -17,8 +19,13 @@
 
 class Nexus3DSceneEngine {
   constructor() {
-    this.version = '1.0.0';
+    this.version = '2.0.0';
     this.threeCDN = 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
+    this.addonCDNs = [
+      'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/EffectComposer.js',
+      'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/RenderPass.js',
+      'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/UnrealBloomPass.js',
+    ];
   }
 
   /**
@@ -71,7 +78,7 @@ class Nexus3DSceneEngine {
       js: sceneJs,
       css: sceneCss,
       canvasId,
-      dependencies: [this.threeCDN],
+      dependencies: [this.threeCDN, ...this.addonCDNs],
     };
   }
 
@@ -84,6 +91,9 @@ class Nexus3DSceneEngine {
   _preamble(canvasId, bgColor, colors) {
     return `
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
+import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 (function() {
   const canvas = document.getElementById('${canvasId}');
@@ -95,20 +105,41 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.m
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(${this._hex(bgColor)});
+  scene.fog = new THREE.FogExp2(${this._hex(bgColor)}, 0.015);
 
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: false });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
 
   const PRIMARY = ${this._hex(colors.primary)};
   const SECONDARY = ${this._hex(colors.secondary)};
   const ACCENT = ${this._hex(colors.accent)};
 
+  // Post-processing
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  if (!isMobile) {
+    const bloom = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      0.8, 0.4, 0.85
+    );
+    composer.addPass(bloom);
+  }
+
+  // Noise function (simple 3D simplex approx)
+  function noise3D(x, y, z) {
+    const p = x * 12.9898 + y * 78.233 + z * 37.719;
+    return (Math.sin(p) * 43758.5453) % 1;
+  }
+
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
   });
   window.addEventListener('mousemove', (e) => {
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -126,7 +157,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.m
     const elapsed = clock.getElapsedTime();
     const delta = clock.getDelta();
     update(elapsed, delta);
-    renderer.render(scene, camera);
+    composer.render();
   }
   animate();
 })();
@@ -147,1470 +178,1046 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.m
 `.trim();
   }
 
-  // ── SCENE 1: Fintech — Floating Data Grid ───────────────────────
+  // ── Shared: create particle cloud ─────────────────────────────────
 
-  _sceneFintech({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const gridSize = performanceLevel === 'high' ? 10 : performanceLevel === 'medium' ? 7 : 5;
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 5, 18);
-  camera.lookAt(0, 0, 0);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-  scene.add(ambientLight);
-  const pointLight = new THREE.PointLight(PRIMARY, 2, 50);
-  pointLight.position.set(5, 5, 5);
-  scene.add(pointLight);
-
-  const gridSize = isMobile ? ${Math.max(gridSize - 3, 3)} : ${gridSize};
-  const spacing = 1.8;
-  const cubes = [];
-  const cubeGroup = new THREE.Group();
-
-  for (let x = 0; x < gridSize; x++) {
-    for (let y = 0; y < gridSize; y++) {
-      for (let z = 0; z < 3; z++) {
-        const geo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
-        const mat = new THREE.MeshPhongMaterial({
-          color: PRIMARY,
-          transparent: true,
-          opacity: 0.08 + Math.random() * 0.15,
-          wireframe: Math.random() > 0.5,
-        });
-        const cube = new THREE.Mesh(geo, mat);
-        cube.position.set(
-          (x - gridSize / 2) * spacing,
-          (y - gridSize / 2) * spacing,
-          (z - 1) * spacing
-        );
-        cube.userData.baseOpacity = mat.opacity;
-        cube.userData.pulseSpeed = 0.5 + Math.random() * 2;
-        cube.userData.pulseOffset = Math.random() * Math.PI * 2;
-        cubeGroup.add(cube);
-        cubes.push(cube);
-      }
+  _particleSnippet(count, color, size, spread, blending) {
+    return `
+  (function() {
+    const pCount = isMobile ? ${Math.floor(count * 0.3)} : ${count};
+    const pPos = new Float32Array(pCount * 3);
+    for (let i = 0; i < pCount; i++) {
+      pPos[i*3]   = (Math.random()-0.5)*${spread};
+      pPos[i*3+1] = (Math.random()-0.5)*${spread};
+      pPos[i*3+2] = (Math.random()-0.5)*${spread};
     }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    const pMat = new THREE.PointsMaterial({
+      color: ${color}, size: ${size}, transparent: true, opacity: 0.6,
+      blending: THREE.${blending || 'AdditiveBlending'}, depthWrite: false,
+    });
+    scene.add(new THREE.Points(pGeo, pMat));
+    return { geo: pGeo, pos: pPos, count: pCount };
+  })()`;
   }
-  scene.add(cubeGroup);
 
-  // Heatmap glow cubes — some cubes are designated "hot"
-  const hotIndices = new Set();
-  for (let i = 0; i < Math.floor(cubes.length * 0.15); i++) {
-    hotIndices.add(Math.floor(Math.random() * cubes.length));
-  }
-  hotIndices.forEach(i => {
-    cubes[i].material.color.set(ACCENT);
-    cubes[i].userData.baseOpacity = 0.4;
-    cubes[i].material.opacity = 0.4;
-    cubes[i].material.wireframe = false;
+  // ── SCENE: Fitness — Exploding wireframe morph ────────────────────
+
+  _sceneFitness({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, { ...colors, primary: '#ef4444', secondary: '#dc2626', accent: '#f97316' })}
+  camera.position.set(0, 0, 5);
+
+  scene.add(new THREE.AmbientLight(0x330000, 0.5));
+  const redLight = new THREE.PointLight(0xff2200, 3, 30);
+  redLight.position.set(3, 3, 3);
+  scene.add(redLight);
+  const orangeLight = new THREE.PointLight(0xff6600, 2, 25);
+  orangeLight.position.set(-3, -2, 2);
+  scene.add(orangeLight);
+
+  // Wireframe icosahedron "body" with vertex displacement
+  const bodyGeo = new THREE.IcosahedronGeometry(1.5, 4);
+  const bodyMat = new THREE.MeshStandardMaterial({
+    color: 0xff2200, wireframe: true, emissive: 0xff0000, emissiveIntensity: 0.3,
   });
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  scene.add(body);
+  const basePositions = bodyGeo.attributes.position.array.slice();
+
+  // Energy particles
+  const parts = ${this._particleSnippet(2000, '0xff4400', 0.03, 8, 'AdditiveBlending')};
+
+  // Secondary ring
+  const ringGeo = new THREE.TorusGeometry(2.5, 0.02, 16, 100);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0xff4400, transparent: true, opacity: 0.4 });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  scene.add(ring);
 
   function update(elapsed) {
-    cubeGroup.rotation.y = elapsed * 0.05 + mouse.x * 0.3;
-    cubeGroup.rotation.x = Math.sin(elapsed * 0.03) * 0.1 + mouse.y * 0.2;
-
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-    camera.position.z = 18 - scrollFactor * 10;
-
-    for (let i = 0; i < cubes.length; i++) {
-      const c = cubes[i];
-      const pulse = Math.sin(elapsed * c.userData.pulseSpeed + c.userData.pulseOffset);
-      c.material.opacity = c.userData.baseOpacity + pulse * 0.08;
-      c.scale.setScalar(1 + pulse * 0.05);
+    // Vertex displacement — morphing effect
+    const pos = bodyGeo.attributes.position.array;
+    for (let i = 0; i < pos.length; i += 3) {
+      const ox = basePositions[i], oy = basePositions[i+1], oz = basePositions[i+2];
+      const d = Math.sin(ox*3 + elapsed*2) * Math.cos(oy*3 + elapsed*1.5) * 0.3;
+      const explode = Math.sin(elapsed * 0.5) * 0.15;
+      const len = Math.sqrt(ox*ox + oy*oy + oz*oz);
+      pos[i]   = ox * (1 + d + explode);
+      pos[i+1] = oy * (1 + d + explode);
+      pos[i+2] = oz * (1 + d + explode);
     }
+    bodyGeo.attributes.position.needsUpdate = true;
 
-    pointLight.position.x = Math.sin(elapsed * 0.5) * 8;
-    pointLight.position.y = Math.cos(elapsed * 0.3) * 5;
-  }
-${this._postamble()}`;
+    body.rotation.y = elapsed * 0.3;
+    body.rotation.x = Math.sin(elapsed * 0.2) * 0.3;
 
-    return { js, css: this._canvasCss(canvasId) };
-  }
+    ring.rotation.x = elapsed * 0.5;
+    ring.rotation.z = elapsed * 0.3;
+    ring.scale.setScalar(1 + Math.sin(elapsed * 2) * 0.1);
 
-  // ── SCENE 2: Trading — Market Flow ──────────────────────────────
-
-  _sceneTrading({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const streamCount = performanceLevel === 'high' ? 5 : 3;
-    const particlesPerStream = performanceLevel === 'high' ? 600 : performanceLevel === 'medium' ? 350 : 200;
-
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 0, 30);
-
-  const streamCount = isMobile ? ${Math.max(streamCount - 2, 2)} : ${streamCount};
-  const particlesPerStream = isMobile ? ${Math.floor(particlesPerStream * 0.4)} : ${particlesPerStream};
-  const streams = [];
-  const streamColors = [PRIMARY, SECONDARY, ACCENT, 0x22d3ee, 0x34d399];
-
-  for (let s = 0; s < streamCount; s++) {
-    const positions = new Float32Array(particlesPerStream * 3);
-    const velocities = new Float32Array(particlesPerStream);
-    const phases = new Float32Array(particlesPerStream);
-    const yOffset = (s - streamCount / 2) * 4;
-    const freq = 0.1 + Math.random() * 0.15;
-    const amp = 2 + Math.random() * 3;
-
-    for (let i = 0; i < particlesPerStream; i++) {
-      const x = (i / particlesPerStream) * 60 - 30;
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = Math.sin(x * freq) * amp + yOffset;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
-      velocities[i] = 0.02 + Math.random() * 0.04;
-      phases[i] = Math.random() * Math.PI * 2;
+    // Particle drift
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3+1] += Math.sin(elapsed + i) * 0.002;
+      parts.pos[i*3]   += Math.cos(elapsed * 0.5 + i * 0.1) * 0.001;
     }
+    parts.geo.attributes.position.needsUpdate = true;
 
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    const mat = new THREE.PointsMaterial({
-      color: streamColors[s % streamColors.length],
-      size: isMobile ? 0.12 : 0.08,
-      transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    });
-
-    const points = new THREE.Points(geo, mat);
-    scene.add(points);
-    streams.push({ points, positions, velocities, phases, freq, amp, yOffset });
-  }
-
-  // Trail lines per stream
-  for (let s = 0; s < streams.length; s++) {
-    const trailCount = isMobile ? 60 : 150;
-    const trailPositions = new Float32Array(trailCount * 3);
-    const st = streams[s];
-    for (let i = 0; i < trailCount; i++) {
-      const x = (i / trailCount) * 60 - 30;
-      trailPositions[i * 3] = x;
-      trailPositions[i * 3 + 1] = Math.sin(x * st.freq) * st.amp + st.yOffset;
-      trailPositions[i * 3 + 2] = 0;
-    }
-    const lineGeo = new THREE.BufferGeometry();
-    lineGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
-    const lineMat = new THREE.LineBasicMaterial({
-      color: streamColors[s % streamColors.length],
-      transparent: true,
-      opacity: 0.15,
-    });
-    const line = new THREE.Line(lineGeo, lineMat);
-    scene.add(line);
-    streams[s].trailGeo = lineGeo;
-    streams[s].trailPositions = trailPositions;
-    streams[s].trailCount = trailCount;
-  }
-
-  function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-    const speedMult = 1 + scrollFactor * 3;
-
-    camera.position.x = mouse.x * 3;
-    camera.position.y = mouse.y * 2;
+    camera.position.x = Math.sin(elapsed * 0.15) * 0.5 + mouse.x * 0.8;
+    camera.position.y = Math.cos(elapsed * 0.1) * 0.3 + mouse.y * 0.5;
+    camera.position.z = 5 - scrollY * 0.003;
     camera.lookAt(0, 0, 0);
 
-    for (const st of streams) {
-      const pos = st.points.geometry.attributes.position.array;
-      for (let i = 0; i < pos.length / 3; i++) {
-        pos[i * 3] += st.velocities[i] * speedMult;
-        if (pos[i * 3] > 30) pos[i * 3] = -30;
-        pos[i * 3 + 1] = Math.sin((pos[i * 3] + elapsed * 2) * st.freq) * st.amp + st.yOffset;
-        pos[i * 3 + 2] = Math.sin(elapsed + st.phases[i]) * 1.5;
-      }
-      st.points.geometry.attributes.position.needsUpdate = true;
-
-      // Update trail line
-      if (st.trailGeo) {
-        const tp = st.trailPositions;
-        for (let i = 0; i < st.trailCount; i++) {
-          const x = (i / st.trailCount) * 60 - 30;
-          tp[i * 3 + 1] = Math.sin((x + elapsed * 2) * st.freq) * st.amp + st.yOffset;
-        }
-        st.trailGeo.attributes.position.needsUpdate = true;
-      }
-    }
+    redLight.position.x = Math.sin(elapsed) * 4;
+    redLight.position.z = Math.cos(elapsed) * 4;
   }
 ${this._postamble()}`;
-
     return { js, css: this._canvasCss(canvasId) };
   }
 
-  // ── SCENE 3: SaaS — Orbital Network ────────────────────────────
-
-  _sceneSaas({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const nodeCount = performanceLevel === 'high' ? 40 : performanceLevel === 'medium' ? 25 : 15;
-
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 5, 20);
-  camera.lookAt(0, 0, 0);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-  scene.add(ambientLight);
-  const pointLight = new THREE.PointLight(PRIMARY, 1.5, 40);
-  scene.add(pointLight);
-
-  const nodeCount = isMobile ? ${Math.floor(nodeCount * 0.5)} : ${nodeCount};
-  const nodes = [];
-  const nodeGroup = new THREE.Group();
-
-  for (let i = 0; i < nodeCount; i++) {
-    const radius = 3 + Math.random() * 8;
-    const angle = Math.random() * Math.PI * 2;
-    const ySpread = (Math.random() - 0.5) * 6;
-    const speed = (0.1 + Math.random() * 0.3) * (Math.random() > 0.5 ? 1 : -1);
-    const size = 0.15 + Math.random() * 0.25;
-
-    const geo = new THREE.SphereGeometry(size, 12, 12);
-    const mat = new THREE.MeshPhongMaterial({
-      color: i % 3 === 0 ? ACCENT : (i % 3 === 1 ? SECONDARY : PRIMARY),
-      emissive: PRIMARY,
-      emissiveIntensity: 0.2,
-      transparent: true,
-      opacity: 0.85,
-    });
-    const sphere = new THREE.Mesh(geo, mat);
-    sphere.position.set(
-      Math.cos(angle) * radius,
-      ySpread,
-      Math.sin(angle) * radius
-    );
-    sphere.userData = { radius, angle, ySpread, speed, baseEmissive: 0.2 };
-    nodeGroup.add(sphere);
-    nodes.push(sphere);
-  }
-  scene.add(nodeGroup);
-
-  // Connection lines
-  const maxDist = 5;
-  const lineGeo = new THREE.BufferGeometry();
-  const maxLines = nodeCount * nodeCount;
-  const linePositions = new Float32Array(maxLines * 6);
-  const lineColors = new Float32Array(maxLines * 6);
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-  lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
-  const lineMat = new THREE.LineBasicMaterial({
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.25,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  });
-  const lines = new THREE.LineSegments(lineGeo, lineMat);
-  scene.add(lines);
-
-  const primaryCol = new THREE.Color(PRIMARY);
-
-  function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-    const orbitSpeed = 1 + scrollFactor * 2;
-
-    camera.position.x = mouse.x * 4;
-    camera.position.y = 5 + mouse.y * 3;
-    camera.lookAt(0, 0, 0);
-
-    // Update node positions
-    for (const node of nodes) {
-      const d = node.userData;
-      d.angle += d.speed * 0.01 * orbitSpeed;
-      node.position.x = Math.cos(d.angle) * d.radius;
-      node.position.z = Math.sin(d.angle) * d.radius;
-      node.position.y = d.ySpread + Math.sin(elapsed * 0.5 + d.angle) * 0.5;
-
-      // Glow based on mouse proximity (projected)
-      const dx = (node.position.x / 15) - mouse.x;
-      const dy = (node.position.y / 10) - mouse.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      node.material.emissiveIntensity = d.baseEmissive + Math.max(0, 1 - dist) * 0.8;
-    }
-
-    // Update connection lines
-    let lineIdx = 0;
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const d = nodes[i].position.distanceTo(nodes[j].position);
-        if (d < maxDist) {
-          const alpha = 1 - d / maxDist;
-          linePositions[lineIdx * 6] = nodes[i].position.x;
-          linePositions[lineIdx * 6 + 1] = nodes[i].position.y;
-          linePositions[lineIdx * 6 + 2] = nodes[i].position.z;
-          linePositions[lineIdx * 6 + 3] = nodes[j].position.x;
-          linePositions[lineIdx * 6 + 4] = nodes[j].position.y;
-          linePositions[lineIdx * 6 + 5] = nodes[j].position.z;
-          for (let c = 0; c < 6; c++) {
-            lineColors[lineIdx * 6 + c] = primaryCol.r * alpha;
-            if (c % 3 === 1) lineColors[lineIdx * 6 + c] = primaryCol.g * alpha;
-            if (c % 3 === 2) lineColors[lineIdx * 6 + c] = primaryCol.b * alpha;
-          }
-          lineIdx++;
-        }
-      }
-    }
-    lineGeo.setDrawRange(0, lineIdx * 2);
-    lineGeo.attributes.position.needsUpdate = true;
-    lineGeo.attributes.color.needsUpdate = true;
-
-    pointLight.position.set(Math.sin(elapsed) * 5, 3, Math.cos(elapsed) * 5);
-  }
-${this._postamble()}`;
-
-    return { js, css: this._canvasCss(canvasId) };
-  }
-
-  // ── SCENE 4: Healthcare — DNA Helix ─────────────────────────────
+  // ── SCENE: Healthcare — DNA Helix ─────────────────────────────────
 
   _sceneHealthcare({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const sphereCount = performanceLevel === 'high' ? 80 : performanceLevel === 'medium' ? 50 : 30;
+    const js = `${this._preamble(canvasId, bgColor, { ...colors, primary: '#3b82f6', secondary: '#06b6d4', accent: '#22d3ee' })}
+  camera.position.set(0, 0, 12);
 
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 0, 25);
+  scene.add(new THREE.AmbientLight(0x112244, 0.6));
+  const blueLight = new THREE.PointLight(0x3b82f6, 3, 40);
+  blueLight.position.set(5, 5, 5);
+  scene.add(blueLight);
+  const cyanLight = new THREE.PointLight(0x06b6d4, 2, 35);
+  cyanLight.position.set(-5, -3, 3);
+  scene.add(cyanLight);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-  scene.add(ambientLight);
-  const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
-  dirLight.position.set(5, 10, 5);
-  scene.add(dirLight);
-
+  // DNA helix
   const helixGroup = new THREE.Group();
-  const sphereCount = isMobile ? ${Math.floor(sphereCount * 0.5)} : ${sphereCount};
-  const helixRadius = 3;
-  const helixHeight = 30;
-  const turns = 3;
-  const spheres1 = [];
-  const spheres2 = [];
-  const bars = [];
-
-  const colA = new THREE.Color(0x22d3ee); // soft cyan
-  const colB = new THREE.Color(0x34d399); // soft green
-
-  for (let i = 0; i < sphereCount; i++) {
-    const t = i / sphereCount;
-    const angle = t * Math.PI * 2 * turns;
-    const y = t * helixHeight - helixHeight / 2;
-
-    // Strand 1
-    const geo1 = new THREE.SphereGeometry(0.2, 10, 10);
-    const mat1 = new THREE.MeshPhongMaterial({ color: colA, emissive: colA, emissiveIntensity: 0.15 });
-    const s1 = new THREE.Mesh(geo1, mat1);
-    s1.position.set(Math.cos(angle) * helixRadius, y, Math.sin(angle) * helixRadius);
-    helixGroup.add(s1);
-    spheres1.push(s1);
-
-    // Strand 2 (offset by PI)
-    const geo2 = new THREE.SphereGeometry(0.2, 10, 10);
-    const mat2 = new THREE.MeshPhongMaterial({ color: colB, emissive: colB, emissiveIntensity: 0.15 });
-    const s2 = new THREE.Mesh(geo2, mat2);
-    s2.position.set(Math.cos(angle + Math.PI) * helixRadius, y, Math.sin(angle + Math.PI) * helixRadius);
-    helixGroup.add(s2);
-    spheres2.push(s2);
-
-    // Cross bars every few spheres
+  const nodeCount = isMobile ? 30 : 60;
+  const nodes = [];
+  const nodeMat = new THREE.MeshStandardMaterial({
+    color: 0x3b82f6, emissive: 0x1e40af, emissiveIntensity: 0.5, metalness: 0.8, roughness: 0.2,
+  });
+  for (let i = 0; i < nodeCount; i++) {
+    const t = (i / nodeCount) * Math.PI * 6;
+    const y = (i / nodeCount) * 16 - 8;
+    for (let strand = 0; strand < 2; strand++) {
+      const angle = t + strand * Math.PI;
+      const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), nodeMat.clone());
+      sphere.position.set(Math.cos(angle) * 1.5, y, Math.sin(angle) * 1.5);
+      helixGroup.add(sphere);
+      nodes.push(sphere);
+    }
+    // Connection bar
     if (i % 3 === 0) {
-      const barGeo = new THREE.CylinderGeometry(0.03, 0.03, 1, 4);
-      const barMat = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.2 });
+      const barGeo = new THREE.CylinderGeometry(0.03, 0.03, 3, 4);
+      const barMat = new THREE.MeshBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.3 });
       const bar = new THREE.Mesh(barGeo, barMat);
-      bar.position.copy(s1.position).lerp(s2.position, 0.5);
-      bar.lookAt(s2.position);
-      bar.rotateX(Math.PI / 2);
-      const dist = s1.position.distanceTo(s2.position);
-      bar.scale.y = dist;
+      bar.position.set(0, y, 0);
+      bar.rotation.z = t;
       helixGroup.add(bar);
-      bars.push({ mesh: bar, i1: spheres1.length - 1, i2: spheres2.length - 1 });
     }
   }
   scene.add(helixGroup);
 
+  // Flowing particles along helix paths
+  const parts = ${this._particleSnippet(1500, '0x22d3ee', 0.04, 20, 'AdditiveBlending')};
+
   function update(elapsed) {
-    // Slow rotation
-    helixGroup.rotation.y = elapsed * 0.15 + mouse.x * 0.5;
+    helixGroup.rotation.y = elapsed * 0.15;
 
-    // Breathing scale
-    const breath = 1 + Math.sin(elapsed * 0.8) * 0.04;
-    helixGroup.scale.set(breath, breath, breath);
+    nodes.forEach((n, i) => {
+      n.material.emissiveIntensity = 0.3 + Math.sin(elapsed * 2 + i * 0.3) * 0.3;
+      n.scale.setScalar(0.8 + Math.sin(elapsed * 3 + i * 0.5) * 0.3);
+    });
 
-    // Camera parallax
-    camera.position.x = mouse.x * 3;
-    camera.position.y = mouse.y * 4;
-    camera.lookAt(0, 0, 0);
-
-    // Scroll shifts view up/down along helix
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-    helixGroup.position.y = scrollFactor * 10 - 5;
-
-    // Sphere pulse
-    for (let i = 0; i < spheres1.length; i++) {
-      const pulse = Math.sin(elapsed * 2 + i * 0.3) * 0.05;
-      spheres1[i].scale.setScalar(1 + pulse);
-      spheres2[i].scale.setScalar(1 + pulse);
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3+1] += 0.01;
+      if (parts.pos[i*3+1] > 10) parts.pos[i*3+1] = -10;
+      parts.pos[i*3] += Math.sin(elapsed + i * 0.01) * 0.003;
     }
+    parts.geo.attributes.position.needsUpdate = true;
+
+    camera.position.x = Math.sin(elapsed * 0.1) * 1.5 + mouse.x * 1.2;
+    camera.position.y = mouse.y * 1.0 + Math.cos(elapsed * 0.08) * 0.5;
+    camera.position.z = 12 - scrollY * 0.004;
+    camera.lookAt(0, 0, 0);
   }
 ${this._postamble()}`;
-
     return { js, css: this._canvasCss(canvasId) };
   }
 
-  // ── SCENE 5: E-commerce — Product Showcase Orbit ────────────────
+  // ── SCENE: Fintech — Holographic Data Grid + Matrix Rain ──────────
 
-  _sceneEcommerce({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const shapeCount = performanceLevel === 'high' ? 18 : performanceLevel === 'medium' ? 12 : 8;
-
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 3, 15);
+  _sceneFintech({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, { ...colors, primary: '#22c55e', secondary: '#10b981', accent: '#4ade80' })}
+  camera.position.set(0, 5, 18);
   camera.lookAt(0, 0, 0);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-  scene.add(ambientLight);
-  // Central glow
-  const centralLight = new THREE.PointLight(ACCENT, 2, 20);
-  centralLight.position.set(0, 0, 0);
-  scene.add(centralLight);
-  const rimLight = new THREE.PointLight(PRIMARY, 1, 30);
-  rimLight.position.set(-5, 5, -5);
-  scene.add(rimLight);
+  scene.add(new THREE.AmbientLight(0x001100, 0.4));
+  const greenLight1 = new THREE.PointLight(0x22c55e, 3, 50);
+  greenLight1.position.set(5, 5, 5);
+  scene.add(greenLight1);
+  const greenLight2 = new THREE.PointLight(0x10b981, 2, 40);
+  greenLight2.position.set(-5, -3, 8);
+  scene.add(greenLight2);
 
-  // Central glow sphere
-  const glowGeo = new THREE.SphereGeometry(0.8, 16, 16);
-  const glowMat = new THREE.MeshBasicMaterial({
-    color: ACCENT,
-    transparent: true,
-    opacity: 0.15,
+  // Holographic grid plane
+  const gridGeo = new THREE.PlaneGeometry(30, 30, 50, 50);
+  const gridMat = new THREE.MeshStandardMaterial({
+    color: 0x22c55e, wireframe: true, transparent: true, opacity: 0.15,
+    emissive: 0x22c55e, emissiveIntensity: 0.2,
   });
-  const glowSphere = new THREE.Mesh(glowGeo, glowMat);
-  scene.add(glowSphere);
+  const grid = new THREE.Mesh(gridGeo, gridMat);
+  grid.rotation.x = -Math.PI * 0.4;
+  grid.position.y = -3;
+  scene.add(grid);
+  const gridBasePos = gridGeo.attributes.position.array.slice();
 
-  const shapeCount = isMobile ? ${Math.floor(shapeCount * 0.5)} : ${shapeCount};
-  const shapes = [];
-  const geometries = [
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.SphereGeometry(0.6, 16, 16),
-    new THREE.ConeGeometry(0.5, 1.2, 8),
-    new THREE.OctahedronGeometry(0.6),
-    new THREE.TorusGeometry(0.5, 0.15, 8, 20),
-    new THREE.DodecahedronGeometry(0.5),
-  ];
-  const colorPool = [PRIMARY, SECONDARY, ACCENT];
-
-  for (let i = 0; i < shapeCount; i++) {
-    const geo = geometries[i % geometries.length];
-    const mat = new THREE.MeshPhongMaterial({
-      color: colorPool[i % colorPool.length],
-      emissive: colorPool[i % colorPool.length],
-      emissiveIntensity: 0.1,
-      flatShading: true,
-      transparent: true,
-      opacity: 0.85,
+  // Matrix rain columns — vertical particle lines
+  const colCount = isMobile ? 20 : 50;
+  const rainDrops = isMobile ? 15 : 30;
+  const rainGroup = new THREE.Group();
+  const rainData = [];
+  for (let c = 0; c < colCount; c++) {
+    const x = (Math.random() - 0.5) * 25;
+    const z = (Math.random() - 0.5) * 15;
+    const positions = new Float32Array(rainDrops * 3);
+    for (let d = 0; d < rainDrops; d++) {
+      positions[d*3] = x;
+      positions[d*3+1] = d * 0.5 + Math.random() * 10;
+      positions[d*3+2] = z;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const mat = new THREE.PointsMaterial({
+      color: 0x4ade80, size: isMobile ? 0.12 : 0.08, transparent: true, opacity: 0.5,
+      blending: THREE.AdditiveBlending, depthWrite: false,
     });
-    const mesh = new THREE.Mesh(geo, mat);
-    const orbitRadius = 4 + Math.random() * 5;
-    const angle = (i / shapeCount) * Math.PI * 2;
-    const yPos = (Math.random() - 0.5) * 4;
-    const rotSpeed = { x: (Math.random() - 0.5) * 0.02, y: (Math.random() - 0.5) * 0.02, z: (Math.random() - 0.5) * 0.02 };
-    const orbitSpeed = 0.1 + Math.random() * 0.2;
-
-    mesh.position.set(Math.cos(angle) * orbitRadius, yPos, Math.sin(angle) * orbitRadius);
-    mesh.userData = { orbitRadius, angle, yPos, rotSpeed, orbitSpeed, baseRadius: orbitRadius };
-    scene.add(mesh);
-    shapes.push(mesh);
+    const pts = new THREE.Points(geo, mat);
+    rainGroup.add(pts);
+    rainData.push({ positions, speed: 0.03 + Math.random() * 0.05 });
   }
+  scene.add(rainGroup);
 
-  function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-
-    camera.position.x = mouse.x * 3;
-    camera.position.y = 3 + mouse.y * 2;
-    camera.lookAt(0, 0, 0);
-
-    // Central glow pulse
-    glowSphere.scale.setScalar(1 + Math.sin(elapsed * 1.5) * 0.15);
-    glowSphere.material.opacity = 0.1 + Math.sin(elapsed) * 0.05;
-
-    for (const shape of shapes) {
-      const d = shape.userData;
-      // Shapes spread apart on scroll
-      const currentRadius = d.baseRadius + scrollFactor * 6;
-      d.angle += d.orbitSpeed * 0.01;
-      shape.position.x = Math.cos(d.angle) * currentRadius;
-      shape.position.z = Math.sin(d.angle) * currentRadius;
-      shape.position.y = d.yPos + Math.sin(elapsed * 0.5 + d.angle) * 0.5;
-
-      // Independent rotation
-      shape.rotation.x += d.rotSpeed.x;
-      shape.rotation.y += d.rotSpeed.y;
-      shape.rotation.z += d.rotSpeed.z;
-    }
-  }
-${this._postamble()}`;
-
-    return { js, css: this._canvasCss(canvasId) };
-  }
-
-  // ── SCENE 6: Fitness — Energy Burst ─────────────────────────────
-
-  _sceneFitness({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const particleCount = performanceLevel === 'high' ? 1500 : performanceLevel === 'medium' ? 800 : 400;
-
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 0, 20);
-
-  // Central energy sphere
-  const coreGeo = new THREE.SphereGeometry(1.5, 32, 32);
-  const coreMat = new THREE.MeshBasicMaterial({
-    color: ACCENT,
-    transparent: true,
-    opacity: 0.3,
-  });
-  const core = new THREE.Mesh(coreGeo, coreMat);
-  scene.add(core);
-
-  // Wireframe overlay
-  const wireGeo = new THREE.SphereGeometry(1.6, 16, 16);
-  const wireMat = new THREE.MeshBasicMaterial({ color: PRIMARY, wireframe: true, transparent: true, opacity: 0.3 });
-  const wireCore = new THREE.Mesh(wireGeo, wireMat);
-  scene.add(wireCore);
-
-  // Energy particles along field lines
-  const count = isMobile ? ${Math.floor(particleCount * 0.35)} : ${particleCount};
-  const positions = new Float32Array(count * 3);
-  const velocities = [];
-  const lifetimes = new Float32Array(count);
-
-  for (let i = 0; i < count; i++) {
-    // Spherical distribution
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    const r = 2 + Math.random() * 0.5;
-    positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-    positions[i * 3 + 2] = r * Math.cos(phi);
-
-    // Outward velocity along curved paths
-    const speed = 0.02 + Math.random() * 0.05;
-    velocities.push({
-      vx: Math.sin(phi) * Math.cos(theta) * speed,
-      vy: Math.sin(phi) * Math.sin(theta) * speed,
-      vz: Math.cos(phi) * speed,
-      theta,
-      phi,
-      curveFactor: (Math.random() - 0.5) * 0.02,
+  // Floating data nodes (icosahedrons)
+  const dataNodes = [];
+  for (let i = 0; i < (isMobile ? 5 : 12); i++) {
+    const geo = new THREE.IcosahedronGeometry(0.15 + Math.random() * 0.2, 1);
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0x22c55e, emissive: 0x22c55e, emissiveIntensity: 0.8,
+      wireframe: Math.random() > 0.5,
     });
-    lifetimes[i] = Math.random();
+    const node = new THREE.Mesh(geo, mat);
+    node.position.set((Math.random()-0.5)*15, (Math.random()-0.5)*10, (Math.random()-0.5)*10);
+    node.userData.speed = { x: Math.random()*0.3, y: Math.random()*0.5, z: Math.random()*0.2 };
+    scene.add(node);
+    dataNodes.push(node);
   }
-
-  const pGeo = new THREE.BufferGeometry();
-  pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const pMat = new THREE.PointsMaterial({
-    color: ACCENT,
-    size: isMobile ? 0.12 : 0.07,
-    transparent: true,
-    opacity: 0.8,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  });
-  const particles = new THREE.Points(pGeo, pMat);
-  scene.add(particles);
-
-  // Secondary ring particles
-  const ringCount = isMobile ? 200 : 500;
-  const ringPos = new Float32Array(ringCount * 3);
-  for (let i = 0; i < ringCount; i++) {
-    const angle = (i / ringCount) * Math.PI * 2;
-    const r = 6 + Math.sin(angle * 5) * 0.5;
-    ringPos[i * 3] = Math.cos(angle) * r;
-    ringPos[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
-    ringPos[i * 3 + 2] = Math.sin(angle) * r;
-  }
-  const ringGeo = new THREE.BufferGeometry();
-  ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPos, 3));
-  const ringMat = new THREE.PointsMaterial({
-    color: PRIMARY,
-    size: 0.06,
-    transparent: true,
-    opacity: 0.5,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  });
-  const ringParticles = new THREE.Points(ringGeo, ringMat);
-  scene.add(ringParticles);
 
   function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-    const intensity = 1 + scrollFactor * 3;
+    // Grid wave displacement
+    const gPos = gridGeo.attributes.position.array;
+    for (let i = 0; i < gPos.length; i += 3) {
+      gPos[i+2] = Math.sin(gridBasePos[i]*0.3 + elapsed) * Math.cos(gridBasePos[i+1]*0.3 + elapsed*0.7) * 0.8;
+    }
+    gridGeo.attributes.position.needsUpdate = true;
 
-    camera.position.x = mouse.x * 4;
-    camera.position.y = mouse.y * 3;
+    // Matrix rain fall
+    rainData.forEach(r => {
+      for (let d = 0; d < rainDrops; d++) {
+        r.positions[d*3+1] -= r.speed;
+        if (r.positions[d*3+1] < -5) r.positions[d*3+1] = 15;
+      }
+    });
+    rainGroup.children.forEach(c => c.geometry.attributes.position.needsUpdate = true);
+
+    // Data nodes orbit
+    dataNodes.forEach(n => {
+      n.rotation.x += 0.01;
+      n.rotation.y += 0.015;
+      n.position.y += Math.sin(elapsed * n.userData.speed.y) * 0.005;
+    });
+
+    camera.position.x = Math.sin(elapsed * 0.08) * 2 + mouse.x * 2;
+    camera.position.y = 5 + mouse.y * 1.5 + Math.cos(elapsed * 0.06) * 0.5;
+    camera.position.z = 18 - scrollY * 0.005;
     camera.lookAt(0, 0, 0);
 
-    // Core pulse
-    const pulse = 1 + Math.sin(elapsed * 3) * 0.1 * intensity;
-    core.scale.setScalar(pulse);
-    wireCore.scale.setScalar(pulse * 1.05);
-    wireCore.rotation.y = elapsed * 0.3;
-    wireCore.rotation.x = elapsed * 0.15;
-    coreMat.opacity = 0.2 + Math.sin(elapsed * 2) * 0.1;
-
-    // Update energy particles
-    const pos = particles.geometry.attributes.position.array;
-    for (let i = 0; i < count; i++) {
-      const v = velocities[i];
-      lifetimes[i] += 0.005 * intensity;
-
-      pos[i * 3] += v.vx * intensity;
-      pos[i * 3 + 1] += v.vy * intensity;
-      pos[i * 3 + 2] += v.vz * intensity;
-
-      // Curve the path
-      pos[i * 3] += Math.sin(lifetimes[i] * 5) * v.curveFactor;
-      pos[i * 3 + 1] += Math.cos(lifetimes[i] * 3) * v.curveFactor;
-
-      // Reset when too far
-      const dist = Math.sqrt(pos[i*3]**2 + pos[i*3+1]**2 + pos[i*3+2]**2);
-      if (dist > 15) {
-        const r = 2;
-        pos[i * 3] = r * Math.sin(v.phi) * Math.cos(v.theta);
-        pos[i * 3 + 1] = r * Math.sin(v.phi) * Math.sin(v.theta);
-        pos[i * 3 + 2] = r * Math.cos(v.phi);
-        lifetimes[i] = 0;
-      }
-    }
-    particles.geometry.attributes.position.needsUpdate = true;
-
-    // Rotate ring
-    ringParticles.rotation.y = elapsed * 0.2;
-    ringParticles.rotation.x = Math.sin(elapsed * 0.1) * 0.2;
+    greenLight1.position.x = Math.sin(elapsed * 0.5) * 8;
+    greenLight1.position.y = Math.cos(elapsed * 0.3) * 5;
   }
 ${this._postamble()}`;
-
     return { js, css: this._canvasCss(canvasId) };
   }
 
-  // ── SCENE 7: Education — Knowledge Constellation ────────────────
+  // ── SCENE: Trading — Market Flow with Streams ─────────────────────
 
-  _sceneEducation({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const starCount = performanceLevel === 'high' ? 500 : performanceLevel === 'medium' ? 300 : 150;
+  _sceneTrading({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, { ...colors, primary: '#22c55e', secondary: '#ef4444', accent: '#eab308' })}
+  camera.position.set(0, 0, 25);
 
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 0, 20);
+  scene.add(new THREE.AmbientLight(0x111111, 0.3));
+  const upLight = new THREE.PointLight(0x22c55e, 3, 40);
+  upLight.position.set(5, 5, 5);
+  scene.add(upLight);
+  const downLight = new THREE.PointLight(0xef4444, 2, 35);
+  downLight.position.set(-5, -5, 5);
+  scene.add(downLight);
 
-  const count = isMobile ? ${Math.floor(starCount * 0.4)} : ${starCount};
-
-  // Define constellation shape sets (unit coordinates to morph between)
-  // Shape 0: sphere cloud, Shape 1: book-like, Shape 2: star
-  const shapeTargets = [];
-  for (let s = 0; s < 3; s++) {
-    const target = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      if (s === 0) {
-        // Sphere
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        const r = 5 + Math.random() * 3;
-        target[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-        target[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-        target[i * 3 + 2] = r * Math.cos(phi);
-      } else if (s === 1) {
-        // Flat spread (book pages)
-        target[i * 3] = (Math.random() - 0.5) * 16;
-        target[i * 3 + 1] = (Math.random() - 0.5) * 10;
-        target[i * 3 + 2] = (Math.random() - 0.5) * 1;
-      } else {
-        // Ring / atom-like
-        const angle = Math.random() * Math.PI * 2;
-        const ringR = 4 + Math.random() * 4;
-        const ringIdx = Math.floor(Math.random() * 3);
-        if (ringIdx === 0) {
-          target[i * 3] = Math.cos(angle) * ringR;
-          target[i * 3 + 1] = Math.sin(angle) * ringR;
-          target[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
-        } else if (ringIdx === 1) {
-          target[i * 3] = Math.cos(angle) * ringR;
-          target[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
-          target[i * 3 + 2] = Math.sin(angle) * ringR;
-        } else {
-          target[i * 3] = (Math.random() - 0.5) * 0.5;
-          target[i * 3 + 1] = Math.cos(angle) * ringR;
-          target[i * 3 + 2] = Math.sin(angle) * ringR;
-        }
-      }
-    }
-    shapeTargets.push(target);
+  // Candlestick-style bars in 3D
+  const barGroup = new THREE.Group();
+  const barCount = isMobile ? 20 : 40;
+  const bars = [];
+  for (let i = 0; i < barCount; i++) {
+    const h = 0.5 + Math.random() * 4;
+    const isUp = Math.random() > 0.4;
+    const geo = new THREE.BoxGeometry(0.3, h, 0.3);
+    const mat = new THREE.MeshStandardMaterial({
+      color: isUp ? 0x22c55e : 0xef4444,
+      emissive: isUp ? 0x22c55e : 0xef4444,
+      emissiveIntensity: 0.3,
+      metalness: 0.6, roughness: 0.3,
+    });
+    const bar = new THREE.Mesh(geo, mat);
+    bar.position.set((i - barCount/2) * 0.7, h/2 - 2, 0);
+    bar.userData = { baseH: h, isUp, phase: Math.random() * Math.PI * 2 };
+    barGroup.add(bar);
+    bars.push(bar);
   }
+  scene.add(barGroup);
 
-  const positions = new Float32Array(count * 3);
-  const sizes = new Float32Array(count);
-  const twinklePhases = new Float32Array(count);
-  for (let i = 0; i < count; i++) {
-    positions[i * 3] = shapeTargets[0][i * 3];
-    positions[i * 3 + 1] = shapeTargets[0][i * 3 + 1];
-    positions[i * 3 + 2] = shapeTargets[0][i * 3 + 2];
-    sizes[i] = 0.5 + Math.random() * 1.5;
-    twinklePhases[i] = Math.random() * Math.PI * 2;
-  }
+  // Flow particles — market data streams
+  const parts = ${this._particleSnippet(2500, '0x22c55e', 0.04, 30, 'AdditiveBlending')};
 
-  const starGeo = new THREE.BufferGeometry();
-  starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  starGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-  const starMat = new THREE.PointsMaterial({
-    color: PRIMARY,
-    size: isMobile ? 0.15 : 0.1,
-    transparent: true,
-    opacity: 0.8,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    sizeAttenuation: true,
-  });
-  const stars = new THREE.Points(starGeo, starMat);
-  scene.add(stars);
-
-  // Connection lines for nearby stars
-  const maxLineDist = 2.5;
-  const linePositions = new Float32Array(count * 6);
-  const lineGeo = new THREE.BufferGeometry();
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-  const lineMat = new THREE.LineBasicMaterial({
-    color: SECONDARY,
-    transparent: true,
-    opacity: 0.1,
-    blending: THREE.AdditiveBlending,
-  });
-  const constellationLines = new THREE.LineSegments(lineGeo, lineMat);
-  scene.add(constellationLines);
-
-  let currentShape = 0;
+  // TorusKnot accent — market cycle metaphor
+  const knotGeo = new THREE.TorusKnotGeometry(4, 0.05, 128, 8, 2, 3);
+  const knotMat = new THREE.MeshBasicMaterial({ color: 0xeab308, transparent: true, opacity: 0.2 });
+  const knot = new THREE.Mesh(knotGeo, knotMat);
+  scene.add(knot);
 
   function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-    const targetShape = Math.min(Math.floor(scrollFactor * 3), 2);
+    barGroup.rotation.y = elapsed * 0.05 + mouse.x * 0.3;
+    bars.forEach(b => {
+      const pulse = Math.sin(elapsed * 1.5 + b.userData.phase);
+      b.scale.y = 0.7 + pulse * 0.4;
+      b.material.emissiveIntensity = 0.2 + Math.abs(pulse) * 0.4;
+    });
 
-    camera.position.x = mouse.x * 5;
-    camera.position.y = mouse.y * 3;
+    knot.rotation.x = elapsed * 0.1;
+    knot.rotation.y = elapsed * 0.15;
+
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3] += Math.sin(elapsed*0.5 + i*0.01) * 0.005;
+      parts.pos[i*3+1] += 0.005;
+      if (parts.pos[i*3+1] > 15) parts.pos[i*3+1] = -15;
+    }
+    parts.geo.attributes.position.needsUpdate = true;
+
+    camera.position.x = Math.sin(elapsed * 0.1) * 3 + mouse.x * 2;
+    camera.position.y = mouse.y * 2 + Math.cos(elapsed * 0.07) * 1;
+    camera.position.z = 25 - scrollY * 0.005;
     camera.lookAt(0, 0, 0);
-
-    // Morph between shapes
-    const target = shapeTargets[targetShape];
-    const pos = stars.geometry.attributes.position.array;
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] += (target[i * 3] - pos[i * 3]) * 0.02;
-      pos[i * 3 + 1] += (target[i * 3 + 1] - pos[i * 3 + 1]) * 0.02;
-      pos[i * 3 + 2] += (target[i * 3 + 2] - pos[i * 3 + 2]) * 0.02;
-    }
-    stars.geometry.attributes.position.needsUpdate = true;
-
-    // Twinkling via opacity modulation (using size as proxy)
-    starMat.opacity = 0.6 + Math.sin(elapsed * 0.5) * 0.2;
-
-    // Slow rotation
-    stars.rotation.y = elapsed * 0.02;
-
-    // Update constellation lines
-    let lineIdx = 0;
-    const lp = constellationLines.geometry.attributes.position.array;
-    const maxPairs = Math.min(count, 100);
-    for (let i = 0; i < maxPairs && lineIdx < count; i++) {
-      for (let j = i + 1; j < maxPairs && lineIdx < count; j++) {
-        const dx = pos[i*3] - pos[j*3];
-        const dy = pos[i*3+1] - pos[j*3+1];
-        const dz = pos[i*3+2] - pos[j*3+2];
-        const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
-        if (d < maxLineDist) {
-          lp[lineIdx * 6] = pos[i * 3];
-          lp[lineIdx * 6 + 1] = pos[i * 3 + 1];
-          lp[lineIdx * 6 + 2] = pos[i * 3 + 2];
-          lp[lineIdx * 6 + 3] = pos[j * 3];
-          lp[lineIdx * 6 + 4] = pos[j * 3 + 1];
-          lp[lineIdx * 6 + 5] = pos[j * 3 + 2];
-          lineIdx++;
-        }
-      }
-    }
-    lineGeo.setDrawRange(0, lineIdx * 2);
-    constellationLines.geometry.attributes.position.needsUpdate = true;
   }
 ${this._postamble()}`;
-
     return { js, css: this._canvasCss(canvasId) };
   }
 
-  // ── SCENE 8: Restaurant — Ambient Glow ──────────────────────────
+  // ── SCENE: SaaS — Neural Network ─────────────────────────────────
 
-  _sceneRestaurant({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const orbCount = performanceLevel === 'high' ? 30 : performanceLevel === 'medium' ? 20 : 12;
-
+  _sceneSaas({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
     const js = `${this._preamble(canvasId, bgColor, colors)}
   camera.position.set(0, 0, 15);
 
-  // Warm ambient
-  const ambientLight = new THREE.AmbientLight(0x331a00, 0.3);
-  scene.add(ambientLight);
+  scene.add(new THREE.AmbientLight(0x111133, 0.4));
+  const blueLight = new THREE.PointLight(PRIMARY, 3, 50);
+  blueLight.position.set(5, 5, 5);
+  scene.add(blueLight);
+  const whiteLight = new THREE.PointLight(0xffffff, 1.5, 40);
+  whiteLight.position.set(-5, 3, 8);
+  scene.add(whiteLight);
 
-  const orbCount = isMobile ? ${Math.floor(orbCount * 0.5)} : ${orbCount};
-  const orbs = [];
-  const warmColors = [0xff9d4d, 0xffb366, 0xffc880, 0xff8533, 0xffad33];
-
-  for (let i = 0; i < orbCount; i++) {
-    // Each orb is a soft glowing sphere
-    const size = 0.3 + Math.random() * 0.8;
-    const geo = new THREE.SphereGeometry(size, 16, 16);
-    const color = warmColors[Math.floor(Math.random() * warmColors.length)];
-    const mat = new THREE.MeshBasicMaterial({
-      color: color,
-      transparent: true,
-      opacity: 0.06 + Math.random() * 0.1,
-    });
-    const orb = new THREE.Mesh(geo, mat);
-
-    const x = (Math.random() - 0.5) * 25;
-    const y = (Math.random() - 0.5) * 15;
-    const z = (Math.random() - 0.5) * 10;
-    orb.position.set(x, y, z);
-
-    orb.userData = {
-      baseX: x,
-      baseY: y,
-      baseZ: z,
-      bobSpeed: 0.3 + Math.random() * 0.5,
-      bobAmp: 0.2 + Math.random() * 0.5,
-      phase: Math.random() * Math.PI * 2,
-      driftX: (Math.random() - 0.5) * 0.003,
-      driftZ: (Math.random() - 0.5) * 0.003,
-    };
-
-    scene.add(orb);
-    orbs.push(orb);
-
-    // Add a point light to some orbs (limited for performance)
-    if (i < (isMobile ? 3 : 6)) {
-      const light = new THREE.PointLight(color, 0.3, 8);
-      light.position.copy(orb.position);
-      scene.add(light);
-      orb.userData.light = light;
-    }
-  }
-
-  // Bokeh-like background particles (depth layers)
-  const bokehCount = isMobile ? 50 : 150;
-  const bokehPositions = new Float32Array(bokehCount * 3);
-  const bokehSizes = new Float32Array(bokehCount);
-  for (let i = 0; i < bokehCount; i++) {
-    bokehPositions[i * 3] = (Math.random() - 0.5) * 30;
-    bokehPositions[i * 3 + 1] = (Math.random() - 0.5) * 20;
-    bokehPositions[i * 3 + 2] = -5 - Math.random() * 15;
-    bokehSizes[i] = 0.5 + Math.random() * 2;
-  }
-  const bokehGeo = new THREE.BufferGeometry();
-  bokehGeo.setAttribute('position', new THREE.BufferAttribute(bokehPositions, 3));
-  const bokehMat = new THREE.PointsMaterial({
-    color: 0xffcc80,
-    size: 0.4,
-    transparent: true,
-    opacity: 0.08,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    sizeAttenuation: true,
+  // Network nodes
+  const nodeCount = isMobile ? 25 : 60;
+  const netGroup = new THREE.Group();
+  const nodePositions = [];
+  const nodeMeshes = [];
+  const nodeMat = new THREE.MeshStandardMaterial({
+    color: PRIMARY, emissive: PRIMARY, emissiveIntensity: 0.6, metalness: 0.9, roughness: 0.1,
   });
-  const bokeh = new THREE.Points(bokehGeo, bokehMat);
-  scene.add(bokeh);
+  for (let i = 0; i < nodeCount; i++) {
+    const pos = new THREE.Vector3(
+      (Math.random()-0.5)*14, (Math.random()-0.5)*10, (Math.random()-0.5)*10
+    );
+    const sphere = new THREE.Mesh(new THREE.IcosahedronGeometry(0.12 + Math.random()*0.1, 1), nodeMat.clone());
+    sphere.position.copy(pos);
+    netGroup.add(sphere);
+    nodePositions.push(pos);
+    nodeMeshes.push(sphere);
+  }
 
-  function update(elapsed) {
-    camera.position.x = mouse.x * 1.5;
-    camera.position.y = mouse.y * 1;
-    camera.lookAt(0, 0, 0);
-
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-
-    for (const orb of orbs) {
-      const d = orb.userData;
-      // Gentle bobbing
-      orb.position.y = d.baseY + Math.sin(elapsed * d.bobSpeed + d.phase) * d.bobAmp;
-      orb.position.x = d.baseX + Math.sin(elapsed * 0.2 + d.phase) * 0.3;
-
-      // Subtle drift
-      d.baseX += d.driftX;
-      d.baseZ += d.driftZ;
-      if (Math.abs(d.baseX) > 15) d.driftX *= -1;
-      if (Math.abs(d.baseZ) > 8) d.driftZ *= -1;
-
-      // Flicker like candlelight
-      orb.material.opacity = 0.06 + Math.sin(elapsed * 3 + d.phase) * 0.02 + Math.sin(elapsed * 7 + d.phase * 2) * 0.01;
-
-      // Scale pulse
-      const s = 1 + Math.sin(elapsed * d.bobSpeed * 2 + d.phase) * 0.08;
-      orb.scale.setScalar(s);
-
-      if (d.light) {
-        d.light.position.copy(orb.position);
-        d.light.intensity = 0.2 + Math.sin(elapsed * 3 + d.phase) * 0.1;
+  // Connections — lines between nearby nodes
+  const lineMat = new THREE.LineBasicMaterial({
+    color: SECONDARY, transparent: true, opacity: 0.12,
+  });
+  const connections = [];
+  for (let i = 0; i < nodeCount; i++) {
+    for (let j = i + 1; j < nodeCount; j++) {
+      if (nodePositions[i].distanceTo(nodePositions[j]) < 4) {
+        const geo = new THREE.BufferGeometry().setFromPoints([nodePositions[i], nodePositions[j]]);
+        const line = new THREE.Line(geo, lineMat.clone());
+        netGroup.add(line);
+        connections.push({ line, a: i, b: j });
       }
     }
+  }
+  scene.add(netGroup);
 
-    // Slight bokeh parallax
-    bokeh.position.x = mouse.x * -0.5;
-    bokeh.position.y = mouse.y * -0.3;
+  const parts = ${this._particleSnippet(1000, 'SECONDARY', 0.03, 18, 'AdditiveBlending')};
+
+  function update(elapsed) {
+    netGroup.rotation.y = elapsed * 0.04 + mouse.x * 0.3;
+    netGroup.rotation.x = Math.sin(elapsed * 0.03) * 0.15 + mouse.y * 0.2;
+
+    // Pulsing nodes
+    nodeMeshes.forEach((n, i) => {
+      const pulse = Math.sin(elapsed * 2 + i * 0.5);
+      n.material.emissiveIntensity = 0.3 + pulse * 0.4;
+      n.scale.setScalar(0.8 + pulse * 0.3);
+    });
+
+    // Pulsing connections
+    connections.forEach((c, i) => {
+      c.line.material.opacity = 0.05 + Math.sin(elapsed * 3 + i * 0.2) * 0.08;
+    });
+
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3] += Math.sin(elapsed + i * 0.05) * 0.002;
+      parts.pos[i*3+1] += Math.cos(elapsed * 0.7 + i * 0.03) * 0.002;
+    }
+    parts.geo.attributes.position.needsUpdate = true;
+
+    camera.position.x = Math.sin(elapsed * 0.06) * 2;
+    camera.position.y = Math.cos(elapsed * 0.04) * 1;
+    camera.position.z = 15 - scrollY * 0.004;
+    camera.lookAt(0, 0, 0);
   }
 ${this._postamble()}`;
-
     return { js, css: this._canvasCss(canvasId) };
   }
 
-  // ── SCENE 9: Agency — Creative Morph ────────────────────────────
+  // ── SCENE: Ecommerce — Product Showcase Platforms ─────────────────
+
+  _sceneEcommerce({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, colors)}
+  camera.position.set(0, 3, 12);
+
+  scene.add(new THREE.AmbientLight(0x222222, 0.5));
+  const spotColors = [PRIMARY, SECONDARY, ACCENT, 0xffffff];
+  const spots = [];
+  for (let i = 0; i < 4; i++) {
+    const spot = new THREE.PointLight(spotColors[i], 2, 30);
+    spot.position.set(Math.cos(i*Math.PI/2)*5, 4, Math.sin(i*Math.PI/2)*5);
+    scene.add(spot);
+    spots.push(spot);
+  }
+
+  // Floating platforms
+  const platformGroup = new THREE.Group();
+  const platforms = [];
+  const shapes = [
+    () => new THREE.TorusKnotGeometry(0.6, 0.2, 64, 8),
+    () => new THREE.IcosahedronGeometry(0.7, 0),
+    () => new THREE.OctahedronGeometry(0.7, 0),
+    () => new THREE.TorusGeometry(0.5, 0.2, 16, 32),
+    () => new THREE.DodecahedronGeometry(0.6, 0),
+  ];
+  const platCount = isMobile ? 4 : 7;
+  for (let i = 0; i < platCount; i++) {
+    const angle = (i / platCount) * Math.PI * 2;
+    const r = 3.5;
+    // Platform disc
+    const disc = new THREE.Mesh(
+      new THREE.CylinderGeometry(1, 1, 0.08, 32),
+      new THREE.MeshStandardMaterial({ color: 0x333344, metalness: 0.9, roughness: 0.2 })
+    );
+    disc.position.set(Math.cos(angle)*r, Math.sin(i*0.5)*1.5, Math.sin(angle)*r);
+    platformGroup.add(disc);
+    // Product shape on platform
+    const product = new THREE.Mesh(
+      shapes[i % shapes.length](),
+      new THREE.MeshStandardMaterial({
+        color: spotColors[i % spotColors.length], metalness: 0.7, roughness: 0.3,
+        emissive: spotColors[i % spotColors.length], emissiveIntensity: 0.2,
+      })
+    );
+    product.position.copy(disc.position).add(new THREE.Vector3(0, 0.8, 0));
+    platformGroup.add(product);
+    platforms.push({ disc, product, angle, baseY: disc.position.y });
+  }
+  scene.add(platformGroup);
+
+  const parts = ${this._particleSnippet(800, 'ACCENT', 0.04, 15, 'AdditiveBlending')};
+
+  function update(elapsed) {
+    platformGroup.rotation.y = elapsed * 0.08 + mouse.x * 0.4;
+
+    platforms.forEach((p, i) => {
+      p.product.rotation.y = elapsed * 0.5 + i;
+      p.product.rotation.x = Math.sin(elapsed * 0.3 + i) * 0.2;
+      p.disc.position.y = p.baseY + Math.sin(elapsed * 0.5 + i * 0.8) * 0.3;
+      p.product.position.y = p.disc.position.y + 0.8;
+    });
+
+    spots.forEach((s, i) => {
+      s.position.x = Math.cos(elapsed * 0.3 + i * Math.PI/2) * 6;
+      s.position.z = Math.sin(elapsed * 0.3 + i * Math.PI/2) * 6;
+    });
+
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3+1] += 0.003;
+      if (parts.pos[i*3+1] > 8) parts.pos[i*3+1] = -8;
+    }
+    parts.geo.attributes.position.needsUpdate = true;
+
+    camera.position.x = Math.sin(elapsed * 0.06) * 1.5 + mouse.x * 1.5;
+    camera.position.y = 3 + mouse.y * 1 + Math.cos(elapsed * 0.05) * 0.5;
+    camera.position.z = 12 - scrollY * 0.004;
+    camera.lookAt(0, 0, 0);
+  }
+${this._postamble()}`;
+    return { js, css: this._canvasCss(canvasId) };
+  }
+
+  // ── SCENE: Restaurant — Smoke/Steam Particles ────────────────────
+
+  _sceneRestaurant({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, { ...colors, primary: '#f59e0b', secondary: '#d97706', accent: '#fbbf24' })}
+  camera.position.set(0, 1, 8);
+
+  scene.add(new THREE.AmbientLight(0x221100, 0.6));
+  scene.fog = new THREE.FogExp2(${this._hex(bgColor)}, 0.04);
+  const warmLight1 = new THREE.PointLight(0xf59e0b, 3, 25);
+  warmLight1.position.set(3, 4, 3);
+  scene.add(warmLight1);
+  const warmLight2 = new THREE.PointLight(0xd97706, 2, 20);
+  warmLight2.position.set(-3, 2, 2);
+  scene.add(warmLight2);
+  const warmLight3 = new THREE.PointLight(0xff6b00, 1.5, 15);
+  warmLight3.position.set(0, -1, 5);
+  scene.add(warmLight3);
+
+  // Central warm orb (firelight)
+  const orbGeo = new THREE.SphereGeometry(0.4, 16, 16);
+  const orbMat = new THREE.MeshStandardMaterial({
+    color: 0xf59e0b, emissive: 0xff8c00, emissiveIntensity: 1.0, transparent: true, opacity: 0.6,
+  });
+  const orb = new THREE.Mesh(orbGeo, orbMat);
+  orb.position.y = -1;
+  scene.add(orb);
+
+  // Smoke/steam particles — rising with turbulence
+  const smokeCount = isMobile ? 400 : 1200;
+  const smokePos = new Float32Array(smokeCount * 3);
+  const smokeSpeeds = new Float32Array(smokeCount);
+  const smokePhases = new Float32Array(smokeCount);
+  for (let i = 0; i < smokeCount; i++) {
+    smokePos[i*3]   = (Math.random()-0.5) * 6;
+    smokePos[i*3+1] = Math.random() * 12 - 2;
+    smokePos[i*3+2] = (Math.random()-0.5) * 6;
+    smokeSpeeds[i] = 0.005 + Math.random() * 0.015;
+    smokePhases[i] = Math.random() * Math.PI * 2;
+  }
+  const smokeGeo = new THREE.BufferGeometry();
+  smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePos, 3));
+  const smokeMat = new THREE.PointsMaterial({
+    color: 0xfbbf24, size: isMobile ? 0.15 : 0.08, transparent: true, opacity: 0.25,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  });
+  scene.add(new THREE.Points(smokeGeo, smokeMat));
+
+  // Ambient floating torus rings (plate metaphor)
+  const rings = [];
+  for (let i = 0; i < 3; i++) {
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(1.5 + i * 0.5, 0.02, 8, 64),
+      new THREE.MeshBasicMaterial({ color: 0xd97706, transparent: true, opacity: 0.15 })
+    );
+    ring.position.y = -1 + i * 0.3;
+    ring.rotation.x = Math.PI * 0.5;
+    scene.add(ring);
+    rings.push(ring);
+  }
+
+  function update(elapsed) {
+    // Smoke rise with turbulence
+    for (let i = 0; i < smokeCount; i++) {
+      smokePos[i*3+1] += smokeSpeeds[i];
+      smokePos[i*3]   += Math.sin(elapsed * 0.8 + smokePhases[i]) * 0.003;
+      smokePos[i*3+2] += Math.cos(elapsed * 0.6 + smokePhases[i]) * 0.003;
+      if (smokePos[i*3+1] > 10) {
+        smokePos[i*3+1] = -2;
+        smokePos[i*3] = (Math.random()-0.5) * 4;
+        smokePos[i*3+2] = (Math.random()-0.5) * 4;
+      }
+    }
+    smokeGeo.attributes.position.needsUpdate = true;
+
+    orb.scale.setScalar(0.9 + Math.sin(elapsed * 3) * 0.15);
+    orbMat.emissiveIntensity = 0.7 + Math.sin(elapsed * 4) * 0.3;
+
+    rings.forEach((r, i) => { r.rotation.z = elapsed * 0.1 * (i+1); });
+
+    warmLight1.intensity = 2.5 + Math.sin(elapsed * 5) * 0.5;
+
+    camera.position.x = Math.sin(elapsed * 0.05) * 1 + mouse.x * 0.8;
+    camera.position.y = 1 + mouse.y * 0.5 + Math.cos(elapsed * 0.04) * 0.3;
+    camera.position.z = 8 - scrollY * 0.003;
+    camera.lookAt(0, 0, 0);
+  }
+${this._postamble()}`;
+    return { js, css: this._canvasCss(canvasId) };
+  }
+
+  // ── SCENE: Education — Assembling Geometric Shapes ────────────────
+
+  _sceneEducation({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, { ...colors, primary: '#8b5cf6', secondary: '#a78bfa', accent: '#c084fc' })}
+  camera.position.set(0, 2, 12);
+
+  scene.add(new THREE.AmbientLight(0x111122, 0.5));
+  const purpleLight = new THREE.PointLight(0x8b5cf6, 3, 40);
+  purpleLight.position.set(5, 5, 5);
+  scene.add(purpleLight);
+  const softLight = new THREE.PointLight(0xc084fc, 2, 30);
+  softLight.position.set(-4, 3, 6);
+  scene.add(softLight);
+
+  const shapeGroup = new THREE.Group();
+  const geometries = [
+    new THREE.TetrahedronGeometry(0.5),
+    new THREE.OctahedronGeometry(0.5),
+    new THREE.IcosahedronGeometry(0.5, 0),
+    new THREE.DodecahedronGeometry(0.4),
+    new THREE.TorusGeometry(0.35, 0.15, 8, 16),
+    new THREE.TorusKnotGeometry(0.3, 0.1, 32, 4),
+    new THREE.BoxGeometry(0.6, 0.6, 0.6),
+    new THREE.ConeGeometry(0.4, 0.8, 6),
+  ];
+  const shapeCount = isMobile ? 12 : 25;
+  const shapes = [];
+  for (let i = 0; i < shapeCount; i++) {
+    const mat = new THREE.MeshStandardMaterial({
+      color: [0x8b5cf6, 0xa78bfa, 0xc084fc, 0x7c3aed][i % 4],
+      metalness: 0.5, roughness: 0.4,
+      emissive: [0x8b5cf6, 0xa78bfa, 0xc084fc, 0x7c3aed][i % 4],
+      emissiveIntensity: 0.15,
+    });
+    const mesh = new THREE.Mesh(geometries[i % geometries.length].clone(), mat);
+    // Orbit parameters
+    const orbitR = 2 + Math.random() * 5;
+    const orbitSpeed = 0.1 + Math.random() * 0.3;
+    const orbitPhase = Math.random() * Math.PI * 2;
+    const orbitY = (Math.random() - 0.5) * 6;
+    mesh.userData = { orbitR, orbitSpeed, orbitPhase, orbitY, spinSpeed: 0.3 + Math.random() * 1 };
+    shapeGroup.add(mesh);
+    shapes.push(mesh);
+  }
+  scene.add(shapeGroup);
+
+  const parts = ${this._particleSnippet(1000, '0xc084fc', 0.03, 16, 'AdditiveBlending')};
+
+  function update(elapsed) {
+    shapes.forEach(s => {
+      const d = s.userData;
+      s.position.x = Math.cos(elapsed * d.orbitSpeed + d.orbitPhase) * d.orbitR;
+      s.position.z = Math.sin(elapsed * d.orbitSpeed + d.orbitPhase) * d.orbitR;
+      s.position.y = d.orbitY + Math.sin(elapsed * 0.5 + d.orbitPhase) * 0.5;
+      s.rotation.x += 0.005 * d.spinSpeed;
+      s.rotation.y += 0.008 * d.spinSpeed;
+    });
+
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3+1] += 0.003;
+      if (parts.pos[i*3+1] > 8) parts.pos[i*3+1] = -8;
+    }
+    parts.geo.attributes.position.needsUpdate = true;
+
+    camera.position.x = Math.sin(elapsed * 0.07) * 2 + mouse.x * 1.5;
+    camera.position.y = 2 + mouse.y * 1 + Math.cos(elapsed * 0.05) * 0.5;
+    camera.position.z = 12 - scrollY * 0.004;
+    camera.lookAt(0, 0, 0);
+  }
+${this._postamble()}`;
+    return { js, css: this._canvasCss(canvasId) };
+  }
+
+  // ── SCENE: Luxury — Gold Particles + Crystal ──────────────────────
+
+  _sceneLuxury({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, { ...colors, primary: '#d4a017', secondary: '#b8860b', accent: '#ffd700' })}
+  camera.position.set(0, 0, 10);
+
+  scene.add(new THREE.AmbientLight(0x221100, 0.3));
+  const goldLight1 = new THREE.PointLight(0xffd700, 3, 40);
+  goldLight1.position.set(5, 5, 5);
+  scene.add(goldLight1);
+  const goldLight2 = new THREE.PointLight(0xd4a017, 2, 30);
+  goldLight2.position.set(-5, -3, 4);
+  scene.add(goldLight2);
+  const whiteLight = new THREE.PointLight(0xffffff, 1, 20);
+  whiteLight.position.set(0, 3, 8);
+  scene.add(whiteLight);
+
+  // Crystalline icosahedron
+  const crystalGeo = new THREE.IcosahedronGeometry(2, 1);
+  const crystalMat = new THREE.MeshStandardMaterial({
+    color: 0xffd700, metalness: 1, roughness: 0.05,
+    emissive: 0xd4a017, emissiveIntensity: 0.2,
+    transparent: true, opacity: 0.85,
+  });
+  const crystal = new THREE.Mesh(crystalGeo, crystalMat);
+  scene.add(crystal);
+
+  // Wireframe outline
+  const wireGeo = new THREE.IcosahedronGeometry(2.05, 1);
+  const wireMat = new THREE.MeshBasicMaterial({ color: 0xffd700, wireframe: true, transparent: true, opacity: 0.3 });
+  const wire = new THREE.Mesh(wireGeo, wireMat);
+  scene.add(wire);
+
+  // Gold particles
+  const goldCount = isMobile ? 600 : 2000;
+  const goldPos = new Float32Array(goldCount * 3);
+  const goldVel = new Float32Array(goldCount);
+  for (let i = 0; i < goldCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 3 + Math.random() * 8;
+    goldPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+    goldPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    goldPos[i*3+2] = r * Math.cos(phi);
+    goldVel[i] = 0.001 + Math.random() * 0.003;
+  }
+  const goldGeo = new THREE.BufferGeometry();
+  goldGeo.setAttribute('position', new THREE.BufferAttribute(goldPos, 3));
+  const goldMat = new THREE.PointsMaterial({
+    color: 0xffd700, size: 0.05, transparent: true, opacity: 0.7,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  });
+  scene.add(new THREE.Points(goldGeo, goldMat));
+
+  // Orbital rings
+  for (let i = 0; i < 3; i++) {
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(3 + i * 0.8, 0.01, 8, 100),
+      new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.15 })
+    );
+    ring.rotation.x = Math.PI * 0.3 * i;
+    ring.rotation.y = Math.PI * 0.2 * i;
+    scene.add(ring);
+  }
+
+  function update(elapsed) {
+    crystal.rotation.y = elapsed * 0.12;
+    crystal.rotation.x = Math.sin(elapsed * 0.08) * 0.2;
+    wire.rotation.y = -elapsed * 0.08;
+    wire.rotation.x = Math.cos(elapsed * 0.06) * 0.2;
+
+    // Slowly swirl gold particles
+    for (let i = 0; i < goldCount; i++) {
+      const x = goldPos[i*3], z = goldPos[i*3+2];
+      const angle = goldVel[i];
+      goldPos[i*3]   = x * Math.cos(angle) - z * Math.sin(angle);
+      goldPos[i*3+2] = x * Math.sin(angle) + z * Math.cos(angle);
+      goldPos[i*3+1] += Math.sin(elapsed + i * 0.01) * 0.001;
+    }
+    goldGeo.attributes.position.needsUpdate = true;
+
+    camera.position.x = Math.sin(elapsed * 0.04) * 2 + mouse.x * 1.5;
+    camera.position.y = Math.cos(elapsed * 0.03) * 1 + mouse.y * 1;
+    camera.position.z = 10 - scrollY * 0.003;
+    camera.lookAt(0, 0, 0);
+  }
+${this._postamble()}`;
+    return { js, css: this._canvasCss(canvasId) };
+  }
+
+  // ── SCENE: Agency — Morphing Iridescent Blob ──────────────────────
 
   _sceneAgency({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
     const js = `${this._preamble(canvasId, bgColor, colors)}
+  camera.position.set(0, 0, 6);
+
+  scene.add(new THREE.AmbientLight(0x111111, 0.3));
+  const light1 = new THREE.PointLight(0xff0066, 3, 30);
+  light1.position.set(3, 3, 3);
+  scene.add(light1);
+  const light2 = new THREE.PointLight(0x00ccff, 3, 30);
+  light2.position.set(-3, -2, 3);
+  scene.add(light2);
+  const light3 = new THREE.PointLight(0xffcc00, 2, 25);
+  light3.position.set(0, 3, -3);
+  scene.add(light3);
+
+  // Morphing blob — high-detail icosahedron with vertex displacement
+  const blobGeo = new THREE.IcosahedronGeometry(2, ${performanceLevel === 'high' ? 5 : 3});
+  const blobMat = new THREE.MeshStandardMaterial({
+    color: PRIMARY, metalness: 0.9, roughness: 0.1,
+    emissive: SECONDARY, emissiveIntensity: 0.15,
+  });
+  const blob = new THREE.Mesh(blobGeo, blobMat);
+  scene.add(blob);
+  const blobBase = blobGeo.attributes.position.array.slice();
+
+  // Iridescence simulation — multiple colored wireframe layers
+  const layers = [];
+  const layerColors = [0xff0066, 0x00ccff, 0xffcc00];
+  for (let i = 0; i < 3; i++) {
+    const lGeo = new THREE.IcosahedronGeometry(2.08 + i * 0.04, 3);
+    const lMat = new THREE.MeshBasicMaterial({
+      color: layerColors[i], wireframe: true, transparent: true, opacity: 0.06,
+    });
+    const lMesh = new THREE.Mesh(lGeo, lMat);
+    scene.add(lMesh);
+    layers.push({ mesh: lMesh, geo: lGeo, base: lGeo.attributes.position.array.slice() });
+  }
+
+  const parts = ${this._particleSnippet(1200, 'ACCENT', 0.03, 12, 'AdditiveBlending')};
+
+  function update(elapsed) {
+    // Morphing displacement
+    const pos = blobGeo.attributes.position.array;
+    for (let i = 0; i < pos.length; i += 3) {
+      const ox = blobBase[i], oy = blobBase[i+1], oz = blobBase[i+2];
+      const len = Math.sqrt(ox*ox + oy*oy + oz*oz);
+      const nx = ox/len, ny = oy/len, nz = oz/len;
+      const d = Math.sin(nx*4 + elapsed*1.2) * Math.cos(ny*4 + elapsed*0.9) * Math.sin(nz*4 + elapsed*0.7) * 0.25;
+      pos[i]   = ox * (1 + d);
+      pos[i+1] = oy * (1 + d);
+      pos[i+2] = oz * (1 + d);
+    }
+    blobGeo.attributes.position.needsUpdate = true;
+    blobGeo.computeVertexNormals();
+
+    layers.forEach((l, li) => {
+      const lp = l.geo.attributes.position.array;
+      for (let i = 0; i < lp.length; i += 3) {
+        const ox = l.base[i], oy = l.base[i+1], oz = l.base[i+2];
+        const len = Math.sqrt(ox*ox + oy*oy + oz*oz);
+        const nx = ox/len, ny = oy/len, nz = oz/len;
+        const d = Math.sin(nx*4 + elapsed*1.2 + li*0.5) * Math.cos(ny*4 + elapsed*0.9 + li*0.3) * 0.2;
+        lp[i]   = ox * (1 + d);
+        lp[i+1] = oy * (1 + d);
+        lp[i+2] = oz * (1 + d);
+      }
+      l.geo.attributes.position.needsUpdate = true;
+    });
+
+    blob.rotation.y = elapsed * 0.15;
+    blob.rotation.x = Math.sin(elapsed * 0.1) * 0.3;
+
+    light1.position.x = Math.sin(elapsed * 0.7) * 5;
+    light1.position.y = Math.cos(elapsed * 0.5) * 4;
+    light2.position.x = Math.cos(elapsed * 0.6) * 5;
+    light2.position.z = Math.sin(elapsed * 0.4) * 5;
+
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3] += Math.sin(elapsed + i*0.05) * 0.002;
+      parts.pos[i*3+1] += Math.cos(elapsed*0.8 + i*0.03) * 0.002;
+    }
+    parts.geo.attributes.position.needsUpdate = true;
+
+    camera.position.x = Math.sin(elapsed * 0.08) * 1.5 + mouse.x * 1.5;
+    camera.position.y = Math.cos(elapsed * 0.06) * 0.8 + mouse.y * 1;
+    camera.position.z = 6 - scrollY * 0.003;
+    camera.lookAt(0, 0, 0);
+  }
+${this._postamble()}`;
+    return { js, css: this._canvasCss(canvasId) };
+  }
+
+  // ── SCENE: Tech — Circuit Board / Code Matrix in 3D ───────────────
+
+  _sceneTech({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, { ...colors, primary: '#06b6d4', secondary: '#0891b2', accent: '#22d3ee' })}
+  camera.position.set(0, 8, 15);
+  camera.lookAt(0, 0, 0);
+
+  scene.add(new THREE.AmbientLight(0x001122, 0.4));
+  const cyanLight = new THREE.PointLight(0x06b6d4, 3, 50);
+  cyanLight.position.set(5, 5, 5);
+  scene.add(cyanLight);
+  const tealLight = new THREE.PointLight(0x0891b2, 2, 40);
+  tealLight.position.set(-5, 3, 8);
+  scene.add(tealLight);
+
+  // Circuit board grid plane
+  const boardGeo = new THREE.PlaneGeometry(20, 20, 40, 40);
+  const boardMat = new THREE.MeshStandardMaterial({
+    color: 0x06b6d4, wireframe: true, transparent: true, opacity: 0.1,
+    emissive: 0x06b6d4, emissiveIntensity: 0.15,
+  });
+  const board = new THREE.Mesh(boardGeo, boardMat);
+  board.rotation.x = -Math.PI * 0.5;
+  board.position.y = -3;
+  scene.add(board);
+
+  // Circuit nodes — vertical pillars from board
+  const pillarGroup = new THREE.Group();
+  const pillarCount = isMobile ? 30 : 80;
+  const pillars = [];
+  for (let i = 0; i < pillarCount; i++) {
+    const h = 0.3 + Math.random() * 3;
+    const geo = new THREE.BoxGeometry(0.08, h, 0.08);
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 0.5,
+      transparent: true, opacity: 0.5 + Math.random() * 0.4,
+    });
+    const pillar = new THREE.Mesh(geo, mat);
+    pillar.position.set((Math.random()-0.5)*18, h/2 - 3, (Math.random()-0.5)*18);
+    pillar.userData = { phase: Math.random() * Math.PI * 2, baseH: h };
+    pillarGroup.add(pillar);
+    pillars.push(pillar);
+
+    // Node cap
+    const cap = new THREE.Mesh(
+      new THREE.SphereGeometry(0.06, 6, 6),
+      new THREE.MeshBasicMaterial({ color: 0x22d3ee })
+    );
+    cap.position.set(pillar.position.x, pillar.position.y + h/2, pillar.position.z);
+    pillarGroup.add(cap);
+  }
+  scene.add(pillarGroup);
+
+  // Connection lines between random pillars
+  for (let i = 0; i < Math.min(pillarCount, 40); i++) {
+    const a = pillars[Math.floor(Math.random() * pillars.length)];
+    const b = pillars[Math.floor(Math.random() * pillars.length)];
+    if (a === b) continue;
+    const lineGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(a.position.x, -3, a.position.z),
+      new THREE.Vector3(b.position.x, -3, b.position.z),
+    ]);
+    const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({
+      color: 0x06b6d4, transparent: true, opacity: 0.08,
+    }));
+    scene.add(line);
+  }
+
+  // Data rain particles
+  const parts = ${this._particleSnippet(1800, '0x22d3ee', 0.04, 20, 'AdditiveBlending')};
+
+  function update(elapsed) {
+    pillars.forEach(p => {
+      const pulse = Math.sin(elapsed * 2 + p.userData.phase);
+      p.scale.y = 0.6 + pulse * 0.5;
+      p.material.emissiveIntensity = 0.3 + pulse * 0.4;
+    });
+
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3+1] -= 0.015;
+      if (parts.pos[i*3+1] < -10) parts.pos[i*3+1] = 10;
+    }
+    parts.geo.attributes.position.needsUpdate = true;
+
+    camera.position.x = Math.sin(elapsed * 0.06) * 3 + mouse.x * 2;
+    camera.position.y = 8 + mouse.y * 1.5 + Math.cos(elapsed * 0.04) * 0.5;
+    camera.position.z = 15 - scrollY * 0.005;
+    camera.lookAt(0, 0, 0);
+  }
+${this._postamble()}`;
+    return { js, css: this._canvasCss(canvasId) };
+  }
+
+  // ── SCENE: Default — Morphing Icosahedron + Bloom + Particles ─────
+
+  _sceneDefault({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
+    const js = `${this._preamble(canvasId, bgColor, colors)}
   camera.position.set(0, 0, 8);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-  scene.add(ambientLight);
-  const pointLight1 = new THREE.PointLight(PRIMARY, 1, 20);
-  pointLight1.position.set(5, 5, 5);
-  scene.add(pointLight1);
-  const pointLight2 = new THREE.PointLight(SECONDARY, 1, 20);
-  pointLight2.position.set(-5, -5, 5);
-  scene.add(pointLight2);
+  scene.add(new THREE.AmbientLight(0x111122, 0.4));
+  const mainLight = new THREE.PointLight(PRIMARY, 3, 40);
+  mainLight.position.set(5, 5, 5);
+  scene.add(mainLight);
+  const fillLight = new THREE.PointLight(SECONDARY, 2, 30);
+  fillLight.position.set(-4, -2, 4);
+  scene.add(fillLight);
+  const rimLight = new THREE.PointLight(ACCENT, 1.5, 25);
+  rimLight.position.set(0, 4, -4);
+  scene.add(rimLight);
 
-  // Icosahedron wireframe
-  const detail = isMobile ? 2 : 3;
-  const icoGeo = new THREE.IcosahedronGeometry(3, detail);
-  const icoMat = new THREE.MeshBasicMaterial({
-    color: PRIMARY,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.6,
+  // Main morphing icosahedron
+  const icoGeo = new THREE.IcosahedronGeometry(2, ${performanceLevel === 'high' ? 4 : 3});
+  const icoMat = new THREE.MeshStandardMaterial({
+    color: PRIMARY, metalness: 0.7, roughness: 0.2,
+    emissive: PRIMARY, emissiveIntensity: 0.15,
   });
   const ico = new THREE.Mesh(icoGeo, icoMat);
   scene.add(ico);
+  const icoBase = icoGeo.attributes.position.array.slice();
 
-  // Solid inner glow
-  const innerGeo = new THREE.IcosahedronGeometry(2.8, 1);
-  const innerMat = new THREE.MeshPhongMaterial({
-    color: SECONDARY,
-    transparent: true,
-    opacity: 0.05,
-    side: THREE.DoubleSide,
+  // Wireframe shell
+  const shellGeo = new THREE.IcosahedronGeometry(2.2, 2);
+  const shellMat = new THREE.MeshBasicMaterial({
+    color: SECONDARY, wireframe: true, transparent: true, opacity: 0.12,
   });
-  const inner = new THREE.Mesh(innerGeo, innerMat);
-  scene.add(inner);
+  const shell = new THREE.Mesh(shellGeo, shellMat);
+  scene.add(shell);
 
-  // Store original positions for noise displacement
-  const origPositions = new Float32Array(icoGeo.attributes.position.array);
-  const vertexCount = origPositions.length / 3;
+  // Orbital torus knot
+  const knotGeo = new THREE.TorusKnotGeometry(3.5, 0.03, 128, 8, 3, 2);
+  const knotMat = new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.2 });
+  const knot = new THREE.Mesh(knotGeo, knotMat);
+  scene.add(knot);
 
-  // Simple noise function
-  function noise3D(x, y, z) {
-    const n = Math.sin(x * 1.7 + y * 2.3 + z * 3.1) * 43758.5453;
-    return (n - Math.floor(n)) * 2 - 1;
-  }
-
-  // Scatter particles around the shape
-  const pCount = isMobile ? 200 : 600;
-  const pPositions = new Float32Array(pCount * 3);
-  for (let i = 0; i < pCount; i++) {
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    const r = 3.5 + Math.random() * 2;
-    pPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-    pPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-    pPositions[i * 3 + 2] = r * Math.cos(phi);
-  }
-  const pGeo = new THREE.BufferGeometry();
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
-  const pMat = new THREE.PointsMaterial({
-    color: ACCENT,
-    size: 0.04,
-    transparent: true,
-    opacity: 0.5,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  });
-  const particleCloud = new THREE.Points(pGeo, pMat);
-  scene.add(particleCloud);
+  const parts = ${this._particleSnippet(1500, 'ACCENT', 0.03, 15, 'AdditiveBlending')};
 
   function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-
-    // Strong mouse reaction
-    const targetRotX = mouse.y * 1.2;
-    const targetRotY = mouse.x * 1.2;
-    ico.rotation.x += (targetRotX - ico.rotation.x) * 0.05;
-    ico.rotation.y += (targetRotY + elapsed * 0.2 - ico.rotation.y) * 0.05;
-    inner.rotation.copy(ico.rotation);
-
-    camera.position.z = 8 - scrollFactor * 3;
-
-    // Vertex noise displacement (morph)
-    const positions = icoGeo.attributes.position.array;
-    const noiseScale = 0.3 + scrollFactor * 0.8;
-    for (let i = 0; i < vertexCount; i++) {
-      const ox = origPositions[i * 3];
-      const oy = origPositions[i * 3 + 1];
-      const oz = origPositions[i * 3 + 2];
-      const len = Math.sqrt(ox * ox + oy * oy + oz * oz);
-      const nx = ox / len;
-      const ny = oy / len;
-      const nz = oz / len;
-      const displacement = noise3D(
-        ox + elapsed * 0.5,
-        oy + elapsed * 0.3,
-        oz + elapsed * 0.4
-      ) * noiseScale;
-      positions[i * 3] = ox + nx * displacement;
-      positions[i * 3 + 1] = oy + ny * displacement;
-      positions[i * 3 + 2] = oz + nz * displacement;
+    // Vertex morphing
+    const pos = icoGeo.attributes.position.array;
+    for (let i = 0; i < pos.length; i += 3) {
+      const ox = icoBase[i], oy = icoBase[i+1], oz = icoBase[i+2];
+      const len = Math.sqrt(ox*ox + oy*oy + oz*oz);
+      const nx = ox/len, ny = oy/len, nz = oz/len;
+      const d = Math.sin(nx*3.5 + elapsed*1.5) * Math.cos(ny*3.5 + elapsed) * Math.sin(nz*2 + elapsed*0.8) * 0.2;
+      pos[i]   = ox * (1 + d);
+      pos[i+1] = oy * (1 + d);
+      pos[i+2] = oz * (1 + d);
     }
     icoGeo.attributes.position.needsUpdate = true;
+    icoGeo.computeVertexNormals();
 
-    // Particles orbit
-    particleCloud.rotation.y = elapsed * 0.1;
-    particleCloud.rotation.x = Math.sin(elapsed * 0.15) * 0.3;
+    ico.rotation.y = elapsed * 0.15;
+    ico.rotation.x = Math.sin(elapsed * 0.1) * 0.2;
 
-    // Lights move
-    pointLight1.position.x = Math.sin(elapsed * 0.7) * 6;
-    pointLight1.position.y = Math.cos(elapsed * 0.5) * 6;
-    pointLight2.position.x = Math.sin(elapsed * 0.4 + 2) * 6;
-    pointLight2.position.z = Math.cos(elapsed * 0.6 + 1) * 6;
-  }
-${this._postamble()}`;
+    shell.rotation.y = -elapsed * 0.1;
+    shell.rotation.z = Math.cos(elapsed * 0.08) * 0.15;
 
-    return { js, css: this._canvasCss(canvasId) };
-  }
+    knot.rotation.x = elapsed * 0.08;
+    knot.rotation.y = elapsed * 0.12;
 
-  // ── SCENE 10: Luxury — Crystal Reflections ──────────────────────
+    // Particle gentle drift
+    for (let i = 0; i < parts.count; i++) {
+      parts.pos[i*3]   += Math.sin(elapsed * 0.5 + i * 0.1) * 0.001;
+      parts.pos[i*3+1] += Math.cos(elapsed * 0.3 + i * 0.05) * 0.001;
+    }
+    parts.geo.attributes.position.needsUpdate = true;
 
-  _sceneLuxury({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 2, 10);
-  camera.lookAt(0, 0, 0);
+    mainLight.position.x = Math.sin(elapsed * 0.4) * 6;
+    mainLight.position.y = Math.cos(elapsed * 0.3) * 4;
+    fillLight.position.z = Math.sin(elapsed * 0.5) * 5;
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
-  scene.add(ambientLight);
-  const spotLight = new THREE.SpotLight(0xffffff, 1.5, 30, Math.PI / 4);
-  spotLight.position.set(5, 10, 5);
-  scene.add(spotLight);
-  const backLight = new THREE.PointLight(SECONDARY, 0.8, 20);
-  backLight.position.set(-5, -3, -5);
-  scene.add(backLight);
-
-  // Crystal (diamond-like shape) — custom geometry using two cones
-  const crystalGroup = new THREE.Group();
-
-  // Top pyramid
-  const topGeo = new THREE.ConeGeometry(2.5, 2, 8);
-  const crystalMat = new THREE.MeshPhongMaterial({
-    color: 0xe8e8f0,
-    specular: 0xffffff,
-    shininess: 200,
-    transparent: true,
-    opacity: 0.35,
-    side: THREE.DoubleSide,
-    flatShading: true,
-  });
-  const topCone = new THREE.Mesh(topGeo, crystalMat);
-  topCone.position.y = 1;
-  crystalGroup.add(topCone);
-
-  // Bottom inverted pyramid (longer)
-  const botGeo = new THREE.ConeGeometry(2.5, 4, 8);
-  const botCone = new THREE.Mesh(botGeo, crystalMat.clone());
-  botCone.rotation.x = Math.PI;
-  botCone.position.y = -2;
-  crystalGroup.add(botCone);
-
-  // Wireframe edges with prismatic colors
-  const edgeColors = [0xff6b9d, 0x6366f1, 0x22d3ee, 0xfbbf24, 0xa78bfa];
-  const edgeMaterials = [];
-  [topGeo, botGeo].forEach((geo, idx) => {
-    const edges = new THREE.EdgesGeometry(geo);
-    const color = edgeColors[idx % edgeColors.length];
-    const lineMat = new THREE.LineBasicMaterial({
-      color: color,
-      transparent: true,
-      opacity: 0.6,
-    });
-    edgeMaterials.push(lineMat);
-    const lineSegments = new THREE.LineSegments(edges, lineMat);
-    lineSegments.position.copy(idx === 0 ? topCone.position : botCone.position);
-    lineSegments.rotation.copy(idx === 0 ? topCone.rotation : botCone.rotation);
-    crystalGroup.add(lineSegments);
-  });
-
-  scene.add(crystalGroup);
-
-  // Floor reflection hint — a subtle reflective plane
-  const floorGeo = new THREE.PlaneGeometry(30, 30);
-  const floorMat = new THREE.MeshPhongMaterial({
-    color: 0x111118,
-    specular: 0x333344,
-    shininess: 100,
-    transparent: true,
-    opacity: 0.5,
-  });
-  const floor = new THREE.Mesh(floorGeo, floorMat);
-  floor.rotation.x = -Math.PI / 2;
-  floor.position.y = -4.5;
-  scene.add(floor);
-
-  // Floating prismatic particles
-  const sparkleCount = isMobile ? 60 : 200;
-  const sparklePositions = new Float32Array(sparkleCount * 3);
-  const sparkleVelocities = [];
-  for (let i = 0; i < sparkleCount; i++) {
-    sparklePositions[i * 3] = (Math.random() - 0.5) * 15;
-    sparklePositions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-    sparklePositions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-    sparkleVelocities.push({
-      vy: 0.005 + Math.random() * 0.01,
-      phase: Math.random() * Math.PI * 2,
-    });
-  }
-  const sparkleGeo = new THREE.BufferGeometry();
-  sparkleGeo.setAttribute('position', new THREE.BufferAttribute(sparklePositions, 3));
-  const sparkleMat = new THREE.PointsMaterial({
-    color: 0xffffff,
-    size: isMobile ? 0.08 : 0.05,
-    transparent: true,
-    opacity: 0.4,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  });
-  const sparkles = new THREE.Points(sparkleGeo, sparkleMat);
-  scene.add(sparkles);
-
-  function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-
-    // Slow elegant rotation
-    crystalGroup.rotation.y = elapsed * 0.1 + mouse.x * 0.5;
-    crystalGroup.rotation.x = Math.sin(elapsed * 0.05) * 0.1 + mouse.y * 0.2;
-
-    camera.position.x = mouse.x * 2;
-    camera.position.y = 2 + mouse.y * 1.5;
+    camera.position.x = Math.sin(elapsed * 0.07) * 1.5 + mouse.x * 1.5;
+    camera.position.y = Math.cos(elapsed * 0.05) * 0.8 + mouse.y * 1;
+    camera.position.z = 8 - scrollY * 0.003;
     camera.lookAt(0, 0, 0);
-
-    // Prismatic edge color cycling
-    for (let i = 0; i < edgeMaterials.length; i++) {
-      const hue = ((elapsed * 0.05 + i * 0.3) % 1);
-      edgeMaterials[i].color.setHSL(hue, 0.8, 0.6);
-    }
-
-    // Crystal subtle scale
-    const s = 1 + Math.sin(elapsed * 0.3) * 0.02;
-    crystalGroup.scale.set(s, s, s);
-
-    // Sparkle movement
-    const sp = sparkles.geometry.attributes.position.array;
-    for (let i = 0; i < sparkleCount; i++) {
-      const v = sparkleVelocities[i];
-      sp[i * 3 + 1] += v.vy;
-      sp[i * 3] += Math.sin(elapsed + v.phase) * 0.003;
-      if (sp[i * 3 + 1] > 6) sp[i * 3 + 1] = -6;
-    }
-    sparkles.geometry.attributes.position.needsUpdate = true;
-
-    // Spotlight follows crystal
-    spotLight.position.x = Math.sin(elapsed * 0.2) * 5;
-    spotLight.position.z = Math.cos(elapsed * 0.2) * 5;
   }
 ${this._postamble()}`;
-
     return { js, css: this._canvasCss(canvasId) };
-  }
-
-  // ── SCENE 11: Tech — Matrix Rain ───────────────────────────────
-
-  _sceneTech({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const columnCount = performanceLevel === 'high' ? 40 : performanceLevel === 'medium' ? 25 : 15;
-    const dotsPerColumn = performanceLevel === 'high' ? 30 : performanceLevel === 'medium' ? 20 : 12;
-
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 0, 20);
-
-  const columnCount = isMobile ? ${Math.floor(columnCount * 0.5)} : ${columnCount};
-  const dotsPerColumn = isMobile ? ${Math.floor(dotsPerColumn * 0.6)} : ${dotsPerColumn};
-  const totalDots = columnCount * dotsPerColumn;
-
-  const positions = new Float32Array(totalDots * 3);
-  const colors = new Float32Array(totalDots * 3);
-  const sizes = new Float32Array(totalDots);
-  const velocities = new Float32Array(totalDots);
-  const columnX = [];
-
-  const spreadX = 30;
-  const spreadY = 25;
-
-  for (let c = 0; c < columnCount; c++) {
-    const x = (c / columnCount) * spreadX - spreadX / 2;
-    columnX.push(x);
-    const depthLayer = Math.random(); // 0=far, 1=near
-    const z = depthLayer * 10 - 5;
-
-    for (let d = 0; d < dotsPerColumn; d++) {
-      const idx = c * dotsPerColumn + d;
-      positions[idx * 3] = x + (Math.random() - 0.5) * 0.3;
-      positions[idx * 3 + 1] = Math.random() * spreadY - spreadY / 2;
-      positions[idx * 3 + 2] = z;
-
-      // Green/blue theme
-      const green = 0.4 + Math.random() * 0.6;
-      const blue = Math.random() * 0.3;
-      colors[idx * 3] = 0;
-      colors[idx * 3 + 1] = green;
-      colors[idx * 3 + 2] = blue;
-
-      // Front particles bigger
-      sizes[idx] = (0.1 + depthLayer * 0.2);
-      velocities[idx] = 0.02 + Math.random() * 0.08 + depthLayer * 0.03;
-    }
-  }
-
-  const rainGeo = new THREE.BufferGeometry();
-  rainGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  rainGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-  const rainMat = new THREE.PointsMaterial({
-    size: 0.15,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.8,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    sizeAttenuation: true,
-  });
-  const rain = new THREE.Points(rainGeo, rainMat);
-  scene.add(rain);
-
-  // "Head" dots — brighter leading particles, one per column
-  const headPositions = new Float32Array(columnCount * 3);
-  const headColors = new Float32Array(columnCount * 3);
-  for (let c = 0; c < columnCount; c++) {
-    headPositions[c * 3] = columnX[c];
-    headPositions[c * 3 + 1] = Math.random() * spreadY;
-    headPositions[c * 3 + 2] = positions[(c * dotsPerColumn) * 3 + 2];
-    headColors[c * 3] = 0.7;
-    headColors[c * 3 + 1] = 1;
-    headColors[c * 3 + 2] = 0.7;
-  }
-  const headGeo = new THREE.BufferGeometry();
-  headGeo.setAttribute('position', new THREE.BufferAttribute(headPositions, 3));
-  headGeo.setAttribute('color', new THREE.BufferAttribute(headColors, 3));
-  const headMat = new THREE.PointsMaterial({
-    size: 0.25,
-    vertexColors: true,
-    transparent: true,
-    opacity: 1,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    sizeAttenuation: true,
-  });
-  const heads = new THREE.Points(headGeo, headMat);
-  scene.add(heads);
-
-  function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-    const speedMult = 1 + scrollFactor * 2;
-
-    camera.position.x = mouse.x * 2;
-    camera.position.y = mouse.y * 1.5;
-    camera.lookAt(0, 0, 0);
-
-    const pos = rain.geometry.attributes.position.array;
-    for (let i = 0; i < totalDots; i++) {
-      pos[i * 3 + 1] -= velocities[i] * speedMult;
-      // Fade effect at bottom via wrapping
-      if (pos[i * 3 + 1] < -spreadY / 2) {
-        pos[i * 3 + 1] = spreadY / 2;
-      }
-    }
-    rain.geometry.attributes.position.needsUpdate = true;
-
-    // Update head particles
-    const hp = heads.geometry.attributes.position.array;
-    for (let c = 0; c < columnCount; c++) {
-      hp[c * 3 + 1] -= (0.06 + Math.random() * 0.02) * speedMult;
-      if (hp[c * 3 + 1] < -spreadY / 2) {
-        hp[c * 3 + 1] = spreadY / 2;
-      }
-    }
-    heads.geometry.attributes.position.needsUpdate = true;
-  }
-${this._postamble()}`;
-
-    return { js, css: this._canvasCss(canvasId) };
-  }
-
-  // ── SCENE 12: Default — Enhanced Particle Field ─────────────────
-
-  _sceneDefault({ canvasId, colors, darkMode, bgColor, performanceLevel }) {
-    const particleCount = performanceLevel === 'high' ? 2000 : performanceLevel === 'medium' ? 1000 : 500;
-
-    const js = `${this._preamble(canvasId, bgColor, colors)}
-  camera.position.set(0, 0, 20);
-
-  const count = isMobile ? ${Math.floor(particleCount * 0.35)} : ${particleCount};
-  const positions = new Float32Array(count * 3);
-  const basePositions = new Float32Array(count * 3);
-  const sizes = new Float32Array(count);
-  const phases = new Float32Array(count);
-
-  for (let i = 0; i < count; i++) {
-    const x = (Math.random() - 0.5) * 40;
-    const y = (Math.random() - 0.5) * 25;
-    const z = (Math.random() - 0.5) * 20;
-    positions[i * 3] = x;
-    positions[i * 3 + 1] = y;
-    positions[i * 3 + 2] = z;
-    basePositions[i * 3] = x;
-    basePositions[i * 3 + 1] = y;
-    basePositions[i * 3 + 2] = z;
-
-    // Depth-based size
-    const depth = (z + 10) / 20; // 0 to 1
-    sizes[i] = 0.03 + depth * 0.12;
-    phases[i] = Math.random() * Math.PI * 2;
-  }
-
-  const particleGeo = new THREE.BufferGeometry();
-  particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-  const particleMat = new THREE.PointsMaterial({
-    color: PRIMARY,
-    size: isMobile ? 0.1 : 0.06,
-    transparent: true,
-    opacity: 0.6,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    sizeAttenuation: true,
-  });
-  const particles = new THREE.Points(particleGeo, particleMat);
-  scene.add(particles);
-
-  // Secondary layer with different color
-  const count2 = Math.floor(count * 0.3);
-  const pos2 = new Float32Array(count2 * 3);
-  for (let i = 0; i < count2; i++) {
-    pos2[i * 3] = (Math.random() - 0.5) * 35;
-    pos2[i * 3 + 1] = (Math.random() - 0.5) * 20;
-    pos2[i * 3 + 2] = (Math.random() - 0.5) * 15;
-  }
-  const geo2 = new THREE.BufferGeometry();
-  geo2.setAttribute('position', new THREE.BufferAttribute(pos2, 3));
-  const mat2 = new THREE.PointsMaterial({
-    color: SECONDARY,
-    size: isMobile ? 0.08 : 0.04,
-    transparent: true,
-    opacity: 0.4,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    sizeAttenuation: true,
-  });
-  const particles2 = new THREE.Points(geo2, mat2);
-  scene.add(particles2);
-
-  // Mouse repulsion parameters
-  const repulsionRadius = 5;
-  const repulsionStrength = 2;
-
-  function update(elapsed) {
-    const scrollFactor = scrollY / (document.body.scrollHeight || 1);
-
-    camera.position.x = mouse.x * 3;
-    camera.position.y = mouse.y * 2;
-    camera.lookAt(0, 0, 0);
-
-    const pos = particles.geometry.attributes.position.array;
-    const mouseWorld = new THREE.Vector3(mouse.x * 15, mouse.y * 10, 0);
-
-    for (let i = 0; i < count; i++) {
-      const bx = basePositions[i * 3];
-      const by = basePositions[i * 3 + 1];
-      const bz = basePositions[i * 3 + 2];
-
-      // Wave pattern
-      const waveX = Math.sin(elapsed * 0.3 + by * 0.1 + phases[i]) * 0.5;
-      const waveY = Math.cos(elapsed * 0.2 + bx * 0.1 + phases[i]) * 0.3;
-      const waveZ = Math.sin(elapsed * 0.15 + bx * 0.05 + by * 0.05) * 0.5;
-
-      let targetX = bx + waveX;
-      let targetY = by + waveY;
-      let targetZ = bz + waveZ;
-
-      // Mouse repulsion field
-      const dx = targetX - mouseWorld.x;
-      const dy = targetY - mouseWorld.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < repulsionRadius) {
-        const force = (1 - dist / repulsionRadius) * repulsionStrength;
-        targetX += (dx / dist) * force;
-        targetY += (dy / dist) * force;
-      }
-
-      // Smooth interpolation
-      pos[i * 3] += (targetX - pos[i * 3]) * 0.05;
-      pos[i * 3 + 1] += (targetY - pos[i * 3 + 1]) * 0.05;
-      pos[i * 3 + 2] += (targetZ - pos[i * 3 + 2]) * 0.05;
-    }
-    particles.geometry.attributes.position.needsUpdate = true;
-
-    // Secondary layer gentle drift
-    particles2.rotation.y = elapsed * 0.02;
-    particles2.rotation.x = Math.sin(elapsed * 0.05) * 0.1;
-    particles2.position.y = scrollFactor * 3;
-  }
-${this._postamble()}`;
-
-    return { js, css: this._canvasCss(canvasId) };
-  }
-
-  // ── List available scenes ───────────────────────────────────────
-
-  listScenes() {
-    return [
-      { id: 'fintech', name: 'Floating Data Grid', description: '3D grid of transparent cubes pulsing like a heatmap' },
-      { id: 'trading', name: 'Market Flow', description: 'Particles in sine-wave streams with trailing lines' },
-      { id: 'saas', name: 'Orbital Network', description: 'Floating spheres connected by lines orbiting a center' },
-      { id: 'healthcare', name: 'DNA Helix', description: 'Double helix of spheres with cross-bar connections' },
-      { id: 'ecommerce', name: 'Product Showcase Orbit', description: 'Ring of mixed geometric shapes with central glow' },
-      { id: 'fitness', name: 'Energy Burst', description: 'Central sphere with radiating energy particles' },
-      { id: 'education', name: 'Knowledge Constellation', description: 'Point cloud morphing between shapes on scroll' },
-      { id: 'restaurant', name: 'Ambient Glow', description: 'Floating warm light orbs with candlelight flicker' },
-      { id: 'agency', name: 'Creative Morph', description: 'Wireframe icosahedron with noise vertex displacement' },
-      { id: 'luxury', name: 'Crystal Reflections', description: 'Faceted diamond with prismatic edge highlights' },
-      { id: 'tech', name: 'Matrix Rain', description: 'Falling particles in columns with depth layers' },
-      { id: 'default', name: 'Enhanced Particle Field', description: 'Wave-patterned particles with mouse repulsion' },
-    ];
   }
 }
 
-module.exports = Nexus3DSceneEngine;
+// ── Export ────────────────────────────────────────────────────────────
 
-// ── CLI Mode ──────────────────────────────────────────────────────
-
-if (require.main === module) {
-  const args = process.argv.slice(2);
-  const engine = new Nexus3DSceneEngine();
-
-  if (args[0] === '--list') {
-    console.log('\nAvailable 3D Scenes:\n');
-    for (const s of engine.listScenes()) {
-      console.log(`  ${s.id.padEnd(14)} ${s.name.padEnd(28)} ${s.description}`);
-    }
-    console.log('');
-    process.exit(0);
-  }
-
-  const businessType = args[0] || 'default';
-  const primary = args[1] || '#6366f1';
-  const secondary = args[2] || '#8b5cf6';
-  const accent = args[3] || '#f59e0b';
-  const darkMode = args[4] !== 'light';
-  const performanceLevel = args[5] || 'high';
-
-  const result = engine.generate({
-    businessType,
-    colors: { primary, secondary, accent },
-    darkMode,
-    performanceLevel,
-  });
-
-  console.log(`\n=== Nexus 3D Scene: ${businessType} ===`);
-  console.log(`Canvas ID: ${result.canvasId}`);
-  console.log(`Dependencies: ${result.dependencies.join(', ')}`);
-  console.log(`\n--- CSS ---\n${result.css}`);
-  console.log(`\n--- JS (${result.js.length} chars) ---`);
-  console.log(result.js);
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Nexus3DSceneEngine;
+}
+if (typeof window !== 'undefined') {
+  window.Nexus3DSceneEngine = Nexus3DSceneEngine;
 }
