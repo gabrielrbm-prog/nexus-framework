@@ -1,50 +1,56 @@
 #!/usr/bin/env node
 
 /*
- * NEXUS ORCHESTRATOR v2.0
- * Pipeline completo: Discovery → Briefing → Report → Context → Design → Content → Image → Video → Code → Quality → Deploy
- * Usa Blackboard para estado central compartilhado
+ * NEXUS ORCHESTRATOR v3.0
+ * Declarative pipeline with real parallel execution
+ * Discovery → Briefing → Report → Context → [Design | Content | Image | Video] → Code → Quality → Deploy
+ * Uses Blackboard for shared central state
  */
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, exec } = require('child_process');
 const board = require('./nexus-blackboard');
 const NexusBridge = require('./nexus-bridge');
 
 const WORKSPACE = path.join(__dirname, '..');
 const AGENTS_DIR = __dirname;
 
-class NexusOrchestratorV2 {
+class NexusOrchestrator {
   constructor() {
-    this.name = "NEXUS Orchestrator v2.0";
-    this.version = "2.0.0";
+    this.name = "NEXUS Orchestrator";
+    this.version = "3.0.0";
 
-    // Pipeline completo com 11 estágios
+    // Declarative pipeline with explicit waves
+    // Each wave runs in parallel; waves execute sequentially
     this.pipeline = [
-      { stage: 'discovery',  script: 'nexus-discovery-agent.js', required: true,  parallel: false, timeout: 30000,
+      // Wave 0: Data collection (sequential)
+      { wave: 0, stage: 'discovery',  required: true,  timeout: 30000,
         description: 'Coleta dados da empresa (web, redes sociais, materiais)' },
-      { stage: 'briefing',   script: 'nexus-briefing-agent.js',  required: true,  parallel: false, timeout: 60000,
+      { wave: 1, stage: 'briefing',   required: true,  timeout: 60000,
         description: 'Gera briefing personalizado com perguntas adaptativas' },
-      { stage: 'report',     script: 'nexus-briefing-report.js', required: false, parallel: false, timeout: 20000,
+      { wave: 2, stage: 'report',     required: false, timeout: 20000,
         description: 'Gera relatório visual do briefing (HTML)' },
-      { stage: 'context',    script: 'nexus-context-agent.js',   required: true,  parallel: false, timeout: 60000,
+      // Wave 3: Analysis
+      { wave: 3, stage: 'context',    required: true,  timeout: 60000,
         description: 'Analisa briefing e gera Context DNA' },
-      { stage: 'design',     script: 'nexus-design-agent.js',    required: true,  parallel: ['image', 'video', 'content'], timeout: 90000,
+      // Wave 4: PARALLEL — Design + Content + Image + Video all depend on Context only
+      { wave: 4, stage: 'design',     required: true,  timeout: 90000,
         description: 'Gera design system contextual' },
-      { stage: 'content',    script: 'nexus-content-agent.js',   required: true,  parallel: ['design', 'image', 'video'], timeout: 60000,
+      { wave: 4, stage: 'content',    required: true,  timeout: 60000,
         description: 'Gera copy contextual otimizado' },
-      { stage: 'image',      script: 'nexus-image-agent.js',     required: false, parallel: ['design', 'content', 'video'], timeout: 120000,
+      { wave: 4, stage: 'image',      required: false, timeout: 120000,
         description: 'Gera prompts para imagens contextuais' },
-      { stage: 'video',      script: 'nexus-video-agent.js',     required: false, parallel: ['design', 'content', 'image'], timeout: 90000,
+      { wave: 4, stage: 'video',      required: false, timeout: 90000,
         description: 'Gera prompts para vídeos cinematográficos' },
-      { stage: 'code',       script: 'nexus-code-agent.js',      required: true,  parallel: false, timeout: 180000,
-        description: 'Gera site completo production-ready',
-        depends: ['context', 'design', 'content'] },
-      { stage: 'quality',    script: 'nexus-quality-agent.js',   required: true,  parallel: false, timeout: 120000,
-        description: 'Audit de qualidade e performance',
-        depends: ['code'] },
-      { stage: 'deploy',     script: null,                       required: false, parallel: false, timeout: 60000,
+      // Wave 5: Assembly (depends on wave 4)
+      { wave: 5, stage: 'code',       required: true,  timeout: 180000,
+        description: 'Gera site completo production-ready' },
+      // Wave 6: Validation
+      { wave: 6, stage: 'quality',    required: true,  timeout: 120000,
+        description: 'Audit de qualidade e performance' },
+      // Wave 7: Ship
+      { wave: 7, stage: 'deploy',     required: false, timeout: 60000,
         description: 'Deploy para GitHub Pages ou VPS' }
     ];
   }
@@ -53,7 +59,7 @@ class NexusOrchestratorV2 {
 
   async run(projectName, opts = {}) {
     const startTime = Date.now();
-    console.log(`\n🎯 NEXUS ORCHESTRATOR v2.0`);
+    console.log(`\n🎯 NEXUS ORCHESTRATOR v3.0`);
     console.log(`${'═'.repeat(50)}`);
     console.log(`📂 Projeto: ${projectName}`);
     console.log(`⏰ Início: ${new Date().toLocaleString('pt-BR')}`);
@@ -67,80 +73,97 @@ class NexusOrchestratorV2 {
       this._loadReferences(opts.niche);
     }
 
-    // Determine start point (resume from last incomplete stage)
+    // Group pipeline into waves
+    const waves = this._groupByWave();
+
+    // Determine start wave
     const startStage = opts.from || board.getNextStage() || 'discovery';
-    const stageIndex = this.pipeline.findIndex(p => p.stage === startStage);
+    const startWave = this.pipeline.find(p => p.stage === startStage)?.wave || 0;
 
-    console.log(`▶ Iniciando de: ${startStage}\n`);
+    console.log(`▶ Iniciando de: ${startStage} (wave ${startWave})\n`);
 
-    // Sequential execution with parallel groups
-    for (let i = stageIndex; i < this.pipeline.length; i++) {
-      const step = this.pipeline[i];
+    // Execute wave by wave
+    for (const [waveNum, steps] of Object.entries(waves)) {
+      if (parseInt(waveNum) < startWave) continue;
 
-      // Skip if already complete
-      if (board.get(`pipeline.stages.${step.stage}.status`) === 'complete') {
-        console.log(`⏭️  ${step.stage} — já completo, pulando`);
-        continue;
-      }
-
-      // Skip optional stages if --fast mode (but never skip deploy when --deploy is set)
-      if (opts.fast && !step.required && !(step.stage === 'deploy' && opts.deploy)) {
-        board.transition(step.stage, 'skipped');
-        console.log(`⏭️  ${step.stage} — pulado (modo fast)`);
-        continue;
-      }
-
-      // Check dependencies
-      if (step.depends) {
-        const unmet = step.depends.filter(d => 
-          board.get(`pipeline.stages.${d}.status`) !== 'complete'
-        );
-        if (unmet.length > 0) {
-          console.log(`⚠️  ${step.stage} — dependências não completas: ${unmet.join(', ')}`);
-          if (step.required) {
-            board.addError(step.stage, `Unmet dependencies: ${unmet.join(', ')}`);
-            board.transition(step.stage, 'failed');
-            continue;
-          }
+      // Filter steps for this wave
+      const activeSteps = steps.filter(step => {
+        const status = board.get(`pipeline.stages.${step.stage}.status`);
+        if (status === 'complete') {
+          console.log(`⏭️  ${step.stage} — já completo`);
+          return false;
+        }
+        if (opts.fast && !step.required && !(step.stage === 'deploy' && opts.deploy)) {
           board.transition(step.stage, 'skipped');
-          continue;
+          console.log(`⏭️  ${step.stage} — pulado (modo fast)`);
+          return false;
+        }
+        return true;
+      });
+
+      if (activeSteps.length === 0) continue;
+
+      // Execute wave
+      if (activeSteps.length === 1) {
+        // Single stage — run directly
+        const step = activeSteps[0];
+        const success = await this._executeStage(step, projectName, opts);
+        if (!success && step.required) {
+          console.log(`\n❌ Pipeline parado em: ${step.stage}`);
+          console.log(`   Use: node nexus-orchestrator.js ${projectName} --from ${step.stage}\n`);
+          break;
+        }
+      } else {
+        // Multiple stages in this wave — run in PARALLEL
+        console.log(`\n⚡ WAVE ${waveNum} — executando ${activeSteps.length} agentes em paralelo`);
+        console.log(`   ${activeSteps.map(s => s.stage).join(' | ')}\n`);
+
+        const results = await Promise.allSettled(
+          activeSteps.map(step => this._executeStageAsync(step, projectName, opts))
+        );
+
+        // Check results
+        let waveFailed = false;
+        results.forEach((result, idx) => {
+          const step = activeSteps[idx];
+          if (result.status === 'rejected' || !result.value) {
+            if (step.required) waveFailed = true;
+          }
+        });
+
+        if (waveFailed) {
+          const failed = activeSteps.filter((s, i) =>
+            s.required && (results[i].status === 'rejected' || !results[i].value)
+          );
+          console.log(`\n❌ Pipeline parado na wave ${waveNum}: ${failed.map(s => s.stage).join(', ')} falharam`);
+          break;
         }
       }
 
-      // Execute stage
-      const success = await this._executeStage(step, projectName, opts);
-      
-      if (!success && step.required) {
-        console.log(`\n❌ Pipeline parado em: ${step.stage}`);
-        console.log(`   Use: node nexus-orchestrator-v2.js ${projectName} --from ${step.stage} para retomar\n`);
-        break;
-      }
-
       // Feedback loop: if quality score < 70, re-run code + quality (max 1 retry)
-      if (step.stage === 'quality' && success && !opts._retried) {
+      const qualityStep = activeSteps.find(s => s.stage === 'quality');
+      if (qualityStep && !opts._retried) {
         const qScore = board.get('quality.score') || 0;
         if (qScore > 0 && qScore < 70) {
           console.log(`\n🔄 Score ${qScore}/100 < 70 — re-gerando código...`);
           opts._retried = true;
-          // Re-run code stage
           board.transition('code', 'pending');
           const codeStep = this.pipeline.find(p => p.stage === 'code');
           await this._executeStage(codeStep, projectName, opts);
-          // Re-run quality
           board.transition('quality', 'pending');
-          await this._executeStage(step, projectName, opts);
-          const newScore = board.get('quality.score') || 0;
-          console.log(`   Score após retry: ${newScore}/100`);
+          await this._executeStage(qualityStep, projectName, opts);
+          console.log(`   Score após retry: ${board.get('quality.score') || 0}/100`);
         }
       }
 
       // Human checkpoint after briefing report
-      if (step.stage === 'report' && opts.interactive) {
+      const reportStep = activeSteps.find(s => s.stage === 'report');
+      if (reportStep && opts.interactive) {
         const cp = board.addCheckpoint('report', 'Revise o relatório do briefing antes de continuar', true);
         console.log(`\n🛑 CHECKPOINT: Revise o relatório e aprove para continuar`);
         console.log(`   ID: ${cp.id}`);
         console.log(`   Comando: node nexus-blackboard.js approve ${projectName} ${cp.id}\n`);
-        break; // Pausa para revisão humana
+        break;
       }
     }
 
@@ -153,7 +176,49 @@ class NexusOrchestratorV2 {
     return board.state;
   }
 
+  // Group pipeline steps by wave number
+  _groupByWave() {
+    const waves = {};
+    for (const step of this.pipeline) {
+      if (!waves[step.wave]) waves[step.wave] = [];
+      waves[step.wave].push(step);
+    }
+    return waves;
+  }
+
   // ========== STAGE EXECUTION ==========
+
+  // Async wrapper for parallel execution (non-blocking child processes)
+  async _executeStageAsync(step, projectName, opts) {
+    const bridgeStages = ['context', 'design', 'content', 'code', 'quality'];
+    if (bridgeStages.includes(step.stage)) {
+      console.log(`  🔄 ${step.stage.toUpperCase()} — ${step.description}`);
+      board.transition(step.stage, 'running');
+      const start = Date.now();
+      try {
+        const bridge = new NexusBridge(projectName);
+        const ok = await bridge.runAgentAsync(step.stage);
+        if (ok) {
+          board.transition(step.stage, 'complete');
+          const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+          console.log(`  ✅ ${step.stage} completo em ${elapsed}s`);
+          return true;
+        } else {
+          board.addError(step.stage, `${step.stage}: no output collected`);
+          board.transition(step.stage, 'failed');
+          console.log(`  ❌ ${step.stage} falhou: no output`);
+          return false;
+        }
+      } catch (err) {
+        board.addError(step.stage, err);
+        board.transition(step.stage, 'failed');
+        console.log(`  ❌ ${step.stage} erro: ${err.message}`);
+        return false;
+      }
+    }
+    // Fallback to sync for non-bridge stages
+    return this._executeStage(step, projectName, opts);
+  }
 
   async _executeStage(step, projectName, opts) {
     console.log(`\n${'─'.repeat(40)}`);
@@ -309,9 +374,9 @@ class NexusOrchestratorV2 {
   }
 
   async _runShellAgent(script, projectName, opts) {
-    const scriptPath = path.join(WORKSPACE, script);
+    const scriptPath = path.join(WORKSPACE, 'bin', script);
     if (!fs.existsSync(scriptPath)) {
-      return { success: false, error: `Script not found: ${script}` };
+      return { success: false, error: `Script not found: bin/${script}` };
     }
     try {
       const output = execSync(`bash ${scriptPath} "${projectName}"`, {
@@ -427,7 +492,7 @@ if (require.main === module) {
 NEXUS Orchestrator v2.0 — Full Pipeline Controller
 
 Usage:
-  node nexus-orchestrator-v2.js <project-name> [options]
+  node nexus-orchestrator.js <project-name> [options]
 
 Options:
   --company "Name"     Company name for discovery
@@ -455,9 +520,9 @@ Pipeline:
   11. Deploy     → GitHub Pages / VPS
 
 Examples:
-  node nexus-orchestrator-v2.js summit-prop --company "Summit Prop" --url summitprop.com --niche trading --demo
-  node nexus-orchestrator-v2.js summit-prop --from code
-  node nexus-orchestrator-v2.js my-project --fast --deploy
+  node nexus-orchestrator.js summit-prop --company "Summit Prop" --url summitprop.com --niche trading --demo
+  node nexus-orchestrator.js summit-prop --from code
+  node nexus-orchestrator.js my-project --fast --deploy
     `);
     process.exit(0);
   }
@@ -478,11 +543,11 @@ Examples:
     else if (arg === '--from' && args[i+1]) opts.from = args[++i];
   }
 
-  const orchestrator = new NexusOrchestratorV2();
+  const orchestrator = new NexusOrchestrator();
   orchestrator.run(projectName, opts).catch(err => {
     console.error(`\n💥 Fatal error: ${err.message}`);
     process.exit(1);
   });
 }
 
-module.exports = NexusOrchestratorV2;
+module.exports = NexusOrchestrator;

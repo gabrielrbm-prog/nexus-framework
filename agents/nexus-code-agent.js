@@ -1,1054 +1,1645 @@
 #!/usr/bin/env node
-
-/*
- * 💻 NEXUS CODE AGENT
- * Gera código completo production-ready baseado em Context DNA + Design System
- * Input: Context DNA + Design System + Component Library
- * Output: Site completo HTML/CSS/JS otimizado
+/**
+ * NEXUS Code Agent v4 — Slot-Driven Component Assembly
+ *
+ * Evolution of v3: instead of hardcoded HTML, uses a SLOT SYSTEM that:
+ * 1. Defines page slots (nav, hero, stats, features, testimonials, pricing, cta, footer)
+ * 2. For each slot, selects best components from the 771-component library
+ * 3. Extracts CSS classes from selected components
+ * 4. Generates HTML that uses real CSS classes from the library
+ *
+ * Usage:  node nexus-code-agent-v4.js <path-to-context-dna.json>
  */
 
-const fs = require('fs');
+'use strict';
+
+const fs   = require('fs');
 const path = require('path');
 
-class NexusCodeAgent {
-  constructor() {
-    this.name = "NEXUS Code Agent";
-    this.version = "1.0.0";
-    this.capabilities = [
-      "Context-Driven Code Generation",
-      "Design System Integration", 
-      "Component Library Application",
-      "Responsive Implementation",
-      "Performance Optimization",
-      "SEO & Accessibility",
-      "Production Deployment Ready"
+// ─────────────────────────────────────────────────────────────
+// SLOT DEFINITIONS — maps page sections to library categories
+// ─────────────────────────────────────────────────────────────
+
+const SLOT_CATEGORIES = {
+  nav:          ['Navigation', 'nav'],
+  hero:         ['Heroes', 'hero'],
+  stats:        ['Cards', 'card', 'Cards/Stats'],
+  features:     ['Layouts', 'Cards', 'Cards/Interactive', 'section', 'card'],
+  testimonials: ['Cards', 'testimonial', 'Cards/Pricing'],
+  pricing:      ['Cards', 'Cards/Pricing', 'card'],
+  cta:          ['Buttons/CTA', 'button', 'Buttons'],
+  footer:       ['Footers'],
+  backgrounds:  ['Backgrounds', 'Backgrounds/Animated', 'Effects/Background'],
+  animations:   ['Animations', 'Animation/Scroll', 'Animation/Text'],
+  typography:   ['Typography', 'Typography/Animation', 'Text/Effect']
+};
+
+// Source affinity by business type (which site's CSS to prefer)
+const BUSINESS_SOURCE_AFFINITY = {
+  fintech:    ['stripe', 'linear', 'mercury', 'ramp', 'brex'],
+  trading:    ['stripe', 'linear', 'tradingview', 'mercury'],
+  saas:       ['linear', 'vercel', 'notion', 'supabase', 'resend'],
+  ecommerce:  ['shopify', 'gumroad', 'lemonsqueezy', 'stripe'],
+  healthcare: ['calm', 'headspace', 'zocdoc', 'stripe'],
+  education:  ['notion', 'duolingo', 'coursera', 'linear'],
+  agency:     ['webflow', 'framer', 'figma', 'linear'],
+  default:    ['stripe', 'linear', 'vercel']
+};
+
+// Premium effect components (always available)
+const PREMIUM_EFFECTS = [
+  'threejs-wireframe',
+  'gsap-scroll-reveal',
+  'gsap-counter',
+  'magicui-floating-particles',
+  'magicui-wave-dividers',
+  'magicui-gradient-text',
+  'magicui-border-beam',
+  'apple-glass-buttons',
+  'aceternity-meteors',
+  'aceternity-flip-words',
+  'aceternity-3d-cards',
+  'aceternity-glowing-stars',
+  'aceternity-moving-borders'
+];
+
+// Default colors
+const DEFAULT_COLORS = {
+  '--bg':             '#0a0a0f',
+  '--bg-card':        '#12121a',
+  '--bg-card-hover':  '#1a1a2e',
+  '--blue':           '#3b82f6',
+  '--cyan':           '#22d3ee',
+  '--purple':         '#8b5cf6',
+  '--pink':           '#ec4899',
+  '--text':           '#e2e8f0',
+  '--text-dim':       '#94a3b8',
+  '--text-bright':    '#f8fafc',
+  '--border':         'rgba(255,255,255,0.06)',
+  '--glow-blue':      '0 0 30px rgba(59,130,246,0.3)',
+  '--glow-cyan':      '0 0 30px rgba(34,211,238,0.3)',
+  '--glow-purple':    '0 0 30px rgba(139,92,246,0.3)'
+};
+
+// ─────────────────────────────────────────────────────────────
+// CSS Class Extractor — parses CSS to find usable class names
+// ─────────────────────────────────────────────────────────────
+
+class CssClassExtractor {
+  static extract(cssString) {
+    if (!cssString) return { classes: [], keyframes: [], hovers: [], mediaQueries: [] };
+
+    const classes = new Set();
+    const keyframes = [];
+    const hovers = [];
+    const mediaQueries = [];
+
+    // Extract class names
+    const classRegex = /\.([a-zA-Z_][\w-]*)\s*[{,:]/g;
+    let m;
+    while ((m = classRegex.exec(cssString)) !== null) {
+      const cls = m[1];
+      // Skip common framework noise
+      if (!cls.match(/^(js-|wp-|is-|has-|show-|hide-|d-|col-|row-|container$|clearfix)/)) {
+        classes.add(cls);
+      }
+    }
+
+    // Extract @keyframes
+    const kfRegex = /@keyframes\s+([\w-]+)\s*\{[^}]*(?:\{[^}]*\}[^}]*)*\}/g;
+    while ((m = kfRegex.exec(cssString)) !== null) {
+      keyframes.push({ name: m[1], css: m[0] });
+    }
+
+    // Extract :hover rules
+    const hoverRegex = /([^{}]+):hover\s*\{([^}]*)\}/g;
+    while ((m = hoverRegex.exec(cssString)) !== null) {
+      if (m[0].length < 500) hovers.push(m[0]);
+    }
+
+    // Extract @media queries
+    const mediaRegex = /@media\s*\([^)]+\)\s*\{[^}]*(?:\{[^}]*\}[^}]*)*\}/g;
+    while ((m = mediaRegex.exec(cssString)) !== null) {
+      if (m[0].length < 1000) mediaQueries.push(m[0]);
+    }
+
+    return { classes: [...classes], keyframes, hovers, mediaQueries };
+  }
+
+  // Score CSS quality (richer CSS = higher score)
+  static qualityScore(cssString) {
+    if (!cssString) return 0;
+    let score = 0;
+    const len = cssString.length;
+
+    if (len > 100)  score += 1;
+    if (len > 500)  score += 1;
+    if (len > 1000) score += 1;
+    if (len > 3000) score += 1;
+
+    if (cssString.includes('@keyframes'))      score += 2;
+    if (cssString.includes(':hover'))          score += 1;
+    if (cssString.includes('gradient'))        score += 1;
+    if (cssString.includes('backdrop-filter')) score += 1;
+    if (cssString.includes('transform'))       score += 0.5;
+    if (cssString.includes('transition'))      score += 0.5;
+    if (cssString.includes('animation'))       score += 1;
+    if (cssString.includes('box-shadow'))      score += 0.5;
+    if (cssString.includes('border-radius'))   score += 0.5;
+    if (cssString.includes('opacity'))         score += 0.5;
+    if (cssString.includes('grid'))            score += 0.5;
+    if (cssString.includes('flex'))            score += 0.5;
+
+    return score;
+  }
+
+  // Extract the most useful CSS rules from a component (clean, no body/html resets)
+  static extractUsableCss(cssString, maxLen = 4000) {
+    if (!cssString) return '';
+
+    // Remove body/html/* resets
+    let clean = cssString
+      .replace(/\bbody\s*\{[^}]*\}/g, '')
+      .replace(/\bhtml\s*\{[^}]*\}/g, '')
+      .replace(/\*\s*\{[^}]*\}/g, '')
+      .trim();
+
+    if (clean.length > maxLen) {
+      // Prioritize: keyframes > hover > transitions > rest
+      const parts = [];
+      const { keyframes, hovers } = CssClassExtractor.extract(cssString);
+
+      for (const kf of keyframes) parts.push(kf.css);
+      for (const hv of hovers) parts.push(hv);
+
+      // Fill remaining space with other rules
+      const remaining = maxLen - parts.join('\n').length;
+      if (remaining > 200) {
+        // Get non-keyframe, non-hover rules
+        let other = clean;
+        for (const kf of keyframes) other = other.replace(kf.css, '');
+        for (const hv of hovers) other = other.replace(hv, '');
+        parts.push(other.substring(0, remaining));
+      }
+
+      clean = parts.join('\n').substring(0, maxLen);
+    }
+
+    return clean;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Slot Resolver — selects best components per slot
+// ─────────────────────────────────────────────────────────────
+
+class SlotResolver {
+  constructor(library, businessType) {
+    this.library = library;
+    this.businessType = businessType || 'default';
+    this.affinity = BUSINESS_SOURCE_AFFINITY[this.businessType] || BUSINESS_SOURCE_AFFINITY.default;
+    this.selected = {};  // slot → [components]
+  }
+
+  resolve() {
+    for (const [slot, categories] of Object.entries(SLOT_CATEGORIES)) {
+      const candidates = this._findCandidates(slot, categories);
+      const scored = this._scoreAndRank(candidates);
+      // Pick top 2-3 components per slot (combine their CSS)
+      const limit = (slot === 'nav' || slot === 'footer') ? 1 : (slot === 'hero' ? 3 : 2);
+      this.selected[slot] = scored.slice(0, limit);
+    }
+    return this.selected;
+  }
+
+  _findCandidates(slot, categories) {
+    return this.library.filter(comp => {
+      const cat = (comp.category || '').toLowerCase();
+      return categories.some(c => cat === c.toLowerCase() || cat.startsWith(c.toLowerCase()));
+    });
+  }
+
+  _scoreAndRank(candidates) {
+    return candidates
+      .map(comp => {
+        let score = CssClassExtractor.qualityScore(comp.css);
+
+        // Boost for source affinity
+        const source = (comp.id || '').toLowerCase();
+        for (const aff of this.affinity) {
+          if (source.includes(aff)) { score += 3; break; }
+        }
+
+        // Boost for having html_template
+        if (comp.html_template && comp.html_template.length > 50) score += 1;
+
+        // Boost for having variables (premium component)
+        if (comp.variables && Object.keys(comp.variables).length > 0) score += 2;
+
+        return { comp, score };
+      })
+      .filter(item => item.score >= 2)
+      .sort((a, b) => b.score - a.score);
+  }
+
+  // Get combined CSS for a slot
+  getCssForSlot(slot) {
+    const items = this.selected[slot] || [];
+    const parts = [];
+    const usedKeyframes = new Set();
+
+    for (const { comp } of items) {
+      const clean = CssClassExtractor.extractUsableCss(comp.css, 3000);
+      if (clean.length < 30) continue;
+
+      // Deduplicate keyframes
+      const { keyframes } = CssClassExtractor.extract(comp.css);
+      let css = clean;
+      for (const kf of keyframes) {
+        if (usedKeyframes.has(kf.name)) {
+          css = css.replace(kf.css, '');
+        } else {
+          usedKeyframes.add(kf.name);
+        }
+      }
+
+      if (css.trim().length > 20) {
+        parts.push(`/* slot:${slot} src:${comp.id} */\n${css.trim()}`);
+      }
+    }
+
+    return parts.join('\n\n');
+  }
+
+  // Get class names available for a slot
+  getClassesForSlot(slot) {
+    const items = this.selected[slot] || [];
+    const allClasses = new Set();
+    for (const { comp } of items) {
+      const { classes } = CssClassExtractor.extract(comp.css);
+      classes.forEach(c => allClasses.add(c));
+    }
+    return [...allClasses];
+  }
+
+  // Get a summary of what was selected
+  getSummary() {
+    const lines = [];
+    for (const [slot, items] of Object.entries(this.selected)) {
+      const names = items.map(i => i.comp.id).join(', ');
+      lines.push(`  ${slot}: ${names || '(none)'}`);
+    }
+    return lines.join('\n');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// NexusCodeAgentV4 Class
+// ─────────────────────────────────────────────────────────────
+
+class NexusCodeAgentV4 {
+
+  constructor(contextDnaPath) {
+    this.contextDnaPath  = path.resolve(contextDnaPath);
+    this.projectDir      = path.dirname(this.contextDnaPath);
+    this.agentsDir       = __dirname;
+    this.libraryPath     = path.resolve(this.agentsDir, '../code-library/components.json');
+
+    this.contextDna      = {};
+    this.designSystem    = {};
+    this.creativeBrief   = {};
+    this.contentData     = {};
+    this.library         = [];
+    this.premiumMap      = {};
+    this.slotResolver    = null;
+    this.resolvedPremium = {};
+    this.colors          = { ...DEFAULT_COLORS };
+    this._darkMode       = true;
+    this._fontFamily     = 'Inter';
+    this._headingFont    = 'Inter';
+    this._headingWeight  = '800';
+  }
+
+  // ─── File I/O helpers ──────────────────────────────────────
+
+  _readJSON(filePath) {
+    try { return JSON.parse(fs.readFileSync(filePath, 'utf-8')); }
+    catch { return null; }
+  }
+
+  _ensureDir(dir) { fs.mkdirSync(dir, { recursive: true }); }
+
+  _writeFile(filePath, content) {
+    this._ensureDir(path.dirname(filePath));
+    fs.writeFileSync(filePath, content, 'utf-8');
+    console.log(`  [write] ${filePath} (${(Buffer.byteLength(content) / 1024).toFixed(1)} KB)`);
+  }
+
+  _escHtml(str) {
+    if (!str && str !== 0) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  _escAttr(str) { return this._escHtml(str); }
+
+  // ─── Context-dna accessors ─────────────────────────────────
+
+  get dna()   { return this.contextDna; }
+  get brief() { return this.creativeBrief; }
+
+  _txt(field, fallback = '') {
+    if (this.dna[field]) return this.dna[field];
+    if (this.brief[field]) return this.brief[field];
+    if (this.contentData[field]) return this.contentData[field];
+    for (const section of ['project', 'brand', 'content', 'visual', 'audience', 'technical']) {
+      if (this.dna[section] && this.dna[section][field]) return this.dna[section][field];
+    }
+    for (const section of ['sectionContent', 'metaContent', 'headlines', 'ctas']) {
+      if (this.contentData[section] && this.contentData[section][field]) return this.contentData[section][field];
+    }
+    return fallback;
+  }
+
+  _arr(field, fallback = []) {
+    let v = this.dna[field] || this.brief[field] || this.contentData[field];
+    if (Array.isArray(v)) return v;
+    for (const section of ['project', 'brand', 'content', 'visual', 'audience', 'technical']) {
+      if (this.dna[section] && Array.isArray(this.dna[section][field])) return this.dna[section][field];
+    }
+    for (const section of ['sectionContent', 'metaContent']) {
+      if (this.contentData[section] && Array.isArray(this.contentData[section][field])) return this.contentData[section][field];
+    }
+    return fallback;
+  }
+
+  _hexToRgb(hex) {
+    if (!hex || !hex.startsWith('#')) return '59,130,246';
+    const h = hex.replace('#', '');
+    return `${parseInt(h.substr(0,2),16)},${parseInt(h.substr(2,2),16)},${parseInt(h.substr(4,2),16)}`;
+  }
+
+  // ─── Step 1: Load library ──────────────────────────────────
+
+  loadLibrary() {
+    console.log('\n[1/7] Loading component library...');
+    const raw = this._readJSON(this.libraryPath);
+    if (!raw) throw new Error(`Cannot read library at ${this.libraryPath}`);
+
+    this.library = Array.isArray(raw) ? raw : (raw.components || []);
+
+    // Separate premium (have typed variables) from extracted
+    for (const comp of this.library) {
+      const isPremium = comp.variables && typeof comp.variables === 'object' &&
+        Object.values(comp.variables).some(v => v && typeof v === 'object' && 'default' in v);
+      if (isPremium) this.premiumMap[comp.id] = comp;
+    }
+
+    console.log(`  Library: ${this.library.length} components`);
+    console.log(`  Premium: ${Object.keys(this.premiumMap).length}`);
+    console.log(`  Extracted: ${this.library.length - Object.keys(this.premiumMap).length}`);
+  }
+
+  // ─── Step 2: Load inputs ───────────────────────────────────
+
+  loadInputs() {
+    console.log('\n[2/7] Loading inputs...');
+
+    this.contextDna = this._readJSON(this.contextDnaPath);
+    if (!this.contextDna) throw new Error(`Cannot read context-dna at ${this.contextDnaPath}`);
+    console.log(`  context-dna: ${this.contextDna.businessName || 'unnamed'}`);
+
+    const dsPath = fs.existsSync(path.join(this.projectDir, 'design-system', 'design-system.json'))
+      ? path.join(this.projectDir, 'design-system', 'design-system.json')
+      : path.join(this.projectDir, 'design-system.json');
+    this.designSystem = this._readJSON(dsPath) || {};
+    if (Object.keys(this.designSystem).length) console.log('  design-system loaded');
+
+    this.creativeBrief = this._readJSON(path.join(this.projectDir, 'creative-brief.json')) || {};
+    if (Object.keys(this.creativeBrief).length) console.log('  creative-brief loaded');
+
+    const contentPaths = [
+      path.join(this.projectDir, 'content', 'all-content.json'),
+      path.join(this.projectDir, 'all-content.json'),
+      path.join(this.projectDir, 'content-assets', 'all-content.json'),
+      path.resolve(this.agentsDir, '../content/all-content.json')
     ];
-    
-    // Path para nossa biblioteca de componentes
-    this.componentLibraryPath = path.join(__dirname, '..', 'code-library');
+    for (const cp of contentPaths) {
+      const data = this._readJSON(cp);
+      if (data && Object.keys(data).length > 0) {
+        this.contentData = data;
+        console.log(`  content loaded from ${path.basename(path.dirname(cp))}/${path.basename(cp)}`);
+        break;
+      }
+    }
+    if (!Object.keys(this.contentData).length) console.log('  content: using defaults');
   }
 
-  /**
-   * Processa Context DNA e gera código completo
-   */
-  async processProject(contextDNAPath) {
-    console.log(`💻 ${this.name} processando projeto...`);
-    
-    // Lê o Context DNA
-    const contextDNA = JSON.parse(fs.readFileSync(contextDNAPath, 'utf8'));
-    
-    // Lê o Design System (se existir)
-    const designSystem = this.loadDesignSystem(contextDNAPath);
-    
-    // Analisa requisitos de código
-    const codeRequirements = this.analyzeCodeRequirements(contextDNA, designSystem);
-    
-    // Gera estrutura do site
-    const siteStructure = this.generateSiteStructure(contextDNA, codeRequirements);
-    
-    // Gera HTML contextual
-    const htmlCode = this.generateHTML(contextDNA, designSystem, siteStructure);
-    
-    // Gera CSS contextual
-    const cssCode = this.generateCSS(contextDNA, designSystem, siteStructure);
-    
-    // Gera JavaScript contextual
-    const jsCode = this.generateJavaScript(contextDNA, siteStructure);
-    
-    // Otimiza para performance e SEO
-    const optimizedCode = this.optimizeCode(htmlCode, cssCode, jsCode, contextDNA);
-    
-    // Organiza e salva os arquivos
-    const codeAssets = this.organizeCodeAssets(optimizedCode, contextDNA);
-    
-    return codeAssets;
+  // ─── Step 3: Resolve slots ─────────────────────────────────
+
+  resolveSlots() {
+    console.log('\n[3/7] Resolving component slots...');
+
+    const btype = (this._txt('businessType', 'default')).toLowerCase();
+    this.businessType = btype;
+    console.log(`  Business type: ${btype}`);
+
+    this.slotResolver = new SlotResolver(this.library, btype);
+    this.slotResolver.resolve();
+
+    console.log(`  Slot assignments:`);
+    console.log(this.slotResolver.getSummary());
   }
 
-  /**
-   * Carrega Design System se existir
-   */
-  loadDesignSystem(contextDNAPath) {
-    const projectDir = path.dirname(contextDNAPath);
-    const designSystemPath = path.join(projectDir, 'design-system', 'design-system.json');
-    
-    if (fs.existsSync(designSystemPath)) {
-      console.log('🎨 Design System encontrado - integrando...');
-      return JSON.parse(fs.readFileSync(designSystemPath, 'utf8'));
-    } else {
-      console.log('⚠️ Design System não encontrado - usando padrões contextuais...');
+  // ─── Step 4: Resolve colors & premium components ──────────
+
+  resolveDesign() {
+    console.log('\n[4/7] Resolving design system & premium components...');
+
+    // Colors from design system
+    const ds = this.designSystem;
+    const palette = ds.colorPalette || ds.colors || {};
+    const getColor = (obj) => {
+      if (!obj) return null;
+      if (typeof obj === 'string') return obj;
+      if (obj.base) return obj.base;
+      if (obj['500']) return obj['500'];
       return null;
-    }
-  }
-
-  /**
-   * Analisa requisitos de código baseado no contexto
-   */
-  analyzeCodeRequirements(contextDNA, designSystem) {
-    const businessType = contextDNA.project.businessType;
-    const audience = contextDNA.audience;
-    const psychology = contextDNA.psychology;
-    const technical = contextDNA.technical;
-    
-    return {
-      // Estrutura do site baseada no business type
-      siteStructure: this.getSiteStructure(businessType),
-      
-      // Seções necessárias baseadas na psicologia
-      requiredSections: this.getRequiredSections(businessType, psychology),
-      
-      // Componentes necessários baseados no target
-      requiredComponents: this.getRequiredComponents(audience, businessType),
-      
-      // Otimizações técnicas
-      technicalOptimizations: this.getTechnicalOptimizations(technical, audience),
-      
-      // Integrações necessárias
-      integrations: this.getRequiredIntegrations(businessType, technical),
-      
-      // Performance goals
-      performanceTargets: this.getPerformanceTargets(businessType, audience)
     };
-  }
 
-  /**
-   * Gera estrutura do site baseada no business type
-   */
-  generateSiteStructure(contextDNA, requirements) {
-    const businessType = contextDNA.project.businessType;
-    
-    const structures = {
-      'fintech': {
-        sections: ['hero', 'trust', 'features', 'results', 'testimonials', 'pricing', 'cta', 'footer'],
-        components: ['trust-badges', 'stats', 'calculator', 'security-features'],
-        layout: 'professional-vertical'
-      },
-      'ecommerce': {
-        sections: ['hero', 'products', 'benefits', 'social-proof', 'urgency', 'checkout', 'footer'],
-        components: ['product-grid', 'cart', 'reviews', 'countdown-timer'],
-        layout: 'commerce-focused'
-      },
-      'healthcare': {
-        sections: ['hero', 'services', 'credentials', 'testimonials', 'location', 'contact', 'footer'],
-        components: ['service-cards', 'doctor-profiles', 'appointment-booking'],
-        layout: 'trustworthy-clean'
-      },
-      'saas': {
-        sections: ['hero', 'features', 'demo', 'pricing', 'testimonials', 'integrations', 'cta', 'footer'],
-        components: ['feature-grid', 'demo-video', 'pricing-table', 'integration-logos'],
-        layout: 'modern-tech'
+    const primary   = getColor(palette.primary);
+    const secondary = getColor(palette.secondary);
+    const accent    = getColor(palette.accent);
+    const highlight = getColor(palette.highlight);
+
+    if (primary)              this.colors['--blue']        = primary;
+    if (secondary)            this.colors['--cyan']        = secondary;
+    if (accent)               this.colors['--purple']      = accent;
+    if (highlight)            this.colors['--pink']        = highlight;
+    if (palette.background)   this.colors['--bg']          = palette.background;
+    if (palette.surface)      this.colors['--bg-card']     = palette.surface;
+    if (palette.text)         this.colors['--text']        = palette.text;
+    if (palette.textDim)      this.colors['--text-dim']    = palette.textDim;
+
+    if (palette.darkMode === false) {
+      if (!palette.background) this.colors['--bg']         = '#ffffff';
+      if (!palette.surface)    this.colors['--bg-card']    = '#f8fafc';
+      if (!palette.text)       this.colors['--text']       = '#1e293b';
+      if (!palette.textDim)    this.colors['--text-dim']   = '#64748b';
+      this.colors['--border']         = 'rgba(0,0,0,0.08)';
+      this.colors['--text-bright']    = '#0f172a';
+      this.colors['--bg-card-hover']  = '#f1f5f9';
+    }
+
+    const typo = ds.typography || {};
+    this._fontFamily    = typo.fontFamily  || 'Inter';
+    this._headingFont   = typo.headingFamily || typo.fontFamily || 'Inter';
+    this._headingWeight = typo.headingWeight || '800';
+    this._darkMode      = palette.darkMode !== false;
+
+    // Generate glow vars
+    for (const [varName, cssVar] of [['--blue','--glow-blue'],['--cyan','--glow-cyan'],['--purple','--glow-purple']]) {
+      const hex = this.colors[varName];
+      if (hex && hex.startsWith('#')) {
+        this.colors[cssVar] = `0 0 30px rgba(${this._hexToRgb(hex)},0.3)`;
       }
-    };
-    
-    return structures[businessType] || structures['saas'];
-  }
-
-  /**
-   * Gera HTML contextual
-   */
-  generateHTML(contextDNA, designSystem, siteStructure) {
-    const businessType = contextDNA.project.businessType;
-    const brand = contextDNA.brand;
-    const content = contextDNA.content;
-    
-    let html = this.generateHTMLHeader(contextDNA, designSystem);
-    html += this.generateHTMLBody(contextDNA, siteStructure);
-    html += this.generateHTMLFooter(contextDNA);
-    
-    return html;
-  }
-
-  /**
-   * Gera cabeçalho HTML com meta tags otimizadas
-   */
-  generateHTMLHeader(contextDNA, designSystem) {
-    const projectName = this.getProjectName(contextDNA);
-    const businessType = contextDNA.project.businessType;
-    const description = this.generateMetaDescription(contextDNA);
-    const keywords = this.generateMetaKeywords(contextDNA);
-    
-    return `<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Meta Tags -->
-    <title>${projectName} | ${this.getBusinessTitle(businessType)}</title>
-    <meta name="description" content="${description}">
-    <meta name="keywords" content="${keywords}">
-    <meta name="author" content="${projectName}">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="${projectName}">
-    <meta property="og:description" content="${description}">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="#">
-    <meta property="og:image" content="assets/images/og-image.jpg">
-    
-    <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${projectName}">
-    <meta name="twitter:description" content="${description}">
-    <meta name="twitter:image" content="assets/images/twitter-image.jpg">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-    
-    <!-- Fonts -->
-    ${this.generateFontImports(designSystem)}
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/design-system.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/main.css">
-    
-    <!-- Performance optimizations -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    
-    <!-- Schema.org structured data -->
-    ${this.generateSchemaMarkup(contextDNA)}
-</head>`;
-  }
-
-  /**
-   * Gera corpo HTML com seções contextuais
-   */
-  generateHTMLBody(contextDNA, siteStructure) {
-    const sections = siteStructure.sections;
-    let bodyHTML = `<body>\n    <!-- Navigation -->\n    ${this.generateNavigation(contextDNA)}\n\n`;
-    
-    // Gera cada seção baseada na estrutura
-    sections.forEach(section => {
-      bodyHTML += `    <!-- ${section.charAt(0).toUpperCase() + section.slice(1)} Section -->\n`;
-      bodyHTML += `    ${this.generateSection(section, contextDNA, siteStructure)}\n\n`;
-    });
-    
-    bodyHTML += `    <!-- JavaScript -->\n`;
-    bodyHTML += `    <script src="js/main.js"></script>\n`;
-    bodyHTML += `</body>\n</html>`;
-    
-    return bodyHTML;
-  }
-
-  /**
-   * Gera navegação contextual
-   */
-  generateNavigation(contextDNA) {
-    const projectName = this.getProjectName(contextDNA);
-    const businessType = contextDNA.project.businessType;
-    
-    const navItems = this.getNavigationItems(businessType);
-    
-    return `<nav class="nexus-nav">
-        <div class="nexus-nav__container">
-            <div class="nexus-nav__brand">
-                <a href="#" class="nexus-nav__logo">
-                    <img src="assets/logo.png" alt="${projectName}" class="nexus-nav__logo-img">
-                    <span class="nexus-nav__logo-text">${projectName}</span>
-                </a>
-            </div>
-            
-            <ul class="nexus-nav__menu">
-                ${navItems.map(item => `
-                <li class="nexus-nav__item">
-                    <a href="#${item.anchor}" class="nexus-nav__link">${item.text}</a>
-                </li>`).join('')}
-            </ul>
-            
-            <div class="nexus-nav__actions">
-                <button class="nexus-btn nexus-btn--primary">
-                    ${this.getPrimaryCTA(contextDNA)}
-                </button>
-            </div>
-            
-            <!-- Mobile menu toggle -->
-            <button class="nexus-nav__mobile-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </nav>`;
-  }
-
-  /**
-   * Gera seção específica baseada no tipo
-   */
-  generateSection(sectionType, contextDNA, siteStructure) {
-    const generators = {
-      'hero': () => this.generateHeroSection(contextDNA),
-      'trust': () => this.generateTrustSection(contextDNA),
-      'features': () => this.generateFeaturesSection(contextDNA),
-      'results': () => this.generateResultsSection(contextDNA),
-      'testimonials': () => this.generateTestimonialsSection(contextDNA),
-      'pricing': () => this.generatePricingSection(contextDNA),
-      'products': () => this.generateProductsSection(contextDNA),
-      'benefits': () => this.generateBenefitsSection(contextDNA),
-      'social-proof': () => this.generateSocialProofSection(contextDNA),
-      'services': () => this.generateServicesSection(contextDNA),
-      'cta': () => this.generateCTASection(contextDNA),
-      'footer': () => this.generateFooterSection(contextDNA)
-    };
-    
-    const generator = generators[sectionType];
-    return generator ? generator() : `<!-- ${sectionType} section --><div class="section section--${sectionType}">Section: ${sectionType}</div>`;
-  }
-
-  /**
-   * Gera seção Hero contextual
-   */
-  generateHeroSection(contextDNA) {
-    const businessType = contextDNA.project.businessType;
-    const psychology = contextDNA.psychology;
-    const brand = contextDNA.brand;
-    
-    // Headlines contextuais baseadas no business type
-    const headlines = this.getContextualHeadlines(contextDNA);
-    const subheadlines = this.getContextualSubheadlines(contextDNA);
-    const benefits = this.getContextualBenefits(contextDNA);
-    
-    return `<section class="nexus-hero" id="hero">
-        <div class="nexus-hero__container">
-            <div class="nexus-hero__content">
-                <div class="nexus-hero__text">
-                    <h1 class="nexus-hero__headline">
-                        ${headlines.primary}
-                    </h1>
-                    <p class="nexus-hero__subheadline">
-                        ${subheadlines.primary}
-                    </p>
-                    
-                    <!-- Benefit bullets -->
-                    <ul class="nexus-hero__benefits">
-                        ${benefits.map(benefit => `
-                        <li class="nexus-hero__benefit">
-                            <svg class="nexus-hero__benefit-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M16.707 5.293a1 1 0 010 1.414L8 15.414l-4.707-4.707a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill="currentColor"/>
-                            </svg>
-                            <span>${benefit}</span>
-                        </li>`).join('')}
-                    </ul>
-                    
-                    <!-- CTA Buttons -->
-                    <div class="nexus-hero__actions">
-                        <button class="nexus-btn nexus-btn--primary nexus-btn--large">
-                            ${this.getPrimaryCTA(contextDNA)}
-                        </button>
-                        <button class="nexus-btn nexus-btn--secondary nexus-btn--large">
-                            ${this.getSecondaryCTA(contextDNA)}
-                        </button>
-                    </div>
-                    
-                    <!-- Social proof -->
-                    ${this.generateHeroSocialProof(contextDNA)}
-                </div>
-                
-                <div class="nexus-hero__visual">
-                    ${this.generateHeroVisual(contextDNA)}
-                </div>
-            </div>
-        </div>
-        
-        <!-- Background effects -->
-        <div class="nexus-hero__background">
-            ${this.generateHeroBackground(contextDNA)}
-        </div>
-    </section>`;
-  }
-
-  /**
-   * Gera seção de confiança para fintech
-   */
-  generateTrustSection(contextDNA) {
-    if (contextDNA.project.businessType !== 'fintech') {
-      return '';
     }
-    
-    return `<section class="nexus-trust" id="trust">
-        <div class="nexus-trust__container">
-            <h2 class="nexus-trust__title">Resultados Comprovados</h2>
-            
-            <div class="nexus-trust__stats">
-                <div class="nexus-trust__stat">
-                    <div class="nexus-trust__stat-number">1.000+</div>
-                    <div class="nexus-trust__stat-label">Alunos Formados</div>
-                </div>
-                <div class="nexus-trust__stat">
-                    <div class="nexus-trust__stat-number">95%</div>
-                    <div class="nexus-trust__stat-label">Taxa de Aprovação</div>
-                </div>
-                <div class="nexus-trust__stat">
-                    <div class="nexus-trust__stat-number">189</div>
-                    <div class="nexus-trust__stat-label">Alunos Ativos</div>
-                </div>
-            </div>
-            
-            <!-- Trust badges -->
-            <div class="nexus-trust__badges">
-                <div class="nexus-trust__badge">
-                    <img src="assets/images/trust/ssl-badge.png" alt="SSL Seguro">
-                </div>
-                <div class="nexus-trust__badge">
-                    <img src="assets/images/trust/certification.png" alt="Certificação">
-                </div>
-                <div class="nexus-trust__badge">
-                    <img src="assets/images/trust/guarantee.png" alt="Garantia">
-                </div>
-            </div>
-        </div>
-    </section>`;
-  }
 
-  /**
-   * Gera CSS contextual
-   */
-  generateCSS(contextDNA, designSystem, siteStructure) {
-    let css = this.generateCSSHeader(contextDNA);
-    
-    // CSS Variables do design system
-    if (designSystem) {
-      css += this.generateDesignSystemCSS(designSystem);
-    } else {
-      css += this.generateFallbackCSS(contextDNA);
-    }
-    
-    // Componentes da nossa biblioteca
-    css += this.generateComponentLibraryCSS(contextDNA, siteStructure);
-    
-    // CSS específico das seções
-    css += this.generateSectionCSS(contextDNA, siteStructure);
-    
-    // Responsive design
-    css += this.generateResponsiveCSS(contextDNA);
-    
-    // Performance optimizations
-    css += this.generatePerformanceCSS(contextDNA);
-    
-    return css;
-  }
-
-  /**
-   * Integra componentes da nossa biblioteca
-   */
-  generateComponentLibraryCSS(contextDNA, siteStructure) {
-    const businessType = contextDNA.project.businessType;
-    let css = `\n/* ===========================================\n   NEXUS COMPONENT LIBRARY INTEGRATION\n   Business: ${businessType}\n   =========================================== */\n\n`;
-    
-    // Seleciona componentes baseados no business type
-    const componentFiles = this.selectComponentFiles(businessType);
-    
-    componentFiles.forEach(componentFile => {
-      const componentPath = path.join(this.componentLibraryPath, componentFile);
-      if (fs.existsSync(componentPath)) {
-        const componentCSS = fs.readFileSync(componentPath, 'utf8');
-        css += `/* ${path.basename(componentFile)} */\n`;
-        css += componentCSS + '\n\n';
+    // Resolve premium effect components
+    const ctx = this._buildVarContext();
+    for (const id of PREMIUM_EFFECTS) {
+      const comp = this.premiumMap[id];
+      if (!comp) continue;
+      const vars = { ...ctx };
+      if (comp.variables) {
+        for (const [key, def] of Object.entries(comp.variables)) {
+          if (!(key in vars)) vars[key] = def && typeof def === 'object' ? String(def.default ?? '') : String(def ?? '');
+        }
       }
-    });
-    
-    return css;
+      this.resolvedPremium[id] = {
+        css:    this._resolveTpl(comp.css || '', vars),
+        html:   this._resolveTpl(comp.html_template || '', vars),
+        js:     this._resolveTpl(comp.js_init || '', vars),
+        jsType: comp.js_type || 'inline',
+        deps:   comp.dependencies || []
+      };
+    }
+
+    console.log(`  Colors resolved (${this._darkMode ? 'dark' : 'light'} mode)`);
+    console.log(`  Premium effects: ${Object.keys(this.resolvedPremium).length}`);
   }
 
-  /**
-   * Seleciona componentes da biblioteca baseado no business type
-   */
-  selectComponentFiles(businessType) {
-    const componentMap = {
-      'fintech': [
-        'elements/buttons/stripe-payment.css',
-        'elements/cards/fintech-trust.css',
-        'elements/animations/aceternity-effects.css',
-        'elements/cards/21st-ai-components.css',
-        'elements/icons/premium-icon-system.css'
-      ],
-      'ecommerce': [
-        'elements/buttons/apple-glass.css',
-        'elements/cards/shopify-product.css',
-        'elements/animations/magic-ui-effects.css',
-        'elements/icons/premium-icon-system.css'
-      ],
-      'healthcare': [
-        'elements/buttons/linear-command.css',
-        'elements/cards/fintech-trust.css',
-        'elements/animations/aceternity-effects.css'
-      ],
-      'saas': [
-        'elements/cards/saas-dashboard.css',
-        'elements/buttons/stripe-payment.css',
-        'elements/animations/magic-ui-effects.css',
-        'elements/icons/premium-icon-system.css'
-      ]
+  _buildVarContext() {
+    const c = this.colors;
+    const cd = this.contentData;
+    const hlData = cd.headlines || {};
+    const hlVars = Array.isArray(hlData.variants) ? hlData.variants : [];
+    const toNumHex = (cssHex) => '0x' + (cssHex || '#3b82f6').replace('#', '');
+
+    return {
+      wireframeColor: toNumHex(c['--blue']), wireframeColor2: toNumHex(c['--cyan']),
+      wireframeOpacity: '0.12', particleCount: '2500',
+      gradientFrom: c['--blue'], gradientMid: c['--cyan'], gradientTo: c['--purple'],
+      gradientExtra: c['--pink'], gradientDuration: '6s',
+      flipWord1: hlVars[0] || 'Profissional', flipWord2: hlVars[1] || 'Premium',
+      flipWord3: hlVars[2] || 'Poderoso', flipWord4: hlVars[3] || 'Comprovado',
+      meteorCount: '10', meteorColor: 'rgba(255,255,255,0.6)', meteorDuration: '3s',
+      starCount: '80', starColor1: c['--purple'], starColor2: c['--cyan'],
+      borderColor1: c['--blue'], borderColor2: c['--cyan'], borderColor3: c['--purple'], borderDuration: '4s',
+      beamColor1: c['--blue'], beamColor2: c['--cyan'], beamDuration: '4s',
+      btnGradientFrom: c['--blue'] + 'cc', btnGradientTo: c['--cyan'] + '99',
+      btnShadowColor: c['--blue'] + '4d',
+      particleColor1: c['--blue'] + '66', particleColor2: c['--cyan'] + '4d',
+      particleColor3: c['--purple'] + '4d', particleColor4: c['--pink'] + '33', particleCount2: '10',
+      waveColor1: c['--blue'] + '1a', waveColor2: c['--purple'] + '14', waveColor3: c['--cyan'] + '1a',
+      counterDuration: '2',
+      '--blue': c['--blue'], '--cyan': c['--cyan'], '--purple': c['--purple'], '--pink': c['--pink'],
+      '--bg': c['--bg'], '--bg-card': c['--bg-card'], '--text': c['--text'],
+      '--text-dim': c['--text-dim'], '--text-bright': c['--text-bright'], '--border': c['--border'],
+      businessName: this._txt('businessName', this._txt('projectName', 'Business')),
+      tagline: (cd.headlines && cd.headlines.primary) || this._txt('tagline', 'Transforme Seu Negocio'),
+      subtitle: (cd.sectionContent && cd.sectionContent.hero && cd.sectionContent.hero.subheadline) || this._txt('subtitle', ''),
+      ctaText: (cd.ctas && cd.ctas.primary) || this._txt('ctaPrimary', 'Comecar Agora'),
+      ctaUrl: this._txt('ctaUrl', '#pricing'),
+      year: String(new Date().getFullYear())
     };
-    
-    return componentMap[businessType] || componentMap['saas'];
   }
 
-  /**
-   * Gera JavaScript contextual
-   */
-  generateJavaScript(contextDNA, siteStructure) {
-    let js = `/*
- * 🚀 NEXUS Generated JavaScript
- * Business: ${contextDNA.project.businessType}
- * Target: ${contextDNA.audience.primaryAge}
- * Generated: ${new Date().toISOString()}
- */
-
-// Core functionality
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 NEXUS site loaded - ${contextDNA.project.businessType}');
-    
-    // Initialize components
-    initializeNavigation();
-    initializeAnimations();
-    initializeTracking();
-    ${this.getBusinessSpecificJS(contextDNA)}
-});
-
-// Navigation functionality
-function initializeNavigation() {
-    const mobileToggle = document.querySelector('.nexus-nav__mobile-toggle');
-    const navMenu = document.querySelector('.nexus-nav__menu');
-    
-    if (mobileToggle && navMenu) {
-        mobileToggle.addEventListener('click', function() {
-            navMenu.classList.toggle('nexus-nav__menu--open');
-        });
-    }
-    
-    // Smooth scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-}
-
-// Animation initialization
-function initializeAnimations() {
-    // Intersection Observer for animations
-    const animateElements = document.querySelectorAll('[data-animate]');
-    
-    if (animateElements.length > 0 && 'IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        animateElements.forEach(el => observer.observe(el));
-    }
-    
-    // Initialize component-specific animations
-    ${this.getAnimationJS(contextDNA)}
-}
-
-// Analytics and tracking
-function initializeTracking() {
-    // Button click tracking
-    document.querySelectorAll('.nexus-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const action = this.textContent.trim();
-            console.log('🎯 CTA clicked:', action);
-            // Add your analytics code here
-        });
-    });
-}
-
-${this.getBusinessSpecificFunctions(contextDNA)}`;
-    
-    return js;
+  _resolveTpl(tpl, vars) {
+    if (!tpl) return '';
+    return tpl.replace(/\{\{(\w+)\}\}/g, (_, key) => key in vars ? vars[key] : '');
   }
 
-  /**
-   * Organiza e salva todos os arquivos
-   */
-  organizeCodeAssets(optimizedCode, contextDNA) {
-    const projectPath = path.dirname(contextDNA.filePath || '');
-    const codePath = path.join(projectPath, 'generated-site');
-    
-    // Cria estrutura de pastas
-    this.createDirectoryStructure(codePath);
-    
-    const assets = {
-      html: optimizedCode.html,
-      css: optimizedCode.css,
-      js: optimizedCode.js,
-      generated: new Date().toISOString(),
-      successful: true,
-      files: []
-    };
-    
-    // Salva HTML
-    const htmlPath = path.join(codePath, 'index.html');
-    fs.writeFileSync(htmlPath, optimizedCode.html);
-    assets.files.push(htmlPath);
-    
-    // Salva CSS
-    const cssDir = path.join(codePath, 'css');
-    const mainCSSPath = path.join(cssDir, 'main.css');
-    fs.writeFileSync(mainCSSPath, optimizedCode.css);
-    assets.files.push(mainCSSPath);
-    
-    // Salva JavaScript
-    const jsDir = path.join(codePath, 'js');
-    const mainJSPath = path.join(jsDir, 'main.js');
-    fs.writeFileSync(mainJSPath, optimizedCode.js);
-    assets.files.push(mainJSPath);
-    
-    // Cria arquivos adicionais
-    this.createAdditionalFiles(codePath, contextDNA);
-    
-    console.log(`💾 Site completo salvo em: ${codePath}`);
-    
-    return assets;
-  }
+  // ─── Step 5: Build page with slot system ───────────────────
 
-  /**
-   * Cria estrutura de diretórios
-   */
-  createDirectoryStructure(basePath) {
-    const dirs = ['css', 'js', 'assets', 'assets/images', 'assets/icons'];
-    
-    if (!fs.existsSync(basePath)) {
-      fs.mkdirSync(basePath, { recursive: true });
+  buildPage() {
+    console.log('\n[5/7] Building page with slot system...');
+
+    // ── Extract content ──
+    const cd  = this.contentData;
+    const hl  = cd.headlines || {};
+    const ct  = cd.ctas || {};
+    const sc  = cd.sectionContent || {};
+    const mc  = cd.metaContent || {};
+    const hero = sc.hero || {};
+
+    const businessName = this._txt('businessName', this._txt('projectName', 'Business'));
+    const tagline      = hl.primary || this._txt('tagline', 'Seu Negocio Premium');
+    const subtitle     = hero.subheadline || this._txt('subtitle', '');
+    const ctaText      = ct.primary || this._txt('ctaPrimary', 'Comecar Agora');
+    const ctaUrl       = this._txt('ctaUrl', '#pricing');
+    const ctaSecondary = ct.secondary || this._txt('ctaSecondary', 'Saiba Mais');
+    const ctaSecondaryUrl = this._txt('ctaSecondaryUrl', '#method');
+    const description  = mc.description || this._txt('description', subtitle);
+    const pageTitle    = mc.title || '';
+    const language     = this._txt('language', 'pt-BR');
+    const socialProof  = hero.social_proof || this._txt('socialProof', '');
+    const currency     = this._txt('currency', 'R$');
+    const footerText   = this._txt('footerText', `\u00a9 ${new Date().getFullYear()} ${businessName}. Todos os direitos reservados.`);
+
+    // Features
+    const contentFeatures = Array.isArray(sc.features) ? sc.features
+      : (sc.features && Array.isArray(sc.features.items) ? sc.features.items : []);
+    const defaultFeatures = ['Qualidade Premium', 'Suporte Especializado', 'Resultados Comprovados'];
+    const features = contentFeatures.length > 0 ? contentFeatures
+      : this._arr('features', defaultFeatures.map(f => ({ title: f, description: '' })));
+
+    // Stats
+    const scStats = Array.isArray(sc.stats) ? sc.stats : (sc.stats && Array.isArray(sc.stats.items)) ? sc.stats.items : [];
+    const defaultStats = [
+      { value: '1.000+', label: 'Clientes Atendidos' },
+      { value: '98%',    label: 'Satisfacao' },
+      { value: '5/5',    label: 'Avaliacao Media' },
+      { value: '24/7',   label: 'Suporte' }
+    ];
+    const stats = scStats.length > 0 ? scStats : this._arr('stats', defaultStats);
+
+    // Testimonials
+    const contentTestimonials = Array.isArray(sc.testimonials) ? sc.testimonials
+      : (sc.testimonials && Array.isArray(sc.testimonials.items) ? sc.testimonials.items : []);
+    const defaultTestimonials = [
+      { name: 'Joao S.',   role: 'CEO',      text: 'Transformou completamente nosso negocio.' },
+      { name: 'Maria L.',  role: 'Diretora', text: 'Profissional, eficiente e premium.' },
+      { name: 'Carlos R.', role: 'Fundador', text: 'O melhor investimento que fizemos.' }
+    ];
+    const testimonials = contentTestimonials.length > 0 ? contentTestimonials : this._arr('testimonials', defaultTestimonials);
+
+    // Pricing
+    const scPricingPlans = (sc.pricing && Array.isArray(sc.pricing.plans)) ? sc.pricing.plans
+      : (sc.pricing && Array.isArray(sc.pricing.items)) ? sc.pricing.items : [];
+    const pricingPlans = scPricingPlans.length > 0 ? scPricingPlans : this._arr('pricingPlans', this._arr('pricing', []));
+
+    // Flip words
+    const hlVariants = Array.isArray(hl.variants) ? hl.variants : [];
+    const flipWords = hlVariants.length > 0 ? hlVariants.slice(0, 4)
+      : this._arr('flipWords', ['Profissional', 'Premium', 'Poderoso', 'Comprovado']);
+
+    // Nav links
+    const navLinks = this._arr('navLinks', [
+      { label: 'Metodo', href: '#method' },
+      { label: 'Resultados', href: '#stats' },
+      { label: 'Precos', href: '#pricing' },
+      { label: 'Depoimentos', href: '#testimonials' }
+    ]);
+
+    // ── Collect slot CSS ──
+    const slotCss = {};
+    for (const slot of Object.keys(SLOT_CATEGORIES)) {
+      slotCss[slot] = this.slotResolver.getCssForSlot(slot);
     }
-    
-    dirs.forEach(dir => {
-      const dirPath = path.join(basePath, dir);
-      if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true });
+
+    // Log slot CSS stats
+    for (const [slot, css] of Object.entries(slotCss)) {
+      if (css.length > 0) {
+        const classes = this.slotResolver.getClassesForSlot(slot);
+        console.log(`  slot:${slot} — ${(css.length/1024).toFixed(1)}KB CSS, ${classes.length} classes`);
       }
-    });
-  }
+    }
 
-  // Métodos auxiliares contextuais
-  getProjectName(contextDNA) {
-    const names = {
-      'fintech': 'ETF Trading School',
-      'ecommerce': 'Urban Store',
-      'healthcare': 'Premium Clinic',
-      'saas': 'Productivity Suite'
-    };
-    
-    return names[contextDNA.project.businessType] || 'NEXUS Site';
-  }
+    // ── Collect premium CSS ──
+    const premiumCssParts = [];
+    for (const [id, resolved] of Object.entries(this.resolvedPremium)) {
+      if (resolved.css) premiumCssParts.push(`/* premium: ${id} */\n${resolved.css}`);
+    }
 
-  getBusinessTitle(businessType) {
-    const titles = {
-      'fintech': 'Escola de Trading Profissional',
-      'ecommerce': 'Loja Online Premium',
-      'healthcare': 'Clínica Médica de Excelência',
-      'saas': 'Software as a Service'
-    };
-    
-    return titles[businessType] || 'Professional Website';
-  }
+    // ── Build HTML sections ──
+    const c = this.colors;
+    const waveOp = this._darkMode ? 0.1 : 0.2;
 
-  getContextualHeadlines(contextDNA) {
-    const businessType = contextDNA.project.businessType;
-    const audience = contextDNA.audience.primaryAge;
-    
-    const headlines = {
-      'fintech': {
-        'millennial': 'Transforme Sua Carreira em Trading Profissional',
-        'gen_z': 'Ganhe Dinheiro Real com Trading Online',
-        'gen_x': 'Invista com Segurança e Conhecimento Técnico'
-      },
-      'ecommerce': {
-        'gen_z': 'O Street Style Que Você Estava Esperando',
-        'millennial': 'Moda Urbana Para Sua Personalidade Única',
-        'gen_x': 'Qualidade Premium em Roupas Streetwear'
-      },
-      'healthcare': {
-        'millennial': 'Cuidados Médicos Premium Para Sua Família',
-        'gen_x': 'Medicina de Excelência Com Atendimento Personalizado',
-        'boomer': 'Saúde Completa Com Experiência e Tradição'
-      }
-    };
-    
-    const businessHeadlines = headlines[businessType] || headlines['fintech'];
-    return {
-      primary: businessHeadlines[audience] || businessHeadlines['millennial']
-    };
-  }
-
-  getContextualSubheadlines(contextDNA) {
-    const businessType = contextDNA.project.businessType;
-    
-    const subheadlines = {
-      'fintech': 'Método SMC + PO3 comprovado. Do zero ao financiado em 90 dias. 1.000+ traders aprovados em prop firms internacionais.',
-      'ecommerce': 'Coleção exclusiva de streetwear urbano. Qualidade premium com entrega rápida e garantia total.',
-      'healthcare': 'Atendimento médico personalizado com tecnologia de ponta. Sua saúde é nossa prioridade máxima.',
-      'saas': 'Aumente sua produtividade em 300% com nossa plataforma completa de gestão empresarial.'
-    };
-    
-    return {
-      primary: subheadlines[businessType] || subheadlines['fintech']
-    };
-  }
-
-  getContextualBenefits(contextDNA) {
-    const businessType = contextDNA.project.businessType;
-    
-    const benefits = {
-      'fintech': [
-        'Método SMC (Smart Money Concepts) completo',
-        'Suporte 24/7 com traders experientes',
-        'Aprovação garantida em prop firms',
-        'Comunidade exclusiva de 1.000+ traders'
-      ],
-      'ecommerce': [
-        'Entrega grátis em todo o Brasil',
-        'Trocas e devoluções em 30 dias',
-        'Produtos originais e garantidos',
-        'Atendimento especializado'
-      ],
-      'healthcare': [
-        'Atendimento médico personalizado',
-        'Tecnologia de última geração',
-        'Equipe médica especializada',
-        'Horários flexíveis e emergência 24h'
-      ],
-      'saas': [
-        'Interface intuitiva e fácil de usar',
-        'Integração com todas ferramentas',
-        'Suporte técnico especializado',
-        'Dados seguros e criptografados'
-      ]
-    };
-    
-    return benefits[businessType] || benefits['fintech'];
-  }
-
-  getPrimaryCTA(contextDNA) {
-    return contextDNA.content.ctaStrategy === 'Get_Started_Safely' ? 'Começar Agora' :
-           contextDNA.content.ctaStrategy === 'Limited_Time_Offer' ? 'Aproveitar Oferta' :
-           contextDNA.content.ctaStrategy === 'See_ROI_Calculator' ? 'Calcular ROI' :
-           'Começar Agora';
-  }
-
-  getSecondaryCTA(contextDNA) {
-    const businessType = contextDNA.project.businessType;
-    
-    const ctas = {
-      'fintech': 'Ver Resultados',
-      'ecommerce': 'Ver Catálogo',
-      'healthcare': 'Agendar Consulta',
-      'saas': 'Ver Demo'
-    };
-    
-    return ctas[businessType] || 'Saiba Mais';
-  }
-
-  // Métodos de otimização e performance...
-  optimizeCode(htmlCode, cssCode, jsCode, contextDNA) {
-    return {
-      html: this.optimizeHTML(htmlCode, contextDNA),
-      css: this.optimizeCSS(cssCode, contextDNA),
-      js: this.optimizeJS(jsCode, contextDNA)
-    };
-  }
-
-  optimizeHTML(html, contextDNA) {
-    // Remove comentários desnecessários
-    let optimized = html.replace(/<!--[\s\S]*?-->/g, '');
-    
-    // Adiciona meta tags de performance
-    const performanceTags = `
-    <!-- Performance optimizations -->
-    <meta name="theme-color" content="#3b82f6">
-    <link rel="preload" href="css/main.css" as="style">
-    <link rel="preload" href="js/main.js" as="script">
-    `;
-    
-    optimized = optimized.replace('</head>', performanceTags + '</head>');
-    
-    return optimized;
-  }
-
-  optimizeCSS(css, contextDNA) {
-    // Remove comentários e espaços desnecessários para produção
-    let optimized = css.replace(/\/\*[\s\S]*?\*\//g, '');
-    optimized = optimized.replace(/\s+/g, ' ');
-    optimized = optimized.replace(/;\s*}/g, '}');
-    
-    return optimized;
-  }
-
-  optimizeJS(js, contextDNA) {
-    // Adiciona error handling e performance monitoring
-    const performanceJS = `
-// Performance monitoring
-window.addEventListener('load', function() {
-    console.log('📊 Site loaded in:', performance.now().toFixed(2) + 'ms');
-});
-`;
-    
-    return js + performanceJS;
-  }
-
-  // Placeholder para métodos auxiliares não implementados
-  generateHTMLFooter(contextDNA) { return ''; }
-  generateFontImports(designSystem) { return '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">'; }
-  generateSchemaMarkup(contextDNA) { return ''; }
-  getNavigationItems(businessType) { 
-    const items = {
-      'fintech': [
-        { text: 'Início', anchor: 'hero' },
-        { text: 'Resultados', anchor: 'trust' },
-        { text: 'Método', anchor: 'features' },
-        { text: 'Preços', anchor: 'pricing' },
-        { text: 'Contato', anchor: 'contact' }
-      ],
-      'ecommerce': [
-        { text: 'Início', anchor: 'hero' },
-        { text: 'Produtos', anchor: 'products' },
-        { text: 'Sobre', anchor: 'about' },
-        { text: 'Contato', anchor: 'contact' }
-      ]
-    };
-    return items[businessType] || items['fintech'];
-  }
-  
-  generateHeroSocialProof(contextDNA) { 
-    return '<div class="nexus-hero__social-proof">⭐⭐⭐⭐⭐ 4.9/5 baseado em 500+ avaliações</div>';
-  }
-  generateHeroVisual(contextDNA) { 
-    return '<div class="nexus-hero__image"><img src="assets/images/hero-image.jpg" alt="Hero Image"></div>';
-  }
-  generateHeroBackground(contextDNA) { 
-    return '<div class="nexus-hero__bg-pattern"></div>';
-  }
-  
-  // Métodos não implementados - placeholders
-  getSiteStructure(businessType) { return ['hero', 'features', 'cta']; }
-  getRequiredSections(businessType, psychology) { return []; }
-  getRequiredComponents(audience, businessType) { return []; }
-  getTechnicalOptimizations(technical, audience) { return {}; }
-  getRequiredIntegrations(businessType, technical) { return []; }
-  getPerformanceTargets(businessType, audience) { return {}; }
-  generateMetaDescription(contextDNA) { 
-    return `${this.getProjectName(contextDNA)} - ${this.getContextualSubheadlines(contextDNA).primary.substring(0, 150)}`;
-  }
-  generateMetaKeywords(contextDNA) {
-    const keywords = {
-      'fintech': 'trading, forex, investimentos, curso trading, prop firm',
-      'ecommerce': 'streetwear, roupas urbanas, moda jovem, loja online',
-      'healthcare': 'clínica médica, consulta médica, saúde, medicina'
-    };
-    return keywords[contextDNA.project.businessType] || 'website profissional';
-  }
-  generateFeaturesSection(contextDNA) { return '<section class="nexus-features" id="features">Features Section</section>'; }
-  generateResultsSection(contextDNA) { return '<section class="nexus-results" id="results">Results Section</section>'; }
-  generateTestimonialsSection(contextDNA) { return '<section class="nexus-testimonials" id="testimonials">Testimonials Section</section>'; }
-  generatePricingSection(contextDNA) { return '<section class="nexus-pricing" id="pricing">Pricing Section</section>'; }
-  generateProductsSection(contextDNA) { return '<section class="nexus-products" id="products">Products Section</section>'; }
-  generateBenefitsSection(contextDNA) { return '<section class="nexus-benefits" id="benefits">Benefits Section</section>'; }
-  generateSocialProofSection(contextDNA) { return '<section class="nexus-social-proof" id="social-proof">Social Proof Section</section>'; }
-  generateServicesSection(contextDNA) { return '<section class="nexus-services" id="services">Services Section</section>'; }
-  generateCTASection(contextDNA) { return '<section class="nexus-cta" id="cta">CTA Section</section>'; }
-  generateFooterSection(contextDNA) { return '<footer class="nexus-footer" id="footer">Footer Section</footer>'; }
-  generateCSSHeader(contextDNA) { 
-    return `/*\n * 🚀 NEXUS Generated CSS\n * Business: ${contextDNA.project.businessType}\n * Generated: ${new Date().toISOString()}\n */\n\n`;
-  }
-  generateDesignSystemCSS(designSystem) { return '/* Design System CSS integrated */\n'; }
-  generateFallbackCSS(contextDNA) { 
-    return `:root {\n  --primary-color: #3b82f6;\n  --secondary-color: #1e293b;\n  --text-color: #0f172a;\n  --bg-color: #ffffff;\n}\n`;
-  }
-  generateSectionCSS(contextDNA, siteStructure) { return '/* Section-specific CSS */\n'; }
-  generateResponsiveCSS(contextDNA) { return '/* Responsive CSS */\n'; }
-  generatePerformanceCSS(contextDNA) { return '/* Performance CSS */\n'; }
-  getBusinessSpecificJS(contextDNA) {
-    const js = {
-      'fintech': 'initializeTradingCalculator();',
-      'ecommerce': 'initializeShoppingCart();',
-      'healthcare': 'initializeAppointmentBooking();'
-    };
-    return js[contextDNA.project.businessType] || '';
-  }
-  getAnimationJS(contextDNA) { return '// Animation initialization\n'; }
-  getBusinessSpecificFunctions(contextDNA) {
-    if (contextDNA.project.businessType === 'fintech') {
+    // Wave divider helper
+    let waveIdx = 0;
+    const waveDivider = () => {
+      waveIdx++;
+      const wc1 = `rgba(${this._hexToRgb(c['--blue'])},${waveOp})`;
+      const wc2 = `rgba(${this._hexToRgb(c['--purple'])},${waveOp * 0.8})`;
+      const wc3 = `rgba(${this._hexToRgb(c['--cyan'])},${waveOp})`;
       return `
-// Trading calculator
-function initializeTradingCalculator() {
-    console.log('🧮 Trading calculator initialized');
-}
-`;
+    <div class="wave-divider">
+      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+        <defs><linearGradient id="waveGrad${waveIdx}" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:${wc1}"/>
+          <stop offset="50%" style="stop-color:${wc2}"/>
+          <stop offset="100%" style="stop-color:${wc3}"/>
+        </linearGradient></defs>
+        <path fill="url(#waveGrad${waveIdx})">
+          <animate attributeName="d"
+            values="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z;M0,50 C360,10 720,70 1080,30 C1260,10 1380,50 1440,40 L1440,80 L0,80 Z;M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z"
+            dur="8s" repeatCount="indefinite"/>
+        </path>
+      </svg>
+    </div>`;
+    };
+
+    // ── Section builders using slot classes ──
+    const navClasses = this.slotResolver.getClassesForSlot('nav');
+    const heroClasses = this.slotResolver.getClassesForSlot('hero');
+    const statsClasses = this.slotResolver.getClassesForSlot('stats');
+    const featureClasses = this.slotResolver.getClassesForSlot('features');
+    const testimonialClasses = this.slotResolver.getClassesForSlot('testimonials');
+    const pricingClasses = this.slotResolver.getClassesForSlot('pricing');
+    const ctaClasses = this.slotResolver.getClassesForSlot('cta');
+    const footerClasses = this.slotResolver.getClassesForSlot('footer');
+
+    // Helper: pick a class from slot if available, else use fallback
+    const pick = (slotClasses, keywords, fallback) => {
+      for (const kw of keywords) {
+        const found = slotClasses.find(c => c.toLowerCase().includes(kw.toLowerCase()));
+        if (found) return found;
+      }
+      return fallback;
+    };
+
+    // NAV — use slot nav classes if available
+    const navContainerClass = pick(navClasses, ['nav', 'header', 'navigation'], 'nav-glass');
+    const navLogoClass = pick(navClasses, ['logo', 'brand', 'home-link'], 'nav-logo');
+    const navLinkClass = pick(navClasses, ['nav-link', 'menu-link', 'link'], 'nav-link');
+    const navBtnClass = pick(ctaClasses, ['btn', 'button', 'cta'], 'glass-btn glass-btn-primary');
+
+    const navHtml = `
+    <!-- NAV (slot: ${navClasses.length} classes available) -->
+    <nav class="${navContainerClass} nav-glass" id="navbar">
+      <div class="container nav-inner">
+        <a href="#" class="${navLogoClass} nav-logo"><span class="gradient-text">${this._escHtml(businessName)}</span></a>
+        <div class="nav-links" id="navLinks">
+          ${navLinks.map(l => `<a href="${l.href || '#'}" class="${navLinkClass} nav-link">${this._escHtml(l.label || '')}</a>`).join('\n          ')}
+        </div>
+        <a href="${ctaUrl}" class="${navBtnClass} glass-btn glass-btn-primary nav-cta">${this._escHtml(ctaText)}</a>
+        <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>`;
+
+    // HERO — use slot hero classes
+    const heroContainerClass = pick(heroClasses, ['hero-section', 'hero_container', 'Hero'], 'hero-section');
+    const heroTitleClass = pick(heroClasses, ['hero-title', 'Hero_title', 'heading'], 'hero-title');
+    const heroBtnClass = pick(heroClasses, ['hero-btn', 'button', 'cta-btn'], 'glass-btn glass-btn-primary');
+
+    // Flip words
+    const flipHtml = flipWords.length > 0 ? `
+        <span class="flip-words-container">
+          ${flipWords.map((w, i) => `<span class="flip-word${i === 0 ? ' active' : ''}">${this._escHtml(w)}</span>`).join('\n          ')}
+        </span>` : '';
+
+    const heroHtml = `
+    <!-- HERO (slot: ${heroClasses.length} classes) -->
+    <section id="hero" class="section ${heroContainerClass} hero-section">
+      <div class="meteors-container"><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div></div>
+      <div class="container hero-content">
+        ${socialProof ? `<div class="hero-badge gsap-reveal"><span class="hero-badge-dot"></span>${this._escHtml(socialProof)}</div>` : ''}
+        <h1 class="${heroTitleClass} hero-title gsap-reveal">
+          ${this._escHtml(tagline)}${flipHtml ? `<br>${flipHtml}` : ''}
+        </h1>
+        <p class="hero-subtitle gsap-reveal">${this._escHtml(subtitle)}</p>
+        <div class="hero-buttons gsap-reveal">
+          <a href="${ctaUrl}" class="magnetic-area">
+            <span class="${heroBtnClass} glass-btn glass-btn-primary">
+              ${this._escHtml(ctaText)}
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+            </span>
+          </a>
+          <a href="${ctaSecondaryUrl}" class="magnetic-area">
+            <span class="glass-btn glass-btn-secondary">${this._escHtml(ctaSecondary)}</span>
+          </a>
+        </div>
+      </div>
+    </section>`;
+
+    // STATS — use slot stats classes
+    const statCardClass = pick(statsClasses, ['card', 'stat', 'metric', 'testimonial-card'], 'stat-card');
+    const statNumberClass = pick(statsClasses, ['number', 'value', 'count', 'stat-number'], 'stat-number');
+    const statLabelClass = pick(statsClasses, ['label', 'description', 'stat-label'], 'stat-label');
+
+    const statsArr = stats.length >= 4 ? stats : [...stats, ...Array(Math.max(0, 4 - stats.length)).fill({ value: '-', label: '-' })];
+    const statsHtml = `
+    <!-- STATS (slot: ${statsClasses.length} classes) -->
+    <section id="stats" class="section">
+      <div class="container">
+        <div class="section-header gsap-reveal">
+          <span class="section-label">Resultados</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('statsTitle', 'Resultados Comprovados'))}</span></h2>
+          <p class="section-desc">${this._escHtml(this._txt('statsDescription', 'Numeros que demonstram nosso compromisso com a excelencia'))}</p>
+        </div>
+        <div class="stats-grid">
+          ${statsArr.slice(0, 4).map(s => {
+            const rawVal  = String(s.value || s.number || '0');
+            const numOnly = rawVal.replace(/[^0-9.]/g, '');
+            const prefix  = rawVal.replace(/[0-9.,]+.*/, '');
+            const suffix  = rawVal.replace(/.*?[0-9.,]+/, '');
+            return `
+          <div class="${statCardClass} stat-card gsap-reveal">
+            <div class="stat-shimmer"></div>
+            <div class="${statNumberClass} stat-number" data-count="${this._escAttr(numOnly)}" data-prefix="${this._escAttr(prefix)}" data-suffix="${this._escAttr(suffix)}">${this._escHtml(rawVal)}</div>
+            <div class="${statLabelClass} stat-label">${this._escHtml(s.label || s.description || '')}</div>
+          </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>`;
+
+    // FEATURES/METHOD
+    const featureCardClass = pick(featureClasses, ['card', 'feature', 'item', 'bento'], 'card-3d');
+    const featureIconClass = pick(featureClasses, ['icon', 'feature-icon', 'card-icon'], 'card-3d-icon');
+    const featureIcons  = ['&#9889;', '&#9881;', '&#127919;', '&#128640;', '&#128161;', '&#128171;', '&#9733;', '&#128296;'];
+    const featureColors = [
+      { bg: `rgba(${this._hexToRgb(c['--blue'])},0.15)`,   border: `rgba(${this._hexToRgb(c['--blue'])},0.2)`,   tagBg: `rgba(${this._hexToRgb(c['--blue'])},0.15)`,   tagColor: 'var(--blue)' },
+      { bg: `rgba(${this._hexToRgb(c['--cyan'])},0.15)`,   border: `rgba(${this._hexToRgb(c['--cyan'])},0.2)`,   tagBg: `rgba(${this._hexToRgb(c['--cyan'])},0.15)`,   tagColor: 'var(--cyan)' },
+      { bg: `rgba(${this._hexToRgb(c['--purple'])},0.15)`, border: `rgba(${this._hexToRgb(c['--purple'])},0.2)`, tagBg: `rgba(${this._hexToRgb(c['--purple'])},0.15)`, tagColor: 'var(--purple)' },
+      { bg: `rgba(${this._hexToRgb(c['--pink'])},0.15)`,   border: `rgba(${this._hexToRgb(c['--pink'])},0.2)`,   tagBg: `rgba(${this._hexToRgb(c['--pink'])},0.15)`,   tagColor: 'var(--pink)' },
+    ];
+
+    const featureItems = features.length > 0 ? features : [{ title: 'Premium', description: '' }];
+    const methodHtml = featureItems.length > 0 ? `
+    <!-- FEATURES (slot: ${featureClasses.length} classes) -->
+    <section id="method" class="section">
+      <div class="container">
+        <div class="section-header gsap-reveal">
+          <span class="section-label">Metodo</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('featuresTitle', 'Como Funciona'))}</span></h2>
+          <p class="section-desc">${this._escHtml(this._txt('featuresSubtitle', 'Nossa abordagem comprovada'))}</p>
+        </div>
+        <div class="method-grid">
+          ${featureItems.slice(0, 6).map((f, i) => {
+            const fc = featureColors[i % featureColors.length];
+            const title = typeof f === 'string' ? f : (f.title || f.name || f);
+            const desc  = typeof f === 'string' ? '' : (f.description || f.text || '');
+            const tag   = typeof f === 'string' ? `Step ${i+1}` : (f.tag || f.label || `Step ${i+1}`);
+            return `
+          <div class="card-3d-wrapper">
+            <div class="${featureCardClass} card-3d">
+              <div class="card-3d-glow"></div>
+              <div class="${featureIconClass} card-3d-icon" style="background:${fc.bg};border:1px solid ${fc.border};">${featureIcons[i % featureIcons.length]}</div>
+              <h3>${this._escHtml(String(title))}</h3>
+              <p>${this._escHtml(String(desc))}</p>
+              <span class="card-3d-tag" style="background:${fc.tagBg};color:${fc.tagColor};">${this._escHtml(String(tag))}</span>
+            </div>
+          </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>` : '';
+
+    // TESTIMONIALS
+    const testimonialCardClass = pick(testimonialClasses, ['testimonial', 'quote', 'card', 'review'], 'testimonial-card');
+    const testimonialsHtml = testimonials.length > 0 ? `
+    <!-- TESTIMONIALS (slot: ${testimonialClasses.length} classes) -->
+    <section id="testimonials" class="section">
+      <div class="container">
+        <div class="section-header gsap-reveal">
+          <span class="section-label">Depoimentos</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('testimonialsTitle', 'O Que Dizem'))}</span></h2>
+        </div>
+        <div class="testimonials-grid">
+          ${testimonials.slice(0, 3).map((t, i) => {
+            const text = typeof t === 'string' ? t : (t.text || t.quote || t.content || '');
+            const name = typeof t === 'string' ? '' : (t.name || t.author || '');
+            const role = typeof t === 'string' ? '' : (t.role || t.title || t.position || '');
+            return `
+          <div class="${testimonialCardClass} testimonial-card gsap-reveal">
+            <div class="testimonial-stars">${'&#9733;'.repeat(5)}</div>
+            <p class="testimonial-text">"${this._escHtml(text)}"</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">${this._escHtml((name[0] || 'A').toUpperCase())}</div>
+              <div>
+                <div class="testimonial-name">${this._escHtml(name)}</div>
+                <div class="testimonial-role">${this._escHtml(role)}</div>
+              </div>
+            </div>
+          </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>` : '';
+
+    // PRICING
+    const pricingCardClass = pick(pricingClasses, ['pricing', 'plan', 'card', 'tier'], 'pricing-card');
+    const pricingHtml = pricingPlans.length > 0 ? `
+    <!-- PRICING (slot: ${pricingClasses.length} classes) -->
+    <section id="pricing" class="section">
+      <div class="container">
+        <div class="section-header gsap-reveal">
+          <span class="section-label">Precos</span>
+          <h2 class="section-title"><span class="gradient-text">${this._escHtml(this._txt('pricingTitle', 'Escolha Seu Plano'))}</span></h2>
+        </div>
+        <div class="pricing-grid">
+          ${pricingPlans.slice(0, 3).map((p, i) => {
+            const name = p.name || p.title || `Plano ${i+1}`;
+            const price = p.price || p.value || '0';
+            const period = p.period || this._txt('pricingPeriod', '/mes');
+            const feats = Array.isArray(p.features) ? p.features : [];
+            const popular = p.popular || p.highlighted || i === 1;
+            return `
+          <div class="${pricingCardClass} pricing-card gsap-reveal${popular ? ' pricing-popular' : ''}">
+            ${popular ? '<div class="pricing-badge">Mais Popular</div>' : ''}
+            <h3 class="pricing-name">${this._escHtml(name)}</h3>
+            <div class="pricing-price"><span class="pricing-currency">${this._escHtml(currency)}</span><span class="pricing-value">${this._escHtml(String(price))}</span><span class="pricing-period">${this._escHtml(period)}</span></div>
+            <ul class="pricing-features">
+              ${feats.map(f => `<li>${this._escHtml(typeof f === 'string' ? f : (f.text || f.name || ''))}</li>`).join('\n              ')}
+            </ul>
+            <a href="${ctaUrl}" class="glass-btn ${popular ? 'glass-btn-primary' : 'glass-btn-secondary'} pricing-btn">${this._escHtml(popular ? ctaText : ctaSecondary)}</a>
+          </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>` : '';
+
+    // CTA SECTION
+    const ctaHtml = `
+    <!-- CTA -->
+    <section id="cta-final" class="section cta-section">
+      <div class="container" style="text-align:center;">
+        <h2 class="section-title gsap-reveal"><span class="gradient-text">${this._escHtml(this._txt('ctaTitle', 'Pronto Para Comecar?'))}</span></h2>
+        <p class="section-desc gsap-reveal">${this._escHtml(this._txt('ctaDescription', 'De o proximo passo agora'))}</p>
+        <div class="gsap-reveal" style="margin-top:2rem;">
+          <a href="${ctaUrl}" class="magnetic-area">
+            <span class="glass-btn glass-btn-primary" style="font-size:1.1rem;padding:1rem 2.5rem;">
+              ${this._escHtml(ctaText)}
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>`;
+
+    // FOOTER
+    const footerContainerClass = pick(footerClasses, ['footer', 'site-footer'], 'site-footer');
+    const footerHtml = `
+    <!-- FOOTER (slot: ${footerClasses.length} classes) -->
+    <footer class="${footerContainerClass} site-footer" id="footer">
+      <div class="container footer-content">
+        <div class="footer-brand">
+          <span class="gradient-text" style="font-size:1.3rem;font-weight:700;">${this._escHtml(businessName)}</span>
+        </div>
+        <div class="footer-links">
+          ${navLinks.map(l => `<a href="${l.href || '#'}">${this._escHtml(l.label || '')}</a>`).join('\n          ')}
+        </div>
+        <p class="footer-copy">${footerText}</p>
+      </div>
+    </footer>`;
+
+    // ── Three.js color values ──
+    const threeColor1 = '0x' + (this.colors['--blue'] || '#3b82f6').replace('#', '');
+    const threeColor2 = '0x' + (this.colors['--cyan'] || '#22d3ee').replace('#', '');
+
+    // ── Collect JS from premium components ──
+    const inlineJsParts = [];
+    const moduleJsParts = [];
+    for (const [id, resolved] of Object.entries(this.resolvedPremium)) {
+      if (id === 'threejs-wireframe') continue; // handled separately
+      if (!resolved.js) continue;
+      if (resolved.jsType === 'module') moduleJsParts.push(resolved.js);
+      else inlineJsParts.push(resolved.js);
     }
-    return '';
+    const inlineJsFromLib = inlineJsParts.join('\n\n');
+    const moduleJsFromLib = moduleJsParts.join('\n\n');
+
+    // ── Assemble all slot CSS ──
+    const allSlotCss = Object.values(slotCss).filter(s => s.length > 0).join('\n\n');
+
+    // ── Assemble full HTML ──
+    return `<!DOCTYPE html>
+<html lang="${language}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this._escHtml(pageTitle || `${businessName} - ${tagline}`)}</title>
+  <meta name="description" content="${this._escAttr(description)}">
+  <meta property="og:title" content="${this._escAttr(pageTitle || businessName)}">
+  <meta property="og:description" content="${this._escAttr(description)}">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(this._fontFamily)}:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  ${this._headingFont !== this._fontFamily ? `<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(this._headingFont)}:wght@700;800;900&display=swap" rel="stylesheet">` : ''}
+
+  <style>
+    /* ═══════════════════════════════════════════════════════
+       CSS VARIABLES (from design system)
+    ═══════════════════════════════════════════════════════ */
+    :root {
+      ${Object.entries(this.colors).map(([k, v]) => `${k}: ${v};`).join('\n      ')}
+      --font-body: '${this._fontFamily}', system-ui, sans-serif;
+      --font-heading: '${this._headingFont}', system-ui, sans-serif;
+      --heading-weight: ${this._headingWeight};
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       BASE STYLES
+    ═══════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .section { padding: 5rem 0; position: relative; }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--blue), var(--cyan), var(--purple));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-label {
+      display: inline-block; font-size: 0.8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.15em;
+      color: var(--blue); margin-bottom: 0.75rem;
+      padding: 0.3rem 0.8rem; border-radius: 100px;
+      background: rgba(${this._hexToRgb(c['--blue'])}, 0.1);
+      border: 1px solid rgba(${this._hexToRgb(c['--blue'])}, 0.2);
+    }
+    .section-title { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3rem); font-weight: var(--heading-weight); line-height: 1.2; margin-bottom: 1rem; }
+    .section-desc { color: var(--text-dim); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+    /* ═══════════════════════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════════════════════ */
+    .nav-glass {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: ${this._darkMode ? 'rgba(10,10,15,0.8)' : 'rgba(255,255,255,0.85)'};
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
+    .nav-logo { text-decoration: none; font-size: 1.3rem; font-weight: 700; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-link { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+    .nav-link:hover { color: var(--text-bright); }
+    .nav-cta { font-size: 0.85rem !important; padding: 0.5rem 1.25rem !important; }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); margin: 5px 0; transition: all 0.3s; border-radius: 2px; }
+
+    /* ═══════════════════════════════════════════════════════
+       GLASS BUTTONS
+    ═══════════════════════════════════════════════════════ */
+    .glass-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.75rem; border-radius: 12px;
+      font-weight: 600; font-size: 0.95rem;
+      text-decoration: none; cursor: pointer;
+      transition: all 0.3s ease; border: none;
+    }
+    .glass-btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(${this._hexToRgb(c['--blue'])}, 0.3);
+    }
+    .glass-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(${this._hexToRgb(c['--blue'])}, 0.5);
+    }
+    .glass-btn-secondary {
+      background: ${this._darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .glass-btn-secondary:hover {
+      background: ${this._darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'};
+      transform: translateY(-2px);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════════════════ */
+    .hero-section { min-height: 100vh; display: flex; align-items: center; padding-top: 5rem; position: relative; overflow: hidden; }
+    .hero-content { position: relative; z-index: 2; text-align: center; max-width: 900px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: ${this._darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
+      border: 1px solid var(--border); border-radius: 100px;
+      padding: 0.4rem 1rem; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem;
+    }
+    .hero-badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .hero-title { font-family: var(--font-heading); font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: var(--heading-weight); line-height: 1.1; margin-bottom: 1.5rem; color: var(--text-bright); }
+    .hero-subtitle { font-size: 1.2rem; color: var(--text-dim); margin-bottom: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .magnetic-area { display: inline-block; }
+
+    /* Flip Words */
+    .flip-words-container { display: inline-block; position: relative; height: 1.2em; overflow: hidden; vertical-align: bottom; min-width: 200px; }
+    .flip-word {
+      position: absolute; top: 0; left: 0; right: 0;
+      opacity: 0; transform: translateY(100%);
+      transition: all 0.5s ease;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .flip-word.active { opacity: 1; transform: translateY(0); }
+
+    /* Meteors */
+    .meteors-container { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+    .meteor {
+      position: absolute; width: 2px; height: 80px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
+      animation: meteorFall 3s linear infinite;
+      opacity: 0;
+    }
+    .meteor:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .meteor:nth-child(2) { left: 25%; animation-delay: 0.5s; }
+    .meteor:nth-child(3) { left: 40%; animation-delay: 1s; }
+    .meteor:nth-child(4) { left: 55%; animation-delay: 1.5s; }
+    .meteor:nth-child(5) { left: 70%; animation-delay: 2s; }
+    .meteor:nth-child(6) { left: 85%; animation-delay: 2.5s; }
+    .meteor:nth-child(7) { left: 15%; animation-delay: 0.3s; }
+    .meteor:nth-child(8) { left: 60%; animation-delay: 1.8s; }
+    @keyframes meteorFall { 0% { transform: translateY(-100px) rotate(35deg); opacity: 0; } 10% { opacity: 0.6; } 100% { transform: translateY(100vh) rotate(35deg); opacity: 0; } }
+
+    /* ═══════════════════════════════════════════════════════
+       STATS
+    ═══════════════════════════════════════════════════════ */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    .stat-card {
+      text-align: center; padding: 2rem 1rem; border-radius: 16px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      position: relative; overflow: hidden; transition: all 0.3s ease;
+    }
+    .stat-card:hover { transform: translateY(-4px); border-color: rgba(${this._hexToRgb(c['--blue'])}, 0.3); }
+    .stat-shimmer {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(${this._hexToRgb(c['--blue'])}, 0.05), transparent);
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    .stat-number { font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; color: var(--text-bright); position: relative; z-index: 1; }
+    .stat-label { color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem; position: relative; z-index: 1; }
+
+    /* ═══════════════════════════════════════════════════════
+       FEATURES / METHOD
+    ═══════════════════════════════════════════════════════ */
+    .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+    .card-3d-wrapper { perspective: 1000px; }
+    .card-3d {
+      padding: 2rem; border-radius: 16px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      position: relative; overflow: hidden; transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+    .card-3d:hover { transform: translateY(-4px); border-color: rgba(${this._hexToRgb(c['--blue'])}, 0.3); }
+    .card-3d-glow {
+      position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(${this._hexToRgb(c['--blue'])}, 0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card-3d-icon {
+      width: 50px; height: 50px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1rem;
+    }
+    .card-3d h3 { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-bright); margin-bottom: 0.75rem; }
+    .card-3d p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; }
+    .card-3d-tag {
+      display: inline-block; margin-top: 1rem;
+      padding: 0.25rem 0.75rem; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TESTIMONIALS
+    ═══════════════════════════════════════════════════════ */
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .testimonial-card {
+      padding: 2rem; border-radius: 16px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .testimonial-card:hover { transform: translateY(-4px); border-color: rgba(${this._hexToRgb(c['--blue'])}, 0.3); }
+    .testimonial-stars { color: #fbbf24; font-size: 1.1rem; margin-bottom: 1rem; }
+    .testimonial-text { color: var(--text); font-size: 1rem; line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+    .testimonial-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 0.9rem;
+    }
+    .testimonial-name { font-weight: 600; color: var(--text-bright); font-size: 0.9rem; }
+    .testimonial-role { color: var(--text-dim); font-size: 0.8rem; }
+
+    /* ═══════════════════════════════════════════════════════
+       PRICING
+    ═══════════════════════════════════════════════════════ */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 960px; margin: 0 auto; }
+    .pricing-card {
+      padding: 2.5rem 2rem; border-radius: 16px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      text-align: center; position: relative; transition: all 0.3s ease;
+    }
+    .pricing-card:hover { transform: translateY(-4px); }
+    .pricing-popular {
+      border-color: var(--blue);
+      box-shadow: 0 0 30px rgba(${this._hexToRgb(c['--blue'])}, 0.15);
+    }
+    .pricing-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #fff; padding: 0.3rem 1rem; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .pricing-name { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; color: var(--text-bright); margin-bottom: 1rem; }
+    .pricing-price { margin-bottom: 1.5rem; }
+    .pricing-currency { font-size: 1.2rem; color: var(--text-dim); vertical-align: top; }
+    .pricing-value { font-family: var(--font-heading); font-size: 3rem; font-weight: 800; color: var(--text-bright); }
+    .pricing-period { font-size: 0.9rem; color: var(--text-dim); }
+    .pricing-features { list-style: none; text-align: left; margin-bottom: 2rem; }
+    .pricing-features li { padding: 0.5rem 0; color: var(--text-dim); font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+    .pricing-features li::before { content: '\\2713'; color: var(--blue); margin-right: 0.5rem; font-weight: 700; }
+    .pricing-btn { width: 100%; justify-content: center; }
+
+    /* ═══════════════════════════════════════════════════════
+       CTA SECTION
+    ═══════════════════════════════════════════════════════ */
+    .cta-section {
+      background: linear-gradient(135deg, rgba(${this._hexToRgb(c['--blue'])}, 0.05), rgba(${this._hexToRgb(c['--purple'])}, 0.05));
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════════ */
+    .site-footer {
+      padding: 3rem 0; border-top: 1px solid var(--border);
+      background: ${this._darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.02)'};
+    }
+    .footer-content { text-align: center; }
+    .footer-brand { margin-bottom: 1rem; }
+    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--text-bright); }
+    .footer-copy { color: var(--text-dim); font-size: 0.8rem; }
+
+    /* ═══════════════════════════════════════════════════════
+       WAVE DIVIDERS
+    ═══════════════════════════════════════════════════════ */
+    .wave-divider { position: relative; height: 60px; overflow: hidden; }
+    .wave-divider svg { position: absolute; bottom: 0; width: 100%; height: 100%; }
+
+    /* ═══════════════════════════════════════════════════════
+       THREE.JS CANVAS
+    ═══════════════════════════════════════════════════════ */
+    #three-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+    /* ═══════════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+      .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: ${this._darkMode ? 'rgba(10,10,15,0.95)' : 'rgba(255,255,255,0.95)'}; backdrop-filter: blur(20px); padding: 1rem; gap: 1rem; border-bottom: 1px solid var(--border); }
+      .nav-cta { display: none; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .method-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: clamp(2rem, 5vw, 3rem); }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       PREMIUM COMPONENT CSS (from library)
+    ═══════════════════════════════════════════════════════ */
+    ${premiumCssParts.join('\n\n    ')}
+
+    /* ═══════════════════════════════════════════════════════
+       SLOT-ENRICHED CSS (from 771 component library)
+    ═══════════════════════════════════════════════════════ */
+    ${allSlotCss}
+
+    /* Visibility fallback */
+    .gsap-reveal { will-change: opacity, transform; }
+  </style>
+</head>
+<body>
+  <canvas id="three-canvas"></canvas>
+  ${navHtml}
+  ${heroHtml}
+  ${waveDivider()}
+  ${statsHtml}
+  ${waveDivider()}
+  ${methodHtml}
+  ${waveDivider()}
+  ${testimonialsHtml}
+  ${waveDivider()}
+  ${pricingHtml}
+  ${waveDivider()}
+  ${ctaHtml}
+  ${footerHtml}
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"><\/script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"><\/script>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════════════════ */
+    (function() {
+      const hamburger = document.getElementById('navHamburger');
+      const navLinks  = document.getElementById('navLinks');
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+        navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+      }
+      const navbar = document.getElementById('navbar');
+      let lastScroll = 0;
+      window.addEventListener('scroll', () => {
+        const st = window.scrollY;
+        if (navbar) {
+          navbar.style.transform = st > lastScroll && st > 100 ? 'translateY(-100%)' : 'translateY(0)';
+          if (st > 50) navbar.classList.add('scrolled');
+          else navbar.classList.remove('scrolled');
+        }
+        lastScroll = st;
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════════
+       FLIP WORDS
+    ═══════════════════════════════════════════════════════ */
+    (function() {
+      const words = document.querySelectorAll('.flip-word');
+      if (words.length <= 1) return;
+      let current = 0;
+      setInterval(() => {
+        words[current].classList.remove('active');
+        current = (current + 1) % words.length;
+        words[current].classList.add('active');
+      }, 2500);
+    })();
+
+    /* ═══════════════════════════════════════════════════════
+       FLOATING PARTICLES
+    ═══════════════════════════════════════════════════════ */
+    (function() {
+      const colors = ['${c['--blue']}66', '${c['--cyan']}4d', '${c['--purple']}4d', '${c['--pink']}33'];
+      for (let i = 0; i < 10; i++) {
+        const p = document.createElement('div');
+        p.style.cssText = \`position:fixed;width:\${4+Math.random()*6}px;height:\${4+Math.random()*6}px;
+          border-radius:50%;background:\${colors[i%4]};pointer-events:none;z-index:1;
+          left:\${Math.random()*100}%;top:\${Math.random()*100}%;
+          animation:floatParticle \${8+Math.random()*12}s ease-in-out infinite \${Math.random()*5}s;\`;
+        document.body.appendChild(p);
+      }
+      if (!document.querySelector('#floatParticleStyle')) {
+        const style = document.createElement('style');
+        style.id = 'floatParticleStyle';
+        style.textContent = \`@keyframes floatParticle {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+          25% { transform: translate(\${Math.random()*100-50}px, \${Math.random()*100-50}px) scale(1.2); opacity: 0.6; }
+          50% { transform: translate(\${Math.random()*100-50}px, \${Math.random()*100-50}px) scale(0.8); opacity: 0.4; }
+          75% { transform: translate(\${Math.random()*100-50}px, \${Math.random()*100-50}px) scale(1.1); opacity: 0.5; }
+        }\`;
+        document.head.appendChild(style);
+      }
+    })();
+
+    /* ═══════════════════════════════════════════════════════
+       GLOWING STARS (testimonials)
+    ═══════════════════════════════════════════════════════ */
+    (function() {
+      const container = document.getElementById('testimonials');
+      if (!container) return;
+      for (let i = 0; i < 40; i++) {
+        const star = document.createElement('div');
+        const size = 1 + Math.random() * 2;
+        star.style.cssText = \`position:absolute;width:\${size}px;height:\${size}px;border-radius:50%;
+          background:\${Math.random()>0.5 ? '${c['--purple']}' : '${c['--cyan']}'};
+          left:\${Math.random()*100}%;top:\${Math.random()*100}%;opacity:0;pointer-events:none;
+          animation:starGlow \${2+Math.random()*3}s ease-in-out infinite \${Math.random()*3}s;\`;
+        container.style.position = 'relative';
+        container.appendChild(star);
+      }
+      if (!document.querySelector('#starGlowStyle')) {
+        const style = document.createElement('style');
+        style.id = 'starGlowStyle';
+        style.textContent = \`@keyframes starGlow { 0%,100% { opacity:0; transform:scale(0.5); } 50% { opacity:0.8; transform:scale(1.5); } }\`;
+        document.head.appendChild(style);
+      }
+    })();
+
+    /* ═══════════════════════════════════════════════════════
+       GSAP SCROLL REVEAL
+    ═══════════════════════════════════════════════════════ */
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.utils.toArray('.gsap-reveal').forEach(el => {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
+        opacity: 0, y: 30, duration: 0.8, ease: 'power2.out'
+      });
+    });
+
+    document.querySelectorAll('.method-grid, .stats-grid, .pricing-grid, .testimonials-grid').forEach(grid => {
+      gsap.from(grid.children, {
+        scrollTrigger: { trigger: grid, start: 'top 90%', toggleActions: 'play none none none' },
+        opacity: 0, y: 30, stagger: 0.15, duration: 0.8, ease: 'power2.out'
+      });
+    });
+
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+      document.querySelectorAll('.gsap-reveal').forEach(el => {
+        if (getComputedStyle(el).opacity === '0') gsap.to(el, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+      });
+    }, 500);
+
+    /* ═══════════════════════════════════════════════════════
+       COUNTER ANIMATION
+    ═══════════════════════════════════════════════════════ */
+    (function() {
+      let triggered = false;
+      const section = document.getElementById('stats');
+      if (!section) return;
+      ScrollTrigger.create({
+        trigger: section, start: 'top 80%',
+        onEnter: function() {
+          if (triggered) return;
+          triggered = true;
+          document.querySelectorAll('.stat-shimmer').forEach(s => gsap.to(s, { opacity: 0, duration: 0.5, onComplete: () => s.remove() }));
+          document.querySelectorAll('.stat-number').forEach(el => {
+            const raw = el.dataset.count;
+            if (!raw) return;
+            const prefix = el.dataset.prefix || '', suffix = el.dataset.suffix || '';
+            const target = parseFloat(raw);
+            if (isNaN(target)) return;
+            const isDec = raw.includes('.');
+            gsap.to({ val: 0 }, {
+              val: target, duration: 2, ease: 'power2.out',
+              onUpdate: function() {
+                const v = this.targets()[0].val;
+                el.textContent = prefix + (isDec ? v.toFixed(1) : Math.floor(v).toLocaleString()) + suffix;
+              }
+            });
+          });
+        }
+      });
+    })();
+
+    /* Fallback: ensure visibility */
+    setTimeout(function() {
+      document.querySelectorAll('.gsap-reveal').forEach(function(el) {
+        el.style.opacity = '1'; el.style.transform = 'none';
+      });
+    }, 3000);
+
+    /* Smooth anchor scroll */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const target = a.getAttribute('href') !== '#' && document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+
+    /* Additional inline JS from library */
+    ${inlineJsFromLib}
+  <\/script>
+
+  <!-- THREE.JS MODULE -->
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
+
+    const canvas = document.getElementById('three-canvas');
+    if (canvas) {
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 5;
+
+      const torusGeo = new THREE.TorusKnotGeometry(1.2, 0.35, 128, 32);
+      const torusMat = new THREE.MeshBasicMaterial({ color: ${threeColor1}, wireframe: true, transparent: true, opacity: ${this._darkMode ? 0.12 : 0.05} });
+      const torusKnot = new THREE.Mesh(torusGeo, torusMat);
+      scene.add(torusKnot);
+
+      const particleCount = 2500;
+      const positions = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+      const c1 = new THREE.Color(${threeColor1});
+      const c2 = new THREE.Color(${threeColor2});
+
+      for (let i = 0; i < particleCount; i++) {
+        positions[i*3] = (Math.random()-0.5)*20;
+        positions[i*3+1] = (Math.random()-0.5)*20;
+        positions[i*3+2] = (Math.random()-0.5)*20;
+        const t = Math.random();
+        const col = c1.clone().lerp(c2, t);
+        colors[i*3] = col.r; colors[i*3+1] = col.g; colors[i*3+2] = col.b;
+      }
+
+      const particleGeo = new THREE.BufferGeometry();
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const particleMat = new THREE.PointsMaterial({ size: 0.025, vertexColors: true, transparent: true, opacity: ${this._darkMode ? 0.6 : 0.25}, sizeAttenuation: true });
+      const particleMesh = new THREE.Points(particleGeo, particleMat);
+      scene.add(particleMesh);
+
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        torusKnot.rotation.x += 0.003; torusKnot.rotation.y += 0.005;
+        torusKnot.position.x += (mouseX * 0.5 - torusKnot.position.x) * 0.02;
+        torusKnot.position.y += (-mouseY * 0.5 - torusKnot.position.y) * 0.02;
+        particleMesh.rotation.y += 0.0003; particleMesh.rotation.x += 0.0001;
+        camera.position.x += (mouseX * 0.3 - camera.position.x) * 0.01;
+        camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.01;
+        camera.lookAt(scene.position);
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      ${moduleJsFromLib}
+    }
+  <\/script>
+</body>
+</html>`;
   }
-  createAdditionalFiles(codePath, contextDNA) {
-    // Cria README
-    const readmePath = path.join(codePath, 'README.md');
-    fs.writeFileSync(readmePath, this.generateREADME(contextDNA));
-  }
-  
-  generateREADME(contextDNA) {
-    return `# ${this.getProjectName(contextDNA)}
 
-Generated by NEXUS Framework
+  // ─── Step 6: Write outputs ─────────────────────────────────
 
-## Business Type
-${contextDNA.project.businessType}
+  writeOutputs(html) {
+    console.log('\n[6/7] Writing output files...');
 
-## Target Audience  
-${contextDNA.audience.primaryAge}
+    const projectName = this.dna.projectName || this.dna.businessName || path.basename(this.projectDir);
+    const slug = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-## Psychology
-${contextDNA.psychology.primary}
+    const projOutputFile = path.join(this.projectDir, 'output', 'index.html');
+    this._writeFile(projOutputFile, html);
 
-## Generated
-${new Date().toISOString()}
+    const workspaceRoot = path.resolve(this.projectDir, '..');
+    const genSiteFile = path.join(workspaceRoot, 'generated-site', slug, 'index.html');
+    this._writeFile(genSiteFile, html);
 
-## Files
-- index.html - Main page
-- css/main.css - Styles
-- js/main.js - JavaScript
-- assets/ - Images and icons
+    // Also write a slot report
+    const report = this._generateSlotReport();
+    const reportFile = path.join(this.projectDir, 'output', 'slot-report.md');
+    this._writeFile(reportFile, report);
 
-## Deploy
-Upload all files to your web server.
-`;
+    return { slug, projOutputFile, genSiteFile, reportFile };
   }
 
-  /**
-   * Gera relatório do código gerado
-   */
-  generateCodeReport(codeAssets, contextDNA) {
-    return `# 💻 NEXUS Code Generation - Relatório
+  _generateSlotReport() {
+    const lines = ['# NEXUS v4 Slot Report\n'];
+    lines.push(`Business Type: ${this.businessType}`);
+    lines.push(`Mode: ${this._darkMode ? 'Dark' : 'Light'}`);
+    lines.push(`Font: ${this._fontFamily} / ${this._headingFont}\n`);
 
-## 📊 **Resumo da Geração**
-- **Projeto:** ${this.getProjectName(contextDNA)}
-- **Business Type:** ${contextDNA.project.businessType}
-- **Target Audience:** ${contextDNA.audience.primaryAge}
-- **Gerado em:** ${codeAssets.generated}
-- **Status:** ${codeAssets.successful ? 'Sucesso ✅' : 'Erro ❌'}
+    lines.push('## Slot Assignments\n');
+    for (const [slot, items] of Object.entries(this.slotResolver.selected)) {
+      lines.push(`### ${slot}`);
+      for (const { comp, score } of items) {
+        const cssLen = (comp.css || '').length;
+        const classes = CssClassExtractor.extract(comp.css).classes.length;
+        lines.push(`- **${comp.id}** (score: ${score.toFixed(1)}, css: ${cssLen}b, classes: ${classes})`);
+      }
+      lines.push('');
+    }
 
-## 🎯 **Context DNA Aplicado**
-- **Psicologia:** ${contextDNA.psychology.primary}
-- **CTA Strategy:** ${contextDNA.content.ctaStrategy}
-- **Visual Direction:** ${contextDNA.visual.colorPsychology}
-- **Layout:** ${contextDNA.visual.layout}
+    lines.push('## Premium Effects\n');
+    for (const id of Object.keys(this.resolvedPremium)) {
+      lines.push(`- ${id}`);
+    }
 
-## 💻 **Código Gerado**
-- **HTML:** Site completo responsivo
-- **CSS:** Design system + componentes integrados
-- **JavaScript:** Funcionalidades contextuais
-- **Assets:** Estrutura completa
+    return lines.join('\n');
+  }
 
-## 🎨 **Componentes Integrados**
-- Biblioteca premium aplicada contextualmente
-- ${this.selectComponentFiles(contextDNA.project.businessType).length} arquivos CSS integrados
-- Animações Aceternity + Magic UI
-- Icons premium system
+  // ─── Main run ──────────────────────────────────────────────
 
-## ⚡ **Otimizações**
-- SEO meta tags contextuais
-- Performance optimizations
-- Responsive design mobile-first
-- Accessibility AA compliance
+  run() {
+    console.log('==================================================');
+    console.log('  NEXUS Code Agent v4 — Slot-Driven Assembly');
+    console.log('==================================================');
 
-## 📁 **Arquivos Criados**
-${codeAssets.files.map(file => `- ${path.basename(file)}`).join('\n')}
+    const startTime = Date.now();
 
-## 🚀 **Deploy Instructions**
-1. Upload todos os arquivos para servidor web
-2. Configure domínio e SSL
-3. Teste responsividade
-4. Configure analytics (Google Analytics)
-5. Adicione tracking de conversão
+    try {
+      this.loadLibrary();        // [1/7]
+      this.loadInputs();         // [2/7]
+      this.resolveSlots();       // [3/7]
+      this.resolveDesign();      // [4/7]
+      const html = this.buildPage(); // [5/7]
 
-## 📊 **Performance Estimada**
-- **Load Time:** < 3 segundos
-- **Mobile Score:** > 90
-- **SEO Score:** > 85
-- **Accessibility:** AA compliant
+      console.log(`\n  Page: ${html.length} chars (${(Buffer.byteLength(html) / 1024).toFixed(1)} KB)`);
 
----
-*Gerado por ${this.name} em ${new Date().toISOString()}*
-`;
+      const paths = this.writeOutputs(html); // [6/7]
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+
+      console.log(`\n[7/7] Done in ${elapsed}s`);
+      console.log('==================================================');
+      console.log(`  Slug:   ${paths.slug}`);
+      console.log(`  Output: ${paths.projOutputFile}`);
+      console.log(`  Site:   ${paths.genSiteFile}`);
+      console.log(`  Report: ${paths.reportFile}`);
+      console.log('==================================================\n');
+
+      return paths;
+    } catch (err) {
+      console.error(`\n[ERROR] ${err.message}`);
+      console.error(err.stack);
+      process.exit(1);
+    }
   }
 }
 
-// CLI Interface
-async function main() {
-  const args = process.argv.slice(2);
-  
-  if (args.length === 0) {
-    console.log(`
-💻 NEXUS Code Agent v1.0.0
+// ─────────────────────────────────────────────────────────────
+// Export & CLI
+// ─────────────────────────────────────────────────────────────
 
-Uso:
-  node nexus-code-agent.js <context-dna-path>
+module.exports = NexusCodeAgentV4;
 
-Exemplo:
-  node nexus-code-agent.js ../projects/etf-landing/context-dna.json
-    `);
-    process.exit(1);
-  }
-
-  const contextDNAPath = args[0];
-  
-  // Verifica se o arquivo existe
-  if (!fs.existsSync(contextDNAPath)) {
-    console.error(`❌ Arquivo não encontrado: ${contextDNAPath}`);
-    process.exit(1);
-  }
-  
-  const agent = new NexusCodeAgent();
-  
-  console.log('🚀 Iniciando geração de código...');
-  console.log(`📄 Context DNA: ${contextDNAPath}`);
-  console.log('');
-
-  try {
-    const codeAssets = await agent.processProject(contextDNAPath);
-    
-    // Gera relatório
-    const contextDNA = JSON.parse(fs.readFileSync(contextDNAPath, 'utf8'));
-    const report = agent.generateCodeReport(codeAssets, contextDNA);
-    
-    const reportPath = path.join(path.dirname(contextDNAPath), 'code-report.md');
-    fs.writeFileSync(reportPath, report);
-    
-    console.log('');
-    console.log('✅ Site gerado com sucesso!');
-    console.log('📊 Estatísticas:');
-    console.log(`   - Business Type: ${contextDNA.project.businessType}`);
-    console.log(`   - Target: ${contextDNA.audience.primaryAge}`);
-    console.log(`   - Arquivos: ${codeAssets.files.length} gerados`);
-    console.log(`   - Componentes: ${agent.selectComponentFiles(contextDNA.project.businessType).length} integrados`);
-    console.log('');
-    console.log('📁 Site completo salvo em:');
-    console.log(`   ${path.dirname(contextDNA.filePath || '')}/generated-site/`);
-    console.log('');
-    console.log('📊 Relatório: ' + path.basename(reportPath));
-    console.log('');
-    console.log('🚀 Ready for deploy!');
-    
-  } catch (error) {
-    console.error('❌ Erro ao gerar código:', error.message);
-    console.error(error.stack);
-    process.exit(1);
-  }
-}
-
-// Executa se chamado diretamente
 if (require.main === module) {
-  main();
+  const args = process.argv.slice(2);
+  if (args.length < 1) {
+    console.error('Usage: node nexus-code-agent-v4.js <path-to-context-dna.json>');
+    process.exit(1);
+  }
+  const agent = new NexusCodeAgentV4(args[0]);
+  agent.run();
 }
-
-module.exports = NexusCodeAgent;

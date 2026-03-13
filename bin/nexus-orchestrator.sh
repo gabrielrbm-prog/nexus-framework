@@ -103,7 +103,7 @@ if ! command -v node >/dev/null 2>&1; then
 fi
 
 # Verifica se o arquivo do Orchestrator Agent existe
-ORCHESTRATOR_PATH="$SCRIPT_DIR/agents/nexus-orchestrator-agent.js"
+ORCHESTRATOR_PATH="$SCRIPT_DIR/agents/nexus-orchestrator.js"
 if [ ! -f "$ORCHESTRATOR_PATH" ]; then
     echo "❌ Erro: Orchestrator Agent não encontrado em $ORCHESTRATOR_PATH"
     exit 1
@@ -111,7 +111,7 @@ fi
 
 # Executa o Orchestrator Agent
 cd "$SCRIPT_DIR"
-node agents/nexus-orchestrator-agent.js "$BRIEFING" "$PROJECT_NAME" $AUTO_RECOVER $MIN_QUALITY $VERBOSE $PARALLEL
+node agents/nexus-orchestrator.js "$BRIEFING" "$PROJECT_NAME" $AUTO_RECOVER $MIN_QUALITY $VERBOSE $PARALLEL
 
 # Captura código de saída
 EXIT_CODE=$?

@@ -1,589 +1,323 @@
 #!/usr/bin/env node
 
 /*
- * 🧠 NEXUS CONTEXT AGENT
- * O cérebro que entende qualquer briefing e cria o DNA do projeto
- * Input: Briefing do cliente
- * Output: Context DNA completo para todos outros agentes
+ * NEXUS Context Agent v2 — LLM-Powered
+ * Analyzes briefing with real AI to generate Context DNA
+ * Replaces keyword-matching with DeepSeek analysis
  */
 
 const fs = require('fs');
 const path = require('path');
+const llm = require('./nexus-llm');
 
-class NexusContextAgent {
-  constructor() {
-    this.name = "NEXUS Context Agent";
-    this.version = "1.0.0";
-    this.capabilities = [
-      "Briefing Analysis",
-      "Target Audience Profiling", 
-      "Competitor Intelligence",
-      "Brand Personality Definition",
-      "Technical Requirements",
-      "Conversion Psychology",
-      "Market Positioning"
-    ];
-  }
+const WORKSPACE = path.join(__dirname, '..');
 
-  /**
-   * Processa um briefing e gera o Context DNA completo
-   */
-  async processBriefing(briefing) {
-    console.log(`🧠 ${this.name} processando briefing...`);
-    
-    const contextDNA = {
-      project: this.extractProjectInfo(briefing),
-      audience: this.analyzeTargetAudience(briefing),
-      psychology: this.defineConversionPsychology(briefing),
-      brand: this.createBrandPersonality(briefing),
-      technical: this.defineTechnicalRequirements(briefing),
-      competitive: this.analyzeCompetitors(briefing),
-      content: this.defineContentStrategy(briefing),
-      visual: this.createVisualDirection(briefing),
-      created: new Date().toISOString(),
-      agent: this.name
-    };
+class NexusContextAgentV2 {
 
-    return contextDNA;
-  }
+  async analyze(briefing, projectName, opts = {}) {
+    console.log('🚀 Iniciando análise com IA...');
+    console.log(`📋 Briefing: "${briefing.slice(0, 80)}..."`);
+    console.log(`📂 Projeto: ${projectName}\n`);
 
-  /**
-   * Extrai informações básicas do projeto
-   */
-  extractProjectInfo(briefing) {
-    const keywords = briefing.toLowerCase();
-    
-    // Detecta tipo de negócio
-    const businessTypes = {
-      'fintech': ['pagamento', 'banco', 'financeiro', 'cartão', 'investimento', 'trading', 'criptomoeda'],
-      'ecommerce': ['loja', 'venda', 'produto', 'carrinho', 'checkout', 'marketplace'],
-      'saas': ['software', 'app', 'plataforma', 'dashboard', 'ferramenta', 'sistema'],
-      'agency': ['agência', 'marketing', 'design', 'criativo', 'publicidade'],
-      'education': ['educação', 'curso', 'ensino', 'aprendizado', 'escola', 'universidade'],
-      'healthcare': ['saúde', 'médico', 'clínica', 'hospital', 'telemedicina'],
-      'real_estate': ['imóvel', 'casa', 'apartamento', 'propriedade', 'aluguel'],
-      'food': ['restaurante', 'comida', 'delivery', 'alimentação', 'culinária'],
-      'travel': ['viagem', 'hotel', 'turismo', 'passagem', 'hospedagem'],
-      'fitness': ['academia', 'fitness', 'exercício', 'treino', 'saúde']
-    };
+    // Gather all available data
+    const projectDir = path.join(WORKSPACE, 'projects', projectName);
+    const discoveryData = this._loadJSON(path.join(projectDir, 'company-profile.json'));
+    const briefData = this._loadJSON(path.join(projectDir, 'creative-brief.json'));
+    const nicheRefs = this._loadNicheRefs(opts.niche);
 
-    let detectedType = 'general';
-    for (const [type, words] of Object.entries(businessTypes)) {
-      if (words.some(word => keywords.includes(word))) {
-        detectedType = type;
-        break;
-      }
+    // Build rich context for LLM
+    const contextPrompt = this._buildPrompt(briefing, projectName, discoveryData, briefData, nicheRefs, opts);
+
+    // Call LLM for deep analysis
+    console.log('🧠 Analisando com IA (DeepSeek)...');
+    let contextDNA;
+    try {
+      contextDNA = await llm.callJSON(contextPrompt, {
+        system: `Você é um estrategista digital especialista em landing pages de alta conversão.
+Analise o briefing e dados fornecidos para criar um Context DNA completo e detalhado.
+Responda APENAS com JSON válido, sem texto adicional.
+Seja específico para o negócio — nunca use conteúdo genérico.
+Adapte tudo ao mercado brasileiro (LGPD, não GDPR; cultura local).`,
+        maxTokens: 4096,
+        temperature: 0.6
+      });
+    } catch(e) {
+      console.log(`   ⚠️ LLM falhou (${e.message}), usando análise local...`);
+      contextDNA = this._fallbackAnalysis(briefing, projectName, opts);
     }
 
-    return {
-      businessType: detectedType,
-      industry: this.mapIndustry(detectedType),
-      projectScale: this.detectProjectScale(briefing),
-      timeline: this.extractTimeline(briefing),
-      budget: this.extractBudgetRange(briefing),
-      goals: this.extractGoals(briefing)
-    };
-  }
+    // Ensure required fields exist
+    contextDNA = this._validateAndEnrich(contextDNA, briefing, projectName, opts);
 
-  /**
-   * Analisa target audience baseado no briefing
-   */
-  analyzeTargetAudience(briefing) {
-    const keywords = briefing.toLowerCase();
-    
-    // Demografia
-    const ageGroups = {
-      'gen_z': ['jovem', 'tiktok', 'instagram', '18-24', 'gen z'],
-      'millennial': ['millennia', '25-35', 'instagram', 'facebook'], 
-      'gen_x': ['35-50', 'facebook', 'linkedin', 'experiência'],
-      'boomer': ['50+', 'tradicional', 'telefone', 'experiência']
-    };
-
-    let primaryAge = 'millennial';
-    for (const [age, indicators] of Object.entries(ageGroups)) {
-      if (indicators.some(indicator => keywords.includes(indicator))) {
-        primaryAge = age;
-        break;
-      }
-    }
-
-    return {
-      primaryAge: primaryAge,
-      demographics: this.buildDemographics(primaryAge),
-      psychographics: this.buildPsychographics(briefing),
-      painPoints: this.extractPainPoints(briefing),
-      motivations: this.extractMotivations(briefing),
-      digitalBehavior: this.analyzDigitalBehavior(primaryAge)
-    };
-  }
-
-  /**
-   * Define psicologia de conversão baseada no target e negócio
-   */
-  defineConversionPsychology(briefing) {
-    const businessType = this.extractProjectInfo(briefing).businessType;
-    
-    const psychologyMap = {
-      'fintech': {
-        primary: 'trust',
-        triggers: ['security', 'transparency', 'social_proof', 'authority'],
-        fears: ['fraud', 'loss', 'complexity'],
-        desires: ['growth', 'control', 'simplicity'],
-        copyTone: 'professional_confident'
-      },
-      'ecommerce': {
-        primary: 'urgency',
-        triggers: ['scarcity', 'social_proof', 'reciprocity'],
-        fears: ['regret', 'missing_out', 'poor_quality'],
-        desires: ['value', 'convenience', 'status'],
-        copyTone: 'friendly_persuasive'
-      },
-      'saas': {
-        primary: 'value',
-        triggers: ['productivity', 'roi', 'authority', 'social_proof'],
-        fears: ['complexity', 'time_waste', 'wrong_choice'],
-        desires: ['efficiency', 'success', 'simplicity'],
-        copyTone: 'smart_solution_oriented'
-      }
-    };
-
-    return psychologyMap[businessType] || psychologyMap['saas'];
-  }
-
-  /**
-   * Cria personalidade de marca baseada no briefing
-   */
-  createBrandPersonality(briefing) {
-    const keywords = briefing.toLowerCase();
-    
-    // Detecta tom de personalidade
-    const personalityIndicators = {
-      'professional': ['corporativo', 'empresa', 'negócio', 'profissional', 'sério'],
-      'friendly': ['amigável', 'próximo', 'acessível', 'humano', 'caloroso'],
-      'innovative': ['inovador', 'moderno', 'tecnologia', 'futuro', 'disruptivo'],
-      'trustworthy': ['confiável', 'seguro', 'transparente', 'honesto'],
-      'premium': ['luxo', 'premium', 'exclusivo', 'sofisticado', 'elite']
-    };
-
-    const detectedTraits = [];
-    for (const [trait, indicators] of Object.entries(personalityIndicators)) {
-      if (indicators.some(indicator => keywords.includes(indicator))) {
-        detectedTraits.push(trait);
-      }
-    }
-
-    return {
-      primaryTraits: detectedTraits.slice(0, 3),
-      voiceTone: this.defineVoiceTone(detectedTraits),
-      brandArchetype: this.assignBrandArchetype(detectedTraits),
-      communicationStyle: this.defineCommunicationStyle(detectedTraits),
-      emotionalCore: this.defineEmotionalCore(briefing)
-    };
-  }
-
-  /**
-   * Define requisitos técnicos baseados no projeto
-   */
-  defineTechnicalRequirements(briefing) {
-    const businessType = this.extractProjectInfo(briefing).businessType;
-    
-    const technicalMap = {
-      'fintech': {
-        security: 'high',
-        performance: 'high', 
-        compliance: ['PCI', 'GDPR', 'SOC2'],
-        integrations: ['payment_gateways', 'banking_apis', 'kyc'],
-        monitoring: 'advanced'
-      },
-      'ecommerce': {
-        security: 'high',
-        performance: 'high',
-        compliance: ['GDPR', 'PCI'],
-        integrations: ['payment', 'shipping', 'inventory', 'crm'],
-        monitoring: 'standard'
-      },
-      'saas': {
-        security: 'medium',
-        performance: 'high',
-        compliance: ['GDPR'],
-        integrations: ['apis', 'webhooks', 'analytics'],
-        monitoring: 'advanced'
-      }
-    };
-
-    return technicalMap[businessType] || technicalMap['saas'];
-  }
-
-  /**
-   * Analisa competitors baseado no tipo de negócio
-   */
-  analyzeCompetitors(briefing) {
-    const businessType = this.extractProjectInfo(briefing).businessType;
-    
-    const competitorBenchmarks = {
-      'fintech': ['stripe', 'nubank', 'wise', 'revolut'],
-      'ecommerce': ['amazon', 'shopify', 'mercadolivre'],
-      'saas': ['notion', 'slack', 'figma', 'linear'],
-      'agency': ['wix', 'squarespace', 'webflow']
-    };
-
-    const relevantCompetitors = competitorBenchmarks[businessType] || [];
-
-    return {
-      directCompetitors: relevantCompetitors,
-      benchmarkSites: this.getBenchmarkSites(businessType),
-      differentiationOpportunities: this.findDifferentiationOpportunities(briefing),
-      designTrends: this.getCurrentDesignTrends(businessType)
-    };
-  }
-
-  /**
-   * Define estratégia de conteúdo
-   */
-  defineContentStrategy(briefing) {
-    const audience = this.analyzeTargetAudience(briefing);
-    const psychology = this.defineConversionPsychology(briefing);
-    
-    return {
-      contentPillars: this.defineContentPillars(briefing),
-      copyStrategy: psychology.copyTone,
-      ctaStrategy: this.defineCTAStrategy(psychology),
-      contentHierarchy: this.defineContentHierarchy(briefing),
-      seoStrategy: this.defineSEOStrategy(briefing)
-    };
-  }
-
-  /**
-   * Cria direção visual baseada no contexto
-   */
-  createVisualDirection(briefing) {
-    const brand = this.createBrandPersonality(briefing);
-    const businessType = this.extractProjectInfo(briefing).businessType;
-    
-    const visualMap = {
-      'fintech': {
-        colorPsychology: 'trust_blue',
-        typography: 'modern_sans',
-        layout: 'clean_minimal',
-        imagery: 'business_lifestyle'
-      },
-      'ecommerce': {
-        colorPsychology: 'converting_orange',
-        typography: 'friendly_rounded',
-        layout: 'grid_product',
-        imagery: 'product_lifestyle'
-      },
-      'saas': {
-        colorPsychology: 'productive_purple',
-        typography: 'tech_geometric',
-        layout: 'dashboard_focused',
-        imagery: 'workflow_abstract'
-      }
-    };
-
-    return visualMap[businessType] || visualMap['saas'];
-  }
-
-  /**
-   * Salva o Context DNA em arquivo
-   */
-  async saveContextDNA(contextDNA, projectName) {
-    const outputDir = path.join(__dirname, '..', 'projects', projectName);
-    
-    // Cria diretório se não existe
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-
-    const filePath = path.join(outputDir, 'context-dna.json');
+    // Save
+    if (!fs.existsSync(projectDir)) fs.mkdirSync(projectDir, { recursive: true });
+    const filePath = path.join(projectDir, 'context-dna.json');
     contextDNA.filePath = filePath;
-    
-    // Salva o arquivo
+    contextDNA._generatedBy = 'nexus-context-agent-v2';
+    contextDNA._generatedAt = new Date().toISOString();
+    contextDNA._usedLLM = true;
+
     fs.writeFileSync(filePath, JSON.stringify(contextDNA, null, 2));
-    
     console.log(`💾 Context DNA salvo em: ${filePath}`);
-    
-    // Gera resumo humano
-    const summaryPath = path.join(outputDir, 'context-summary.md');
-    const summary = this.generateHumanSummary(contextDNA);
+
+    // Generate human summary
+    const summaryPath = path.join(projectDir, 'context-summary.md');
+    const summary = this._generateSummary(contextDNA, projectName);
     fs.writeFileSync(summaryPath, summary);
-    
-    console.log(`📄 Resumo humano salvo em: ${summaryPath}`);
-    
+    console.log(`📄 Resumo salvo em: ${summaryPath}`);
+
+    console.log('\n✅ Context DNA gerado com IA!');
+    console.log(`📄 Arquivos salvos:`);
+    console.log(`   - ${filePath}`);
+    console.log(`   - ${summaryPath}`);
+
     return { contextDNA, filePath, summaryPath };
   }
 
-  /**
-   * Gera resumo humano do Context DNA
-   */
-  generateHumanSummary(dna) {
-    return `# 🧠 NEXUS Context DNA - Resumo
+  _buildPrompt(briefing, projectName, discovery, brief, nicheRefs, opts) {
+    let prompt = `Analise este projeto e gere um Context DNA completo em JSON.
 
-## 🎯 **Projeto**
-- **Tipo:** ${dna.project.businessType}
-- **Indústria:** ${dna.project.industry}
-- **Escala:** ${dna.project.projectScale}
-- **Timeline:** ${dna.project.timeline}
-- **Objetivos:** ${dna.project.goals.join(', ')}
+## Projeto: ${projectName}
+## Briefing: ${briefing}`;
 
-## 👥 **Target Audience**
-- **Idade Primária:** ${dna.audience.primaryAge}
-- **Demografia:** ${JSON.stringify(dna.audience.demographics, null, 2)}
-- **Pain Points:** ${dna.audience.painPoints.join(', ')}
-- **Motivações:** ${dna.audience.motivations.join(', ')}
+    if (opts.company) prompt += `\n## Empresa: ${opts.company}`;
+    if (opts.niche) prompt += `\n## Nicho: ${opts.niche}`;
+    if (opts.url) prompt += `\n## Website: ${opts.url}`;
 
-## 🧠 **Psicologia de Conversão**
-- **Trigger Primário:** ${dna.psychology.primary}
-- **Gatilhos:** ${dna.psychology.triggers.join(', ')}
-- **Medos:** ${dna.psychology.fears.join(', ')}
-- **Desejos:** ${dna.psychology.desires.join(', ')}
-- **Tom de Copy:** ${dna.psychology.copyTone}
-
-## 🎨 **Personalidade da Marca**
-- **Traços Principais:** ${dna.brand.primaryTraits.join(', ')}
-- **Tom de Voz:** ${dna.brand.voiceTone}
-- **Arquétipo:** ${dna.brand.brandArchetype}
-- **Estilo de Comunicação:** ${dna.brand.communicationStyle}
-
-## ⚙️ **Requisitos Técnicos**
-- **Segurança:** ${dna.technical.security}
-- **Performance:** ${dna.technical.performance}
-- **Compliance:** ${dna.technical.compliance.join(', ')}
-- **Integrações:** ${dna.technical.integrations.join(', ')}
-
-## 🏆 **Análise Competitiva**
-- **Competitors Diretos:** ${dna.competitive.directCompetitors.join(', ')}
-- **Benchmark Sites:** ${dna.competitive.benchmarkSites.join(', ')}
-
-## 📝 **Estratégia de Conteúdo**
-- **Pilares:** ${dna.content.contentPillars.join(', ')}
-- **Estratégia de Copy:** ${dna.content.copyStrategy}
-- **Estratégia CTA:** ${dna.content.ctaStrategy}
-
-## 🎨 **Direção Visual**
-- **Psicologia de Cor:** ${dna.visual.colorPsychology}
-- **Tipografia:** ${dna.visual.typography}
-- **Layout:** ${dna.visual.layout}
-- **Imagery:** ${dna.visual.imagery}
-
----
-*Gerado por ${dna.agent} em ${dna.created}*
-`;
-  }
-
-  // Métodos auxiliares
-  mapIndustry(businessType) {
-    const industryMap = {
-      'fintech': 'Financial Services',
-      'ecommerce': 'Retail & Commerce',
-      'saas': 'Technology',
-      'agency': 'Marketing & Advertising',
-      'education': 'Education & Training',
-      'healthcare': 'Healthcare & Medical',
-      'real_estate': 'Real Estate',
-      'food': 'Food & Beverage',
-      'travel': 'Travel & Hospitality',
-      'fitness': 'Health & Fitness'
-    };
-    return industryMap[businessType] || 'General';
-  }
-
-  detectProjectScale(briefing) {
-    const keywords = briefing.toLowerCase();
-    if (keywords.includes('startup') || keywords.includes('pequeno')) return 'startup';
-    if (keywords.includes('empresa') || keywords.includes('médio')) return 'medium';
-    if (keywords.includes('corporação') || keywords.includes('grande')) return 'enterprise';
-    return 'medium';
-  }
-
-  extractTimeline(briefing) {
-    const keywords = briefing.toLowerCase();
-    if (keywords.includes('urgente') || keywords.includes('asap')) return 'rush';
-    if (keywords.includes('semana')) return '1-2 weeks';
-    if (keywords.includes('mês')) return '1 month';
-    return '2-4 weeks';
-  }
-
-  extractBudgetRange(briefing) {
-    const keywords = briefing.toLowerCase();
-    if (keywords.includes('baixo') || keywords.includes('barato')) return 'low';
-    if (keywords.includes('premium') || keywords.includes('investimento')) return 'high';
-    return 'medium';
-  }
-
-  extractGoals(briefing) {
-    const goalMap = {
-      'conversão': 'increase_conversions',
-      'vendas': 'increase_sales', 
-      'leads': 'generate_leads',
-      'cadastro': 'user_acquisition',
-      'marca': 'brand_awareness',
-      'engagement': 'user_engagement'
-    };
-
-    const detected = [];
-    const keywords = briefing.toLowerCase();
-    
-    for (const [keyword, goal] of Object.entries(goalMap)) {
-      if (keywords.includes(keyword)) {
-        detected.push(goal);
-      }
+    if (discovery && Object.keys(discovery).length > 0) {
+      prompt += `\n\n## Dados de Discovery (coletados do site/redes):\n${JSON.stringify(discovery, null, 2).slice(0, 2000)}`;
     }
 
-    return detected.length > 0 ? detected : ['increase_conversions'];
+    if (brief && Object.keys(brief).length > 0) {
+      prompt += `\n\n## Briefing Criativo:\n${JSON.stringify(brief, null, 2).slice(0, 1500)}`;
+    }
+
+    if (nicheRefs) {
+      prompt += `\n\n## Referências do nicho ${opts.niche}:\n- Sites: ${(nicheRefs.sites || []).map(s => s.name || s.url).join(', ')}`;
+      prompt += `\n- Padrões comuns: ${(nicheRefs.topComponents || []).slice(0, 5).map(c => c.pattern || c).join(', ')}`;
+    }
+
+    prompt += `
+
+## Formato de saída (JSON):
+
+{
+  "project": {
+    "name": "nome do projeto",
+    "businessType": "tipo exato (healthcare, fintech, fitness, ecommerce, saas, education, restaurant, agency, consulting, realestate)",
+    "industry": "indústria específica (ex: estética facial, trading esportivo, crossfit)",
+    "projectScale": "small|medium|large",
+    "goals": ["goal1", "goal2", "goal3"]
+  },
+  "brand": {
+    "name": "nome da marca/empresa",
+    "tagline": "frase de impacto curta e única para este negócio",
+    "primaryTraits": ["trait1", "trait2", "trait3"],
+    "voiceTone": "tom de voz específico (ex: acolhedor_profissional, ousado_jovem, técnico_confiável)",
+    "brandArchetype": "arquétipo (hero, sage, caregiver, creator, ruler, explorer, magician, lover, jester, everyman, innocent, rebel)",
+    "communicationStyle": "estilo detalhado",
+    "emotionalCore": "emoção central específica (ex: transformação_pessoal, segurança_financeira, pertencimento)"
+  },
+  "audience": {
+    "primaryAge": "faixa etária (ex: 25-45)",
+    "gender": "predominante ou todos",
+    "income": "faixa de renda",
+    "psychographics": ["psicografia1", "psicografia2", "psicografia3"],
+    "painPoints": ["dor real 1 específica do nicho", "dor real 2", "dor real 3"],
+    "motivations": ["motivação real 1", "motivação real 2", "motivação real 3"],
+    "objections": ["objeção comum 1", "objeção comum 2", "objeção comum 3"]
+  },
+  "psychology": {
+    "primary": "gatilho principal (trust, urgency, authority, scarcity, social_proof, transformation, exclusivity, fear_of_missing)",
+    "secondary": "gatilho secundário",
+    "conversionTriggers": ["trigger1", "trigger2", "trigger3"],
+    "emotionalJourney": "descreva a jornada emocional do visitante em 1 frase"
+  },
+  "visual": {
+    "mood": "mood board em 3 palavras (ex: clean_luxuoso_acolhedor)",
+    "colorStrategy": "estratégia de cor (ex: tons de azul para confiança médica, verde para saúde)",
+    "suggestedPalette": {
+      "primary": "#hexcolor baseado no nicho",
+      "secondary": "#hexcolor complementar",
+      "accent": "#hexcolor de destaque",
+      "background": "#hexcolor de fundo"
+    },
+    "typography": "sugestão de fonte (ex: sans-serif moderna, serif elegante)",
+    "imageStyle": "estilo de imagens (ex: fotos reais de pacientes, ilustrações flat, mockups)"
+  },
+  "content": {
+    "keyMessages": ["mensagem-chave 1 específica", "mensagem-chave 2", "mensagem-chave 3"],
+    "uniqueSellingPoints": ["USP1 real do negócio", "USP2", "USP3"],
+    "socialProof": "tipo de prova social ideal (depoimentos de pacientes, números de alunos, cases de sucesso)",
+    "ctaStrategy": "estratégia de CTA (ex: agendar consulta gratuita, começar teste grátis)"
+  },
+  "seo": {
+    "primaryKeyword": "keyword principal",
+    "secondaryKeywords": ["kw2", "kw3", "kw4", "kw5"],
+    "searchIntent": "intenção de busca do público",
+    "localSEO": true/false
+  },
+  "technical": {
+    "layoutStyle": "hero_centric, feature_grid, storytelling, comparison, funnel",
+    "prioritySections": ["hero", "section2", "section3", "section4", "cta"],
+    "interactionLevel": "low|medium|high",
+    "mobileFirst": true
+  },
+  "competitors": {
+    "directCompetitors": ["concorrente real 1", "concorrente real 2"],
+    "differentiators": ["diferencial real 1 deste negócio", "diferencial 2"],
+    "marketPosition": "posicionamento em 1 frase"
+  }
+}
+
+IMPORTANTE:
+- Tudo deve ser ESPECÍFICO para "${briefing}" — nada genérico
+- Pain points, motivações e objeções devem ser REAIS do nicho
+- Cores devem fazer sentido para o setor (não roxo para clínica médica, por exemplo)
+- Keywords devem ser termos que o público REALMENTE busca no Google Brasil
+- Concorrentes devem ser empresas REAIS do setor quando possível`;
+
+    return prompt;
   }
 
-  // Adicionar mais métodos auxiliares conforme necessário...
-  buildDemographics(primaryAge) {
-    const ageMap = {
-      'gen_z': { age: '18-24', income: 'low-medium', tech: 'high', social: 'tiktok-instagram' },
-      'millennial': { age: '25-35', income: 'medium-high', tech: 'high', social: 'instagram-linkedin' },
-      'gen_x': { age: '35-50', income: 'high', tech: 'medium', social: 'facebook-linkedin' },
-      'boomer': { age: '50+', income: 'high', tech: 'low', social: 'facebook-email' }
-    };
-    return ageMap[primaryAge];
-  }
-
-  buildPsychographics(briefing) {
-    // Análise psicográfica baseada no briefing
+  _fallbackAnalysis(briefing, projectName, opts) {
+    // Minimal fallback if LLM is unavailable
+    const niche = opts.niche || 'general';
     return {
-      values: ['efficiency', 'quality', 'value'],
-      interests: ['technology', 'business', 'growth'],
-      lifestyle: 'busy_professional'
+      project: {
+        name: projectName,
+        businessType: niche,
+        industry: niche,
+        projectScale: 'medium',
+        goals: ['increase_conversions', 'build_trust', 'generate_leads']
+      },
+      brand: {
+        name: opts.company || projectName,
+        tagline: '',
+        primaryTraits: [],
+        voiceTone: 'professional',
+        brandArchetype: 'hero',
+        communicationStyle: 'informative',
+        emotionalCore: 'trust'
+      },
+      audience: {
+        primaryAge: '25-45',
+        painPoints: [],
+        motivations: [],
+        objections: []
+      },
+      psychology: { primary: 'trust', secondary: 'authority', conversionTriggers: [] },
+      visual: { mood: 'modern_clean', suggestedPalette: {} },
+      content: { keyMessages: [], uniqueSellingPoints: [], ctaStrategy: '' },
+      seo: { primaryKeyword: projectName.replace(/-/g, ' '), secondaryKeywords: [] },
+      technical: { layoutStyle: 'hero_centric', prioritySections: ['hero', 'features', 'testimonials', 'pricing', 'cta'] },
+      competitors: { directCompetitors: [], differentiators: [] }
     };
   }
 
-  extractPainPoints(briefing) {
-    return ['time_consuming', 'complex_process', 'lack_of_transparency'];
+  _validateAndEnrich(dna, briefing, projectName, opts) {
+    // Ensure minimum structure
+    if (!dna.project) dna.project = {};
+    if (!dna.project.name) dna.project.name = projectName;
+    if (!dna.project.businessType) dna.project.businessType = opts.niche || 'general';
+    if (!dna.brand) dna.brand = {};
+    if (!dna.brand.name) dna.brand.name = opts.company || projectName;
+    if (!dna.audience) dna.audience = {};
+    if (!dna.psychology) dna.psychology = { primary: 'trust' };
+    if (!dna.visual) dna.visual = {};
+    if (!dna.content) dna.content = {};
+    if (!dna.seo) dna.seo = {};
+    if (!dna.technical) dna.technical = {};
+    if (!dna.competitors) dna.competitors = {};
+    return dna;
   }
 
-  extractMotivations(briefing) {
-    return ['save_time', 'increase_profit', 'reduce_risk'];
+  _loadJSON(filepath) {
+    try { return JSON.parse(fs.readFileSync(filepath, 'utf-8')); } catch(e) { return null; }
   }
 
-  analyzDigitalBehavior(primaryAge) {
-    const behaviorMap = {
-      'gen_z': 'mobile_first_short_attention',
-      'millennial': 'multi_device_research_heavy',
-      'gen_x': 'desktop_focused_thorough',
-      'boomer': 'traditional_channels_preferred'
-    };
-    return behaviorMap[primaryAge];
+  _loadNicheRefs(niche) {
+    if (!niche) return null;
+    const refPath = path.join(WORKSPACE, 'references-db', 'niches', `${niche}.json`);
+    return this._loadJSON(refPath);
   }
 
-  defineVoiceTone(traits) {
-    if (traits.includes('professional')) return 'professional_confident';
-    if (traits.includes('friendly')) return 'friendly_approachable';
-    if (traits.includes('innovative')) return 'cutting_edge_smart';
-    return 'balanced_trustworthy';
-  }
+  _generateSummary(dna, projectName) {
+    const p = dna.project || {};
+    const b = dna.brand || {};
+    const a = dna.audience || {};
+    const psy = dna.psychology || {};
+    const v = dna.visual || {};
+    const c = dna.content || {};
 
-  assignBrandArchetype(traits) {
-    if (traits.includes('innovative')) return 'magician';
-    if (traits.includes('trustworthy')) return 'sage';
-    if (traits.includes('friendly')) return 'everyman';
-    if (traits.includes('premium')) return 'ruler';
-    return 'hero';
-  }
+    return `# Context DNA — ${b.name || projectName}
 
-  defineCommunicationStyle(traits) {
-    if (traits.includes('professional')) return 'direct_clear';
-    if (traits.includes('friendly')) return 'conversational_warm';
-    if (traits.includes('innovative')) return 'visionary_inspiring';
-    return 'informative_helpful';
-  }
+## Projeto
+- **Tipo:** ${p.businessType} / ${p.industry || ''}
+- **Escala:** ${p.projectScale || 'medium'}
+- **Objetivos:** ${(p.goals || []).join(', ')}
 
-  defineEmotionalCore(briefing) {
-    return 'trust_and_success';
-  }
+## Marca
+- **Nome:** ${b.name || projectName}
+- **Tagline:** ${b.tagline || '—'}
+- **Tom de voz:** ${b.voiceTone || '—'}
+- **Arquétipo:** ${b.brandArchetype || '—'}
+- **Emoção central:** ${b.emotionalCore || '—'}
 
-  getBenchmarkSites(businessType) {
-    const benchmarkMap = {
-      'fintech': ['stripe.com', 'wise.com', 'revolut.com'],
-      'ecommerce': ['shopify.com', 'amazon.com'],
-      'saas': ['linear.app', 'notion.so', 'figma.com']
-    };
-    return benchmarkMap[businessType] || [];
-  }
+## Audiência
+- **Idade:** ${a.primaryAge || '—'}
+- **Dores:** ${(a.painPoints || []).join(', ')}
+- **Motivações:** ${(a.motivations || []).join(', ')}
+- **Objeções:** ${(a.objections || []).join(', ')}
 
-  findDifferentiationOpportunities(briefing) {
-    return ['user_experience', 'transparency', 'speed'];
-  }
+## Psicologia
+- **Gatilho primário:** ${psy.primary || '—'}
+- **Gatilho secundário:** ${psy.secondary || '—'}
+- **Jornada emocional:** ${psy.emotionalJourney || '—'}
 
-  getCurrentDesignTrends(businessType) {
-    return ['glassmorphism', 'micro_interactions', 'dark_mode'];
-  }
+## Visual
+- **Mood:** ${v.mood || '—'}
+- **Estratégia de cor:** ${v.colorStrategy || '—'}
+- **Paleta sugerida:** ${JSON.stringify(v.suggestedPalette || {})}
 
-  defineContentPillars(briefing) {
-    return ['education', 'trust_building', 'product_benefits'];
-  }
+## Conteúdo
+- **Mensagens-chave:** ${(c.keyMessages || []).join(' | ')}
+- **USPs:** ${(c.uniqueSellingPoints || []).join(' | ')}
+- **CTA Strategy:** ${c.ctaStrategy || '—'}
 
-  defineCTAStrategy(psychology) {
-    const ctaMap = {
-      'trust': 'Get_Started_Safely',
-      'urgency': 'Limited_Time_Offer',
-      'value': 'See_ROI_Calculator'
-    };
-    return ctaMap[psychology.primary] || 'Get_Started_Now';
-  }
+## SEO
+- **Keyword principal:** ${(dna.seo || {}).primaryKeyword || '—'}
+- **Keywords secundárias:** ${((dna.seo || {}).secondaryKeywords || []).join(', ')}
 
-  defineContentHierarchy(briefing) {
-    return ['hero_value_prop', 'social_proof', 'features', 'pricing', 'cta'];
-  }
-
-  defineSEOStrategy(briefing) {
-    return 'focused_long_tail_keywords';
+---
+*Gerado por NEXUS Context Agent v2 (LLM-powered) em ${new Date().toLocaleString('pt-BR')}*
+`;
   }
 }
 
-// CLI Interface
-async function main() {
-  const args = process.argv.slice(2);
-  
-  if (args.length === 0) {
-    console.log(`
-🧠 NEXUS Context Agent v1.0.0
+module.exports = NexusContextAgentV2;
 
-Uso:
-  node nexus-context-agent.js "Briefing do projeto" [nome-do-projeto]
-
-Exemplo:
-  node nexus-context-agent.js "Preciso de um site para minha fintech de pagamentos, focado em conversão e confiança" fintech-payments
-    `);
-    process.exit(1);
-  }
-
-  const briefing = args[0];
-  const projectName = args[1] || `projeto-${Date.now()}`;
-  
-  const agent = new NexusContextAgent();
-  
-  console.log('🚀 Iniciando análise...');
-  console.log(`📋 Briefing: "${briefing}"`);
-  console.log(`📂 Projeto: ${projectName}`);
-  console.log('');
-
-  try {
-    const contextDNA = await agent.processBriefing(briefing);
-    const result = await agent.saveContextDNA(contextDNA, projectName);
-    
-    console.log('');
-    console.log('✅ Context DNA gerado com sucesso!');
-    console.log('📄 Arquivos salvos:');
-    console.log(`   - ${result.filePath}`);
-    console.log(`   - ${result.summaryPath}`);
-    console.log('');
-    console.log('🎯 Próximo passo: Use este Context DNA com outros agentes NEXUS');
-    
-  } catch (error) {
-    console.error('❌ Erro ao processar briefing:', error);
-    process.exit(1);
-  }
-}
-
-// Executa se chamado diretamente
+// CLI
 if (require.main === module) {
-  main();
-}
+  const args = process.argv.slice(2);
+  const briefing = args[0] || 'projeto genérico';
+  const projectName = args[1] || 'test-project';
 
-module.exports = NexusContextAgent;
+  // Parse opts from remaining args
+  const opts = {};
+  for (let i = 2; i < args.length; i++) {
+    if (args[i] === '--niche' && args[i+1]) opts.niche = args[++i];
+    if (args[i] === '--company' && args[i+1]) opts.company = args[++i];
+    if (args[i] === '--url' && args[i+1]) opts.url = args[++i];
+  }
+
+  const agent = new NexusContextAgentV2();
+  agent.analyze(briefing, projectName, opts)
+    .then(r => {
+      console.log('\n🎯 Próximo passo: Use este Context DNA com outros agentes NEXUS');
+    })
+    .catch(e => {
+      console.error('❌ Erro:', e.message);
+      process.exit(1);
+    });
+}

@@ -33,4 +33,4 @@ echo "Project: $PROJECT"
 echo "DNA: $DNA_FILE"
 echo ""
 
-node "$AGENTS_DIR/nexus-code-agent-v4.js" "$DNA_FILE"
+node "$AGENTS_DIR/nexus-code-agent.js" "$DNA_FILE"
